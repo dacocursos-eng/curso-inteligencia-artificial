@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Fortalecer la iniciativa de IA | Segunda parte</title>
+<style>
+:root{
+  --navy:#062f63;--navy-deep:#032957;--navy-mid:#073d72;--blue:#7fd7ea;--ice:#dff5fa;
+  --card:#f8f9fa;--ink:#172033;--muted:#6b7890;--line:rgba(255,255,255,.18);
+  --ok:#9de4af;--warn:#f3d27a;--steel:#315f82;
+  --serif:Georgia,"Times New Roman",serif;--sans:Inter,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--navy);color:#fff;font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+button,input,textarea{font:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #9de4ef;outline-offset:3px}
+a{color:inherit}
+
+/* Encabezado */
+header{background:var(--navy);color:#fff;padding:0 5.5vw;position:sticky;top:0;z-index:30;border-bottom:1px solid rgba(255,255,255,.13)}
+.header{max-width:1280px;margin:auto;min-height:74px;display:flex;align-items:center;gap:34px}
+.logo{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;font-weight:900;color:#fff;white-space:nowrap}
+.logo span{color:var(--blue)}
+.progress{flex:1}
+.progress-top{display:flex;justify-content:space-between;font-size:.72rem;color:#b9d0df;margin-bottom:7px}
+.track{height:4px;background:rgba(255,255,255,.2);border-radius:9px}
+.fill{height:100%;width:0;background:#9de4ef;border-radius:9px;transition:width .3s}
+.navcontext{display:flex;gap:4px}
+.phase{background:transparent;border:0;color:#b9cce0;font-size:.74rem;font-weight:800;letter-spacing:.03em;padding:8px 9px;border-radius:4px;cursor:pointer}
+.phase:hover{color:#fff;background:rgba(255,255,255,.07)}
+.phase.on{color:#fff;box-shadow:inset 0 -2px 0 var(--blue)}
+
+/* Estructura */
+.layout{max-width:1320px;margin:auto;display:grid;grid-template-columns:280px minmax(0,1fr);gap:44px;padding:0 5.5vw 90px}
+aside{position:sticky;top:98px;height:max-content;align-self:start;padding-top:28px}
+.project-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:18px;margin-bottom:18px;border-radius:14px}
+.project-card label{margin:0 0 8px;font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;color:#b9d0df}
+.project-card input{font-size:.9rem;padding:10px 12px}
+.small-note{font-size:.8rem;color:#9fb5ca;margin:8px 0 0;line-height:1.45}
+.side-list{border-left:1px solid rgba(255,255,255,.16);padding-left:8px}
+.side-step{display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;background:transparent;padding:8px 12px;border:0;border-left:3px solid transparent;color:#9fb5ca;font-size:.83rem;font-weight:500;cursor:pointer;border-radius:0 8px 8px 0;line-height:1.35}
+.side-step .n{font-weight:800;min-width:20px;color:#7f99b3}
+.side-step:hover{color:#fff}
+.side-step.active{border-left-color:var(--blue);color:#fff;background:rgba(255,255,255,.07);font-weight:800}
+.side-step.done{color:var(--ok)}
+.side-step.done .n{color:var(--ok)}
+.side-sep{height:1px;background:rgba(255,255,255,.12);margin:8px 12px}
+main{min-width:0}
+.screen{display:none;padding-top:70px}
+.screen.active{display:block}
+.screen>*{max-width:980px;margin-left:auto;margin-right:auto}
+.screen.home{padding-top:0}
+
+/* Apertura */
+.opening{min-height:calc(100vh - 74px);display:grid;grid-template-columns:1.08fr .92fr;gap:64px;align-items:center;padding:64px 0 76px;position:relative;max-width:none}
+.opening:after{content:"";position:absolute;left:50%;right:-20vw;bottom:0;height:1px;background:rgba(255,255,255,.16)}
+.kicker{font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;font-weight:900;color:#b9edf5;margin-bottom:22px}
+.hero-copy .kicker:before{content:"";display:inline-block;width:42px;height:3px;background:#fff;margin:0 14px 3px 0}
+.opening h1{font-family:var(--serif);font-size:clamp(3.6rem,6.4vw,6.4rem);line-height:.92;letter-spacing:-.05em;margin:0 0 30px;font-weight:700;color:#fff}
+.opening h1 em{font-style:italic;font-weight:400}
+.opening p,.lead{font-size:clamp(1.05rem,1.5vw,1.24rem);color:#bcd0e2;line-height:1.65}
+.opening p{max-width:640px}
+.hero-visual{background:linear-gradient(145deg,#0b527d,#087d98);border-radius:16px;min-height:430px;position:relative;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.18)}
+.hero-visual:before,.hero-visual:after{content:"";position:absolute;border:1px solid rgba(218,247,255,.65);border-radius:50%}
+.hero-visual:before{width:280px;height:280px;left:18%;top:14%}
+.hero-visual:after{width:390px;height:390px;right:-25%;top:-25%}
+.shape{position:absolute;background:linear-gradient(145deg,#e8fbff,#a6dce7);opacity:.9;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.shape.one{width:105px;height:105px;right:25%;top:4%}
+.shape.two{width:170px;height:170px;right:-2%;top:26%}
+.shape.three{width:230px;height:160px;left:28%;bottom:18%;transform:rotate(27deg)}
+.shape.four{width:120px;height:120px;left:8%;top:40%;transform:rotate(12deg)}
+.hero-note{position:absolute;left:0;right:0;bottom:0;background:#f8f9fa;padding:22px 28px;color:#617087;font-size:.95rem;border-radius:0 0 16px 16px;line-height:1.55}
+.hero-note strong{color:#172033}
+
+/* Tipografía y bloques */
+h2{font-family:var(--serif);font-size:clamp(2.8rem,5.4vw,5rem);line-height:.96;letter-spacing:-.045em;margin:0 0 22px;font-weight:700;color:#fff}
+h3{font-family:var(--serif);font-size:1.9rem;line-height:1.1;margin:0 0 14px;color:#172033;font-weight:700}
+.label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:var(--steel);margin-bottom:10px}
+.case{background:var(--card);padding:34px 40px;border-radius:16px;margin:30px auto;color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.case p{color:#53647a;margin:0 0 12px}
+.case p:last-child{margin-bottom:0}
+.now{background:var(--navy-mid);color:#fff;border-radius:16px;padding:34px 40px;margin:30px auto;border:1px solid rgba(255,255,255,.12)}
+.now h3{color:#fff}
+.now p{color:#c7d9e7;margin:0 0 12px}
+.now .label{color:#b9edf5}
+.callout{border-left:4px solid var(--blue);background:#e7f5f8;padding:26px 30px;border-radius:0 14px 14px 0;margin:30px auto;color:var(--ink)}
+.callout h3{font-size:1.5rem}
+.callout p{margin:0 0 10px;color:#34475c}
+.callout ul{margin:6px 0 0;padding-left:20px;color:#34475c}
+.callout li{margin:4px 0}
+.check{background:var(--card);color:var(--ink);border-radius:14px;padding:24px 28px;margin:28px auto}
+.check h3{font-size:1.45rem;margin-bottom:6px}
+.check .intro{color:#5b6b7d;font-size:.93rem;margin:0 0 10px}
+.checkline{font-weight:500;margin:0;display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-top:1px solid #e3e9ee;cursor:pointer;color:#26364a}
+.checkline:first-of-type{border-top:0}
+.checkline input{width:18px;height:18px;margin:4px 0 0;flex:none;accent-color:var(--navy)}
+label{display:block;font-weight:800;margin:20px 0 8px}
+textarea,input[type=text]{width:100%;border:1px solid #b9c8d4;border-radius:8px;background:#fff;padding:14px;color:var(--ink)}
+textarea{min-height:190px;resize:vertical;line-height:1.55}
+textarea::placeholder,input::placeholder{color:#8a97a8}
+.saved{font-size:.85rem;color:var(--ok);margin-top:8px;min-height:20px}
+.cycle{display:inline-flex;align-items:center;gap:10px;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:900;color:var(--steel);margin-bottom:10px}
+.cycle b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--navy);color:#fff;font-size:.72rem;letter-spacing:0}
+.now .cycle{color:#b9edf5}
+.now .cycle b{background:#fff;color:var(--navy)}
+.step-meta{display:flex;flex-wrap:wrap;gap:10px;margin:0 auto 18px}
+.chip{font-size:.74rem;font-weight:800;color:#d8f2f6;border:1px solid rgba(255,255,255,.28);padding:4px 10px;border-radius:30px}
+
+/* Audio */
+.audio-card{display:grid;grid-template-columns:86px 1fr;gap:26px;align-items:start}
+.ep-num{background:var(--navy);color:#fff;border-radius:12px;height:86px;display:grid;place-items:center;text-align:center;line-height:1}
+.ep-num small{display:block;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:#b9edf5;font-weight:800;margin-bottom:4px}
+.ep-num span{font-family:var(--serif);font-size:2.3rem;font-weight:700}
+.audio-card audio{width:100%;margin-top:6px}
+.listen-note{display:flex;gap:10px;align-items:center;font-size:.9rem;color:#315f82;font-weight:700;margin-top:10px}
+.listen-note.ok{color:#1d7a45}
+.audio-error{display:none;background:#fff4dc;border:1px solid #efd18a;color:#6d5310;border-radius:8px;padding:12px 14px;font-size:.88rem;margin-top:10px}
+.audio-error code{font-size:.84rem;word-break:break-all}
+
+/* Referencias a pasos anteriores */
+.refs{margin-top:16px;display:grid;gap:10px}
+.ref{background:#fff;border:1px solid #cfe2e8;border-radius:10px;padding:12px 14px}
+.ref-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.ref b{font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+.ref p{margin:6px 0 0;font-size:.92rem;color:#26364a;white-space:pre-wrap}
+.ref p.empty{color:#8a6a1a;font-style:italic}
+.linkbtn{background:none;border:0;padding:0;color:var(--steel);font-weight:800;font-size:.8rem;cursor:pointer;text-decoration:underline;white-space:nowrap}
+
+/* Apoyo */
+.support{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0 6px}
+.support-item{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:16px 18px}
+.support-item strong{display:block;color:#fff;margin-bottom:4px}
+.support-item p{font-size:.9rem;margin:0 0 10px;color:#c7d9e7}
+.support-item p:last-child{margin-bottom:0}
+
+/* Nivel de papel / decisión */
+.options{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0 4px}
+.options.five{grid-template-columns:repeat(5,1fr)}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt label{margin:0;height:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);border-radius:10px;padding:13px 14px;cursor:pointer;font-weight:500;color:#c7d9e7;font-size:.86rem;line-height:1.4}
+.opt label strong{display:block;color:#fff;font-size:.98rem;margin-bottom:3px}
+.opt input:checked+label{background:#fff;border-color:#fff;color:#34475c}
+.opt input:checked+label strong{color:var(--navy)}
+.opt input:focus-visible+label{outline:3px solid #9de4ef;outline-offset:2px}
+
+/* Botones */
+button{border:0;border-radius:4px;padding:13px 20px;font-weight:800;cursor:pointer}
+.primary{background:#f8fbfc;color:var(--navy);border:1px solid #dce6ed}
+.primary:hover{background:#fff}
+.secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.48)}
+.secondary:hover{background:rgba(255,255,255,.08)}
+.dark{background:var(--navy);color:#fff;border:1px solid var(--navy)}
+.dark:hover{background:var(--navy-deep)}
+.ghost-dark{background:transparent;color:var(--navy);border:1px solid #9fb4c6}
+a.btn{display:inline-block;text-decoration:none;border-radius:4px;padding:13px 20px;font-weight:800}
+.actions{display:flex;justify-content:space-between;gap:14px;border-top:1px solid rgba(255,255,255,.18);padding-top:22px;margin-top:44px}
+.actions button{min-width:150px}
+.btn-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
+
+/* Inicio */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.qcard{background:#eef6f8;border:1px solid #d5e5ea;border-radius:12px;padding:18px 20px}
+.qcard small{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:900;color:var(--steel);margin-bottom:6px}
+.qcard p{font-family:var(--serif);font-size:1.15rem;line-height:1.35;color:var(--ink);margin:0}
+.route{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:18px;counter-reset:r}
+.route div{background:#eef6f8;border:1px solid #d5e5ea;border-radius:12px;padding:16px;color:#34475c;font-size:.9rem;line-height:1.4}
+.route div strong{display:block;color:var(--ink);font-size:1rem;margin-bottom:4px}
+.route div:before{counter-increment:r;content:counter(r);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;font-weight:800;font-size:.8rem;margin-bottom:10px}
+.cycle-line{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.cycle-line span{background:#fff;border:1px solid #cfe2e8;border-radius:30px;padding:6px 14px;font-weight:800;color:var(--navy);font-size:.86rem}
+.cycle-line span.past{background:#dfe7ee;color:#617589}
+.cycle-line i{font-style:normal;color:#8aa1b5}
+.map13{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:16px}
+.map13 div{border:1px solid #d5e5ea;border-radius:10px;padding:10px 12px;font-size:.86rem;color:#26364a;background:#fff}
+.map13 div b{color:var(--steel);margin-right:6px}
+
+/* Integración */
+.status-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:16px}
+.st{border-radius:10px;padding:13px 14px;border:1px solid #d8e1e6;background:#fff;display:flex;flex-direction:column;gap:6px}
+.st .t{font-weight:800;color:var(--ink);font-size:.92rem;line-height:1.3}
+.st .t span{color:var(--steel);margin-right:6px}
+.st .s{font-size:.8rem;font-weight:800}
+.st.ok{border-left:5px solid #2f9a5c}.st.ok .s{color:#1d7a45}
+.st.short{border-left:5px solid #d9a52a}.st.short .s{color:#8a6a1a}
+.st.empty{border-left:5px solid #c9564a}.st.empty .s{color:#a23b31}
+.st .linkbtn{align-self:flex-start}
+.alerts{margin:14px 0 0;padding:0;list-style:none}
+.alerts li{padding:9px 12px;border-radius:8px;background:#fff4dc;color:#5f4a10;margin-top:8px;font-size:.9rem}
+.alerts li.none{background:#e4f5ea;color:#1d5c36}
+.pair{border-top:1px solid #e3e9ee;padding:18px 0}
+.pair:first-of-type{border-top:0}
+.pair h4{margin:0 0 4px;font-size:1rem;color:var(--ink)}
+.pair .q{margin:0 0 10px;color:#5b6b7d;font-size:.92rem}
+.pair-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pair-cols .ref p{max-height:180px;overflow:auto}
+
+/* Mi iniciativa */
+.ficha{background:#fff;color:var(--ink);border-radius:16px;overflow:hidden;margin:30px auto;box-shadow:0 18px 50px rgba(0,0,0,.2)}
+.ficha-head{background:linear-gradient(145deg,#0b527d,#087d98);color:#fff;padding:30px 36px}
+.ficha-head small{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:#d8f2f6}
+.ficha-head h3{color:#fff;font-size:2.1rem;margin:8px 0 4px}
+.ficha-head p{margin:0;color:#d8f2f6;font-size:.92rem}
+.ficha-body{display:grid;grid-template-columns:1fr 1fr}
+.ficha-cell{padding:18px 24px;border-top:1px solid #e3e9ee}
+.ficha-cell.left{border-right:1px solid #e3e9ee}
+.ficha-cell.wide{grid-column:1/-1}
+.ficha-cell b{display:block;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);margin-bottom:6px}
+.ficha-cell p{margin:0;white-space:pre-wrap;font-size:.93rem;line-height:1.55}
+.ficha-cell p.pending{color:#a23b31;font-style:italic}
+
+/* Cierre */
+.steps-list{margin:14px 0 0;padding:0;list-style:none;counter-reset:s}
+.steps-list li{counter-increment:s;display:flex;gap:14px;padding:10px 0;border-top:1px solid #e3e9ee;color:#26364a}
+.steps-list li:first-child{border-top:0}
+.steps-list li:before{content:counter(s);flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;font-weight:800;font-size:.82rem}
+.prompt{width:100%;min-height:520px;background:var(--navy-deep);color:#dcebf3;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:24px 26px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88rem;line-height:1.6;resize:vertical;white-space:pre-wrap}
+.prompt-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:18px 0 12px;flex-wrap:wrap}
+.notice{background:#fff4dc;border:1px solid #efd18a;color:#5f4a10;border-radius:10px;padding:14px 16px;margin-top:14px;font-size:.92rem}
+.notice.ok{background:#e4f5ea;border-color:#b6dfc3;color:#1d5c36}
+.reset{margin-top:40px;text-align:right}
+.reset button{background:transparent;color:#9fb5ca;border:1px solid rgba(255,255,255,.2);font-weight:600;font-size:.82rem;padding:9px 14px}
+
+/* Documento imprimible */
+#printDoc{display:none}
+@media print{
+  @page{size:A4;margin:18mm 16mm}
+  body{background:#fff;color:#000}
+  header,.layout{display:none!important}
+  #printDoc{display:block;font-family:Georgia,"Times New Roman",serif;color:#172033}
+  #printDoc .ph{background:#062f63;color:#fff;padding:18px 22px;margin-bottom:18px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #printDoc .ph small{font-family:Arial,sans-serif;font-size:9pt;letter-spacing:.14em;text-transform:uppercase}
+  #printDoc .ph h1{margin:6px 0 2px;font-size:20pt}
+  #printDoc .ph p{margin:0;font-family:Arial,sans-serif;font-size:9.5pt}
+  #printDoc section{break-inside:avoid;border-top:1px solid #c9d5de;padding:10px 0 8px}
+  #printDoc h2{font-family:Arial,sans-serif;font-size:11pt;color:#062f63;margin:0 0 5px;letter-spacing:0;line-height:1.3}
+  #printDoc p{font-family:Arial,sans-serif;font-size:10pt;line-height:1.5;margin:0;white-space:pre-wrap}
+  #printDoc p.pending{font-style:italic;color:#a23b31}
+}
+
+/* Responsivo */
+@media(max-width:1100px){.navcontext{display:none}}
+@media(max-width:1050px){
+  .layout{grid-template-columns:230px minmax(0,1fr);gap:28px;padding-left:5vw;padding-right:5vw}
+  .opening{grid-template-columns:1fr;gap:34px;min-height:auto;padding:52px 0 62px}
+  .opening:after{right:0}
+  .hero-visual{min-height:330px}
+  .route{grid-template-columns:repeat(3,1fr)}
+  .options.five{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:760px){
+  .layout{display:flex;flex-direction:column;padding-left:6vw;padding-right:6vw}
+  aside{position:relative;top:auto;order:2;padding-top:40px}
+  .grid2,.support,.pair-cols,.ficha-body{grid-template-columns:1fr}
+  .ficha-cell.left{border-right:0}
+  .options,.options.five{grid-template-columns:1fr 1fr}
+  .route{grid-template-columns:1fr 1fr}
+  .audio-card{grid-template-columns:1fr}
+  .ep-num{width:86px}
+  .progress-top span:last-child{display:none}
+}
+@media(max-width:600px){
+  .opening h1{font-size:3.2rem}
+  .case,.now,.check{padding:24px}
+  .actions button{min-width:0;flex:1}
+  .logo{font-size:.66rem}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header">
+    <div class="logo">RETOS / IA <span>·</span> Parte 2</div>
+    <div class="progress">
+      <div class="progress-top"><span id="progressText">Inicio</span><span id="saveText">Guardado automáticamente en este navegador</span></div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+    <nav class="navcontext" aria-label="Fases del recorrido">
+      <button type="button" class="phase" data-go="1">Definir</button>
+      <button type="button" class="phase" data-go="5">Diseñar</button>
+      <button type="button" class="phase" data-go="7">Proteger</button>
+      <button type="button" class="phase" data-go="9">Medir y decidir</button>
+      <button type="button" class="phase" data-go="13">Integrar</button>
+      <button type="button" class="phase" data-go="14">Presentar</button>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+  <aside>
+    <div class="project-card">
+      <label for="sideName">Nombre del caso</label>
+      <input type="text" id="sideName" data-bind="nombre" placeholder="Nombre de tu iniciativa"/>
+      <p class="small-note">Es la misma iniciativa que construiste en la primera parte.</p>
+    </div>
+    <nav class="side-list" id="sideList" aria-label="Pasos"></nav>
+  </aside>
+  <main id="main"></main>
+</div>
+
+<div id="printDoc" aria-hidden="true"></div>
+
+<script>
+/* =========================================================
+   CONFIGURACIÓN
+   Los audios se cargan desde la misma carpeta del repositorio
+   donde está este HTML, con los nombres originales.
+   ========================================================= */
+const MONITOR_URL = "https://gemini.google.com/gem/1uViX-hOLQXQ4rmzAM-NC3vWY2TQb1J3M?usp=sharing";
+const GAMMA_URL = "https://gamma.app";
+const STORE = "ia_publica_parte2_v1";
+
+const AUDIOS = {
+  1:"E1 Define_el_problema_real_en_IA_institucional.m4a",
+  2:"E2 Diferencia_entre_usuario_y_beneficiario_en_IA.m4a",
+  3:"E3 Línea_base_para_generar_valor_con_IA.m4a",
+  4:"E4 Lo_simple_le_gana_a_la_IA.m4a",
+  5:"E5 Cuánta_autoridad_darle_a_la_IA_pública.m4a",
+  6:"E6 Fuentes_fiables_para_una_IA_segura.m4a",
+  7:"E7 Evita_desastres_institucionales_con_IA.m4a",
+  8:"E8 Crea_controles_concretos_para_tu_IA.m4a",
+  9:"E9 Mide_impacto_real_no_solo_actividad.m4a",
+  10:"E10 Cuándo_apagar_tu_piloto_de_IA.m4a",
+  11:"E11 Quién_responde_si_falla_la_IA.m4a",
+  12:"E 12 Evidencia_para_decidir_si_tu_IA_continúa.m4a",
+  13:"E13 Conecta todas las partes.mp3"
+};
+
+/* Campos de la Ficha Ejecutiva de Oportunidad de IA */
+const FICHA = [
+  {n:1, key:"nombre",       title:"Nombre del caso"},
+  {n:2, key:"problema",     title:"Problema público o institucional"},
+  {n:3, key:"usuario",      title:"Usuario o beneficiario"},
+  {n:4, key:"proceso",      title:"Proceso actual y línea base"},
+  {n:5, key:"alternativa",  title:"Alternativa sin IA"},
+  {n:6, key:"papel",        title:"Papel de la IA"},
+  {n:7, key:"informacion",  title:"Información necesaria"},
+  {n:8, key:"riesgos",      title:"Riesgos principales"},
+  {n:9, key:"controles",    title:"Controles iniciales"},
+  {n:10,key:"metricas",     title:"Métricas de éxito"},
+  {n:11,key:"parada",       title:"Condición de parada"},
+  {n:12,key:"propietario",  title:"Propietario del proceso"},
+  {n:13,key:"decision",     title:"Próxima decisión"}
+];
+const FIELD = Object.fromEntries(FICHA.map(f=>[f.key,f]));
+/* Paso del recorrido en el que se trabaja cada campo */
+const STEP_OF = {problema:1,usuario:2,proceso:3,alternativa:4,papel:5,informacion:6,riesgos:7,controles:8,metricas:9,parada:10,propietario:11,decision:12,nombre:13};
+
+const PAPEL_OPTS = [
+  {v:"Informar",   d:"Busca y presenta información de fuentes autorizadas."},
+  {v:"Asistir",    d:"Prepara borradores que una persona revisa y ajusta."},
+  {v:"Recomendar", d:"Sugiere opciones o prioridades; una persona decide."},
+  {v:"Ejecutar",   d:"Realiza una acción sin validación humana previa."}
+];
+const DECISION_OPTS = [
+  {v:"Aprobar un piloto controlado", d:"Probar con alcance y plazo definidos."},
+  {v:"Continuar con ajustes", d:"Corregir antes de seguir."},
+  {v:"Ampliar", d:"Extender el alcance o los usuarios."},
+  {v:"Replantear", d:"Rediseñar el enfoque o la solución."},
+  {v:"Detener", d:"Suspender la iniciativa."}
+];
+
+/* Contenido pedagógico de los 13 pasos */
+const STEPS = [
+ {n:1, key:"problema", phase:"Definir", title:"Problema público o institucional",
+  ep:"Define el problema real en IA institucional",
+  context:"El problema describe la situación concreta que la entidad quiere cambiar: qué ocurre, a quién afecta, con qué frecuencia y qué consecuencia produce. Una formulación observable permite dimensionar la solución y establecer desde el inicio qué resultado se espera conseguir.",
+  observe:"Vuelve a la necesidad con la que empezaste la primera parte, la que dio origen a tu asistente.",
+  questions:["¿Qué situación concreta motivó tu solución?","¿Está descrita como una situación que ocurre hoy o como la herramienta que querías construir?","¿Qué resultado esperabas conseguir para las personas o para la entidad?"],
+  refs:[],
+  task:"Reformula el problema de tu iniciativa a partir de la situación que ocurre hoy. Describe qué pasa, a quién afecta, qué consecuencia tiene y qué resultado espera conseguir la entidad.",
+  monitor:"para diferenciar un problema observable de la descripción de una solución.",
+  chat:"para recordar qué necesidad dio origen a tu asistente y cómo la formulaste.",
+  ph:"Describe la situación que ocurre hoy, a quién afecta, su consecuencia y el resultado que se espera conseguir.",
+  review:["El texto describe la situación que ocurre hoy, antes de mencionar cualquier solución.","Una persona ajena a mi área entendería qué ocurre.","Incluye una consecuencia observable: tiempos, errores, reprocesos, costos o insatisfacción.","Indica el resultado que la entidad espera conseguir."]},
+
+ {n:2, key:"usuario", phase:"Definir", title:"Usuario o beneficiario",
+  ep:"Diferencia entre usuario y beneficiario en IA",
+  context:"El usuario es quien interactúa con la solución. El beneficiario es quien recibe el efecto del cambio. En algunos casos coinciden y en otros son personas distintas, por ejemplo un funcionario que usa la herramienta y un ciudadano que recibe una respuesta más oportuna. Distinguirlos define el alcance de la solución y el tipo de resultado que conviene medir.",
+  observe:"En la primera parte definiste para quién era tu asistente.",
+  questions:["¿Esa persona es quien usa la solución, quien recibe el beneficio, o ambas?","¿Qué tarea realiza hoy?","¿Qué resultado necesita obtener?"],
+  refs:["problema"],
+  task:"Identifica quién usará la solución y quién recibirá el beneficio. Para cada uno, indica qué tarea realiza hoy y qué resultado necesita obtener.",
+  monitor:"para aclarar la diferencia entre usuario y beneficiario con un ejemplo.",
+  chat:"para revisar a quién estaba dirigido tu asistente y cómo lo describiste.",
+  ph:"Usuario: quién interactúa con la solución, qué tarea realiza hoy y qué necesita.\nBeneficiario: quién recibe el efecto del cambio y qué resultado necesita.",
+  review:["Están identificados el usuario y el beneficiario, aunque sean la misma persona.","Se describe la tarea que realizan hoy.","Se precisa el resultado que necesitan obtener.","Es coherente con el problema definido en el paso 1."]},
+
+ {n:3, key:"proceso", phase:"Definir", title:"Proceso actual y línea base",
+  ep:"Línea base para generar valor con IA",
+  context:"La línea base registra cómo funciona hoy el proceso: actividades, participantes, volumen, tiempos, errores y reprocesos. Es el punto de referencia con el que después se compara cualquier resultado. Con ella la entidad puede demostrar si la iniciativa produjo una mejora.",
+  observe:"Piensa en cómo se atiende hoy la necesidad que tu asistente busca apoyar.",
+  questions:["¿Cómo funciona el proceso hoy y quiénes intervienen?","¿Cuántos casos se atienden y en cuánto tiempo?","¿Dónde están las demoras o las tareas repetitivas?","¿Qué dato disponible puede servir como línea base?"],
+  refs:["problema","usuario"],
+  task:"Describe en pocas líneas cómo funciona hoy el proceso y registra al menos un dato de línea base: volumen, tiempo, errores o reprocesos. Si el dato aún no existe, indica cómo y cuándo podría obtenerse.",
+  monitor:"para entender qué es una línea base y qué tipos de datos pueden usarse.",
+  chat:"para ubicar en qué parte del proceso interviene la solución que construiste.",
+  ph:"Cómo funciona hoy: pasos, participantes, tiempos.\nLínea base: dato actual (volumen, tiempo, errores o reprocesos) y su fuente.",
+  review:["Se entiende quién interviene y en qué orden.","Hay al menos un dato cuantitativo o una forma definida de obtenerlo.","Se identifican las demoras o tareas repetitivas.","El dato permitirá comparar después si hubo mejora."]},
+
+ {n:4, key:"alternativa", phase:"Definir", title:"Alternativa sin IA",
+  ep:"Lo simple le gana a la IA",
+  context:"Algunas necesidades pueden atenderse total o parcialmente con ajustes al proceso, una regla más clara, una plantilla, un repositorio ordenado o una automatización simple. Comparar esas opciones permite identificar qué parte del valor depende realmente de la IA y justificar su uso ante la organización.",
+  observe:"Mira el proceso que acabas de describir.",
+  questions:["¿Qué parte del problema podría resolverse con un cambio sencillo?","¿Una plantilla, una regla o un repositorio ordenado resolverían una parte importante?","¿Qué quedaría pendiente después de ese cambio?"],
+  refs:["problema","proceso"],
+  task:"Describe al menos una alternativa sin IA. Indica qué resolvería, qué ventajas tendría y qué parte del problema seguiría pendiente. Con esa comparación, explica qué aporta la IA en tu caso.",
+  monitor:"para ver ejemplos de alternativas sencillas y cómo compararlas.",
+  chat:"para identificar qué hace tu asistente que una solución más simple no resolvería.",
+  ph:"Alternativa: ...\nQué resolvería y ventajas: ...\nQué seguiría pendiente: ...\nQué aporta la IA frente a esta alternativa: ...",
+  review:["La alternativa es realista para mi entidad.","Indica qué resolvería y qué dejaría pendiente.","Permite explicar qué aporta la IA frente a la alternativa.","Consideré combinar la alternativa con la solución de IA."]},
+
+ {n:5, key:"papel", phase:"Diseñar", title:"Papel de la IA",
+  ep:"Cuánta autoridad darle a la IA pública",
+  context:"El papel define cuánta autoridad tiene la IA dentro del proceso: informar, asistir, recomendar o ejecutar. A mayor autoridad, mayores deben ser las salvaguardas y el nivel de revisión humana. Esta definición orienta los controles y la asignación de responsabilidades.",
+  observe:"Tu asistente de la primera parte ya cumple una función dentro del proceso.",
+  questions:["¿Informa, redacta borradores, sugiere decisiones o actúa sin intervención humana?","¿Qué decisión debe permanecer siempre en manos de una persona?","¿Qué consecuencia tendría un error en ese nivel?"],
+  refs:["problema","alternativa"],
+  options:"papel",
+  task:"Selecciona el nivel de autoridad de la IA en tu iniciativa. Luego explica qué hará, qué no hará, por qué ese nivel es adecuado para tu caso y qué decisión queda en manos de una persona.",
+  monitor:"para comprender las diferencias entre informar, asistir, recomendar y ejecutar.",
+  chat:"para revisar qué hace exactamente tu asistente según las instrucciones que le diste.",
+  ph:"Qué hará la IA: ...\nQué no hará: ...\nPor qué este nivel es adecuado: ...\nDecisión que conserva una persona: ...",
+  review:["El nivel elegido corresponde con lo que hace hoy mi asistente.","Está claro qué decisiones conserva una persona.","Justifiqué por qué este nivel es el adecuado.","El nivel es proporcional a la consecuencia de un error."]},
+
+ {n:6, key:"informacion", phase:"Diseñar", title:"Información necesaria",
+  ep:"Fuentes fiables para una IA segura",
+  context:"La calidad y la procedencia de las fuentes determinan si las respuestas pueden verificarse. La información se organiza en tres grupos: pública o sintética; interna autorizada, con reglas de uso claras; y personal, reservada o estratégica, con restricciones estrictas.",
+  observe:"En la primera parte cargaste documentos a tu asistente.",
+  questions:["¿Qué documentos usaste y de dónde provienen?","¿Están vigentes? ¿Quién los aprueba y los actualiza?","¿Qué información no debería usar la solución?"],
+  refs:["papel"],
+  task:"Identifica la información que necesita la iniciativa, sus fuentes autorizadas, quién las mantiene actualizadas y con qué frecuencia. Clasifica la información según su sensibilidad e indica cuál debe quedar excluida.",
+  monitor:"para aclarar la clasificación de la información y el concepto de fuente autorizada.",
+  chat:"para listar los documentos que usaste y revisar su vigencia.",
+  ph:"Fuentes autorizadas: ...\nResponsable de actualización y frecuencia: ...\nClasificación (pública, interna autorizada, reservada): ...\nInformación excluida: ...",
+  review:["Cada fuente tiene un origen oficial identificable.","Está definido quién la actualiza y con qué frecuencia.","La información está clasificada según su sensibilidad.","Se indica qué información queda excluida."]},
+
+ {n:7, key:"riesgos", phase:"Proteger", title:"Riesgos principales",
+  ep:"Evita desastres institucionales con IA",
+  context:"Un riesgo describe qué podría salir mal, qué situación lo provocaría y qué consecuencia tendría para las personas o para la entidad. Su magnitud depende del papel asignado a la IA y del efecto de sus resultados: respuestas incorrectas, información desactualizada, exposición de datos, recomendaciones perjudiciales, pérdida de trazabilidad o dependencia del proveedor.",
+  observe:"Recuerda las pruebas que hiciste en la primera parte.",
+  questions:["¿Qué respuestas incorrectas, incompletas o inesperadas observaste?","¿Qué ocurriría si una respuesta errónea llegara a un ciudadano o a una decisión?","¿Cuáles de esos riesgos tendrían mayor consecuencia?"],
+  refs:["papel","informacion"],
+  task:"Identifica los dos o tres riesgos de mayor consecuencia para tu iniciativa. Para cada uno, distingue el riesgo, la situación que lo provoca y la consecuencia para la persona o para la entidad.",
+  monitor:"para revisar las dimensiones de riesgo y cómo distinguir causa y consecuencia.",
+  chat:"para recordar los fallos que encontraste al probar tu asistente.",
+  ph:"Riesgo 1: ...\nSituación que lo provoca: ...\nConsecuencia: ...\n\nRiesgo 2: ...",
+  review:["Los riesgos son específicos de mi iniciativa.","Cada riesgo distingue la situación que lo provoca y su consecuencia.","Consideré exactitud, vigencia de la información, datos sensibles, trazabilidad y dependencia del proveedor.","Están ordenados según su consecuencia."]},
+
+ {n:8, key:"controles", phase:"Proteger", title:"Controles iniciales",
+  ep:"Crea controles concretos para tu IA",
+  context:"Un control es un mecanismo concreto que gestiona un riesgo específico: límites de alcance, fuentes autorizadas, validación humana, registro de uso o condiciones de detención. La revisión humana funciona como control cuando la persona tiene tiempo, información y autoridad para corregir o rechazar el resultado. El rigor de los controles corresponde al papel asignado a la IA.",
+  observe:"Toma los riesgos que registraste en el paso anterior.",
+  questions:["¿Qué mecanismo concreto reduciría cada riesgo?","¿Quién lo aplicaría y en qué momento del proceso?","¿La persona que revisa tiene tiempo, información y autoridad para corregir?"],
+  refs:["riesgos","papel"],
+  task:"Define al menos un control para cada riesgo. Indica en qué consiste, quién lo aplica y en qué momento del proceso.",
+  monitor:"para ver ejemplos de controles y las condiciones de una revisión humana efectiva.",
+  chat:"para identificar qué límites ya incluiste en las instrucciones de tu asistente.",
+  ph:"Riesgo 1 → Control: ... | Responsable: ... | Momento: ...\nRiesgo 2 → Control: ...",
+  review:["Cada riesgo registrado tiene al menos un control.","Cada control indica responsable y momento de aplicación.","La revisión humana cuenta con tiempo, información y autoridad.","El rigor de los controles corresponde al papel de la IA."]},
+
+ {n:9, key:"metricas", phase:"Medir y decidir", title:"Métricas de éxito",
+  ep:"Mide impacto real, no solo actividad",
+  context:"Las métricas conectan el problema y la línea base con el resultado esperado. Miden efectos en tiempo, calidad, esfuerzo, costo o experiencia del usuario. El volumen de uso complementa esa información y permite interpretar los resultados.",
+  observe:"Vuelve al dato de línea base que registraste en el paso 3.",
+  questions:["¿Qué cambio en ese dato demostraría que la iniciativa funciona?","¿Qué evidencia usarías para comprobarlo?","¿Cada cuánto se mediría?"],
+  refs:["problema","proceso"],
+  task:"Define dos o tres métricas de éxito. Para cada una, indica el valor actual, el valor esperado, la evidencia que usarás y la periodicidad de medición.",
+  monitor:"para diferenciar métricas de resultado y métricas de actividad.",
+  chat:"para identificar qué resultado concreto produce tu asistente para el usuario.",
+  ph:"Métrica 1: ... | Valor actual: ... | Valor esperado: ... | Evidencia: ... | Periodicidad: ...",
+  review:["Cada métrica se relaciona con el problema definido.","Cada métrica tiene un punto de partida en la línea base.","Las métricas miden resultados, además de actividad.","Está definida la fuente de evidencia y la periodicidad."]},
+
+ {n:10, key:"parada", phase:"Medir y decidir", title:"Condición de parada",
+  ep:"Cuándo apagar tu piloto de IA",
+  context:"La condición de parada es un límite observable, definido antes de iniciar el piloto, que indica cuándo detener, corregir o replantear la iniciativa. Vincula las métricas, los riesgos y los controles con una decisión concreta.",
+  observe:"Revisa tus métricas y tus riesgos.",
+  questions:["¿Qué resultado en las métricas haría inaceptable continuar?","¿Qué falla en los controles obligaría a suspender?","¿En qué periodo se observaría?"],
+  refs:["metricas","riesgos"],
+  task:"Formula una o dos condiciones de parada observables. Para cada una, indica el umbral, el periodo de observación y la acción que se tomaría: suspender, ajustar o replantear.",
+  monitor:"para entender la relación entre métrica, umbral y decisión.",
+  chat:"para identificar qué tipo de error de tu asistente sería inaceptable.",
+  ph:"Condición 1: si ... (umbral) durante ... (periodo), entonces ... (acción).",
+  review:["La condición es observable y medible.","Está definida antes de iniciar el piloto.","Indica la acción que se tomaría.","Se conecta con una métrica o un riesgo registrado."]},
+
+ {n:11, key:"propietario", phase:"Medir y decidir", title:"Propietario del proceso",
+  ep:"Quién responde si falla la IA",
+  context:"El propietario del proceso responde por los resultados, los riesgos y la activación de las condiciones de parada. Corresponde a un cargo del área misional. Tecnología, jurídica, datos y seguridad acompañan la iniciativa desde sus competencias.",
+  observe:"Imagina que tu iniciativa produce hoy un error crítico.",
+  questions:["¿Quién tendría la autoridad misional para detenerla?","¿A quién rinde cuentas esa persona?","¿Qué áreas la acompañarían y en qué?"],
+  refs:["parada","controles"],
+  task:"Identifica el cargo y, si es posible, el nombre del propietario del proceso. Indica qué decide, a quién rinde cuentas y qué áreas lo acompañan.",
+  monitor:"para aclarar la diferencia entre propietario, usuario y equipo técnico.",
+  chat:"para revisar qué área es dueña del proceso que apoya tu asistente.",
+  ph:"Propietario (cargo y nombre): ...\nQué decide: ...\nA quién rinde cuentas: ...\nÁreas de apoyo: ...",
+  review:["El propietario pertenece al área misional.","Tiene autoridad para activar la condición de parada.","Está claro qué áreas lo apoyan y en qué.","La persona conoce y acepta esta responsabilidad."]},
+
+ {n:12, key:"decision", phase:"Medir y decidir", title:"Próxima decisión",
+  ep:"Evidencia para decidir si tu IA continúa",
+  context:"Cada etapa de una iniciativa produce evidencia para tomar la siguiente decisión: continuar, ajustar, ampliar, detener o replantear. La próxima decisión indica qué se solicita a la organización, con qué evidencia, quién decide y en qué plazo.",
+  observe:"Tu iniciativa ya tiene problema, línea base, riesgos, controles, métricas, condiciones de parada y propietario.",
+  questions:["¿Qué decisión necesitas que tome la organización ahora?","¿Qué evidencia la sustenta?","¿Qué recursos o autorizaciones requiere?"],
+  refs:["metricas","parada","propietario"],
+  options:"decision",
+  task:"Selecciona el tipo de decisión y descríbela: qué se solicita, quién decide, qué evidencia la sustenta, qué recursos o autorizaciones se requieren y en qué plazo.",
+  monitor:"para revisar los tipos de decisión y la evidencia que requiere cada una.",
+  chat:"para reunir lo que aprendiste de las pruebas de tu asistente.",
+  ph:"Decisión solicitada: ...\nQuién decide: ...\nEvidencia que la sustenta: ...\nRecursos o autorizaciones: ...\nPlazo: ...",
+  review:["La decisión es concreta y el comité puede tomarla.","Se apoya en la evidencia disponible.","Indica responsable y plazo.","Es coherente con las métricas y las condiciones de parada."]}
+];
+
+const STEP13 = {n:13, phase:"Integrar", title:"Iniciativa completa", ep:"Conecta todas las partes"};
+
+/* Pares para revisar coherencia en el paso 13 */
+const PAIRS = [
+  {a:"problema",b:"usuario",t:"Problema y usuario",q:"¿El usuario y el beneficiario son quienes viven el problema descrito?"},
+  {a:"proceso",b:"metricas",t:"Línea base y métricas",q:"¿Cada métrica parte de un dato de la línea base?"},
+  {a:"alternativa",b:"papel",t:"Alternativa sin IA y papel de la IA",q:"¿Queda claro qué aporta la IA frente a la alternativa sin IA?"},
+  {a:"papel",b:"controles",t:"Papel de la IA y controles",q:"¿El rigor de los controles corresponde al nivel de autoridad de la IA?"},
+  {a:"informacion",b:"riesgos",t:"Información y riesgos",q:"¿Los riesgos consideran la vigencia y la sensibilidad de las fuentes?"},
+  {a:"riesgos",b:"controles",t:"Riesgos y controles",q:"¿Cada riesgo tiene al menos un control asociado?"},
+  {a:"metricas",b:"parada",t:"Métricas y condición de parada",q:"¿La condición de parada usa una métrica o evidencia observable?"},
+  {a:"parada",b:"propietario",t:"Condición de parada y propietario",q:"¿El propietario tiene autoridad para activar la condición de parada?"},
+  {a:"metricas",b:"decision",t:"Métricas y próxima decisión",q:"¿La decisión solicitada se sustenta en la evidencia que producirán las métricas?"}
+];
+
+const REVIEW13 = ["Los trece campos tienen contenido o están identificados como pendientes.","Revisé los pares de coherencia y corregí las contradicciones.","La ficha forma una sola historia: necesidad, oportunidad, prueba, controles y decisión.","Una persona de mi entidad que no participó en el ejercicio entendería qué se propone y qué se solicita.","El nombre del caso identifica la iniciativa con claridad.","La ficha describe la misma iniciativa construida en la primera parte."];
+
+/* =========================================================
+   ESTADO Y ALMACENAMIENTO
+   ========================================================= */
+let S = {};
+function load(){ try{ S = JSON.parse(localStorage.getItem(STORE)) || {}; }catch(e){ S = {}; } }
+let saveTimer=null;
+function save(){
+  try{ localStorage.setItem(STORE, JSON.stringify(S)); flashSaved(); }
+  catch(e){ document.getElementById("saveText").textContent="No fue posible guardar en este navegador"; }
+}
+function flashSaved(){
+  const el=document.getElementById("saveText");
+  el.textContent="Guardado";
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{el.textContent="Guardado automáticamente en este navegador";},1400);
+}
+const val = k => (S[k]||"").trim();
+function fieldText(key){
+  let t = val(key);
+  if(key==="papel" && val("papel_nivel")) t = "Nivel: " + val("papel_nivel") + (t? "\n" + t : "");
+  if(key==="decision" && val("decision_tipo")) t = "Tipo de decisión: " + val("decision_tipo") + (t? "\n" + t : "");
+  return t;
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+/* =========================================================
+   CONSTRUCCIÓN DE PANTALLAS
+   ========================================================= */
+const main = document.getElementById("main");
+let current = 0;
+const TOTAL = 15; // 0 inicio, 1-13 pasos, 14 cierre
+
+function supportBlock(s){
+  return `<div class="support">
+    <div class="support-item"><strong>Monitor IA Pública</strong>
+      <p>Consúltalo ${esc(s.monitor)}</p>
+      <a class="btn secondary" href="${MONITOR_URL}" target="_blank" rel="noopener">Abrir el Monitor</a></div>
+    <div class="support-item"><strong>El chat de tu primera parte</strong>
+      <p>Vuelve al chat que usaste para construir tu solución (ChatGPT u otro). Conserva el contexto de tu proyecto. Úsalo ${esc(s.chat)}</p></div>
+  </div>`;
+}
+
+function audioBlock(n, title){
+  return `<div class="case audio-card">
+    <div class="ep-num"><div><small>Episodio</small><span>${n}</span></div></div>
+    <div>
+      <div class="cycle"><b>2</b>Escucha y comprende</div>
+      <h3>${esc(title)}</h3>
+      <p>Escucha el episodio completo antes de continuar. Después aplicarás el concepto a tu iniciativa.</p>
+      <audio controls preload="metadata" data-audio="${n}"></audio>
+      <div class="listen-note" id="listen-${n}"></div>
+      <div class="audio-error" id="aerr-${n}">No se encontró el audio <code>${esc(AUDIOS[n])}</code>. El archivo debe estar en la misma carpeta del repositorio que esta página, con ese nombre exacto.</div>
+    </div>
+  </div>`;
+}
+
+function refsBlock(keys){
+  if(!keys.length) return "";
+  return `<div class="refs">${keys.map(k=>refCard(k)).join("")}</div>`;
+}
+function refCard(k){
+  const f=FIELD[k], t=fieldText(k), st=STEP_OF[k];
+  return `<div class="ref"><div class="ref-top"><b>${esc(f.title)}</b><button type="button" class="linkbtn" data-go="${st}">Ir al paso ${st}</button></div>
+    <p class="${t?"":"empty"}" data-ref="${k}">${t?esc(t):"Aún no registrado en el paso "+st+"."}</p></div>`;
+}
+
+function optionsBlock(kind){
+  const opts = kind==="papel"? PAPEL_OPTS : DECISION_OPTS;
+  const key = kind==="papel"? "papel_nivel" : "decision_tipo";
+  return `<div class="options ${opts.length===5?"five":""}" role="radiogroup" aria-label="${kind==="papel"?"Nivel de autoridad de la IA":"Tipo de decisión"}">
+    ${opts.map((o,i)=>`<div class="opt"><input type="radio" name="${key}" id="${key}_${i}" value="${esc(o.v)}" data-radio="${key}"><label for="${key}_${i}"><strong>${esc(o.v)}</strong>${esc(o.d)}</label></div>`).join("")}
+  </div>`;
+}
+
+function reviewBlock(id, items, intro){
+  return `<div class="check">
+    <div class="cycle"><b>4</b>Revisa tu definición</div>
+    <h3>Preguntas de comprobación</h3>
+    <p class="intro">${intro}</p>
+    ${items.map((q,i)=>`<label class="checkline"><input type="checkbox" data-check="${id}_${i}"><span>${esc(q)}</span></label>`).join("")}
+  </div>`;
+}
+
+function actions(prevLabel, nextLabel){
+  return `<div class="actions">
+    ${prevLabel?`<button type="button" class="secondary" data-nav="-1">${prevLabel}</button>`:"<span></span>"}
+    ${nextLabel?`<button type="button" class="primary" data-nav="1">${nextLabel}</button>`:"<span></span>"}
+  </div>`;
+}
+
+function buildHome(){
+  const map = FICHA.map(f=>`<div><b>${f.n}</b>${esc(f.title)}</div>`).join("");
+  return `<section class="screen home" data-screen="0">
+  <div class="opening">
+    <div class="hero-copy">
+      <div class="kicker">Segunda parte</div>
+      <h1>Volvamos a tu iniciativa.</h1>
+      <p>Ya construiste una solución con IA. Ahora vamos a volver sobre esa misma iniciativa para fortalecerla desde una perspectiva institucional.</p>
+      <p>Al final tendrás una iniciativa estructurada, un documento con su Ficha Ejecutiva y una presentación para el comité directivo.</p>
+    </div>
+    <div class="hero-visual"><span class="shape one"></span><span class="shape two"></span><span class="shape three"></span><span class="shape four"></span>
+      <div class="hero-note"><strong>La ruta:</strong> problema → usuario y beneficiario → proceso y línea base → alternativa sin IA → papel de la IA → información → riesgos → controles → métricas → condición de parada → propietario → próxima decisión → iniciativa completa.</div>
+    </div>
+  </div>
+
+  <div class="case" style="margin-top:56px">
+    <div class="label">La pregunta cambia</div>
+    <h3>Del prototipo a la iniciativa institucional</h3>
+    <p>Trabajarás sobre la misma solución que construiste en la primera parte. En esta etapa se revisa cómo debe estar definida para que la entidad pueda tomar decisiones sobre ella.</p>
+    <div class="grid2">
+      <div class="qcard"><small>Primera parte</small><p>¿Puedo construir esta solución con IA?</p></div>
+      <div class="qcard"><small>Segunda parte</small><p>¿Cómo debe estar definida esta iniciativa para que una organización pueda comprenderla, probarla, controlarla, medirla y decidir qué hacer con ella?</p></div>
+    </div>
+  </div>
+
+  <div class="case">
+    <div class="label">Cómo funciona cada paso</div>
+    <h3>Trece pasos, una misma iniciativa</h3>
+    <div class="route">
+      <div><strong>Escucha</strong>un audio breve del episodio.</div>
+      <div><strong>Comprende</strong>el aspecto que se revisa.</div>
+      <div><strong>Revisa</strong>tu iniciativa desde esa perspectiva.</div>
+      <div><strong>Registra</strong>tu definición en el campo de trabajo.</div>
+      <div><strong>Avanza</strong>al siguiente elemento.</div>
+    </div>
+    <p style="margin-top:20px">El recorrido continúa el ciclo de aprendizaje de la primera parte:</p>
+    <div class="cycle-line"><span class="past">Hacer</span><i>→</i><span>Observar</span><i>→</i><span>Preguntar</span><i>→</i><span>Conceptualizar</span><i>→</i><span>Aplicar</span></div>
+    <p style="margin-top:14px">En la primera parte hiciste. En cada paso de esta segunda parte observas tu iniciativa, te formulas preguntas, conceptualizas con el audio y aplicas el concepto en tu definición.</p>
+  </div>
+
+  <div class="case">
+    <div class="label">Lo que vas a construir</div>
+    <h3>La Ficha Ejecutiva de Oportunidad de IA</h3>
+    <p>Cada paso completa un campo de la ficha. Cada decisión alimenta la siguiente: el problema define qué se quiere cambiar, los riesgos orientan los controles y las métricas sustentan la próxima decisión.</p>
+    <div class="map13">${map}</div>
+  </div>
+
+  <div class="now">
+    <div class="label">¿Tienes una duda?</div>
+    <h3>Apoyos durante el recorrido</h3>
+    <p>Puedes consultar el <strong>Monitor IA Pública</strong>. El Monitor puede ayudarte a entender un concepto, aclarar lo explicado en el audio, encontrar información en los materiales, pedir un ejemplo y relacionar el concepto con tu caso.</p>
+    <p>El Monitor acompaña tu trabajo. Las decisiones sobre tu iniciativa las construyes tú.</p>
+    <p>También puedes volver al chat que te acompañó durante la primera parte (ChatGPT u otro) cuando necesites apoyo sobre la solución que construiste. Ese chat conserva el contexto de tu proyecto.</p>
+    <div class="btn-row"><a class="btn primary" href="${MONITOR_URL}" target="_blank" rel="noopener">Abrir el Monitor IA Pública</a></div>
+  </div>
+
+  <div class="now">
+    <div class="label">Antes de empezar</div>
+    <h3>Escribe el nombre de tu iniciativa</h3>
+    <p>Usa el nombre con el que identificas la solución de la primera parte. Podrás ajustarlo en el paso 13.</p>
+    <label for="homeName">Nombre del caso</label>
+    <input type="text" id="homeName" data-bind="nombre" placeholder="Ejemplo: nombre de tu asistente o de la necesidad que atiende"/>
+    <p class="small-note" style="color:#b9d0df">Tus respuestas se guardan automáticamente en este navegador. Para conservarlas, usa siempre el mismo equipo y navegador.</p>
+  </div>
+  ${actions(null,"Comenzar paso 1")}
+</section>`;
+}
+
+function buildStep(s){
+  const fieldNo = FIELD[s.key].n;
+  return `<section class="screen" data-screen="${s.n}">
+  <div class="step-meta"><span class="chip">Paso ${s.n} de 13</span><span class="chip">${esc(s.phase)}</span><span class="chip">Campo ${fieldNo} de la Ficha Ejecutiva</span></div>
+  <h2>${esc(s.title)}</h2>
+  <p class="lead">${esc(s.context)}</p>
+
+  <div class="callout">
+    <div class="cycle"><b>1</b>Observa y pregúntate</div>
+    <p><strong>Ahora vuelve a mirar tu iniciativa desde esta perspectiva.</strong> ${esc(s.observe)}</p>
+    <ul>${s.questions.map(q=>`<li>${esc(q)}</li>`).join("")}</ul>
+    ${s.refs.length?`<p style="margin-top:14px"><strong>Lo que ya definiste y conecta con este paso:</strong></p>`+refsBlock(s.refs):""}
+  </div>
+
+  ${audioBlock(s.n, s.ep)}
+
+  <div class="now">
+    <div class="cycle"><b>3</b>Aplica a tu iniciativa</div>
+    <h3>Qué debes hacer ahora</h3>
+    <p>${esc(s.task)}</p>
+    ${supportBlock(s)}
+    ${s.options?optionsBlock(s.options):""}
+    <label for="f_${s.key}">${esc(s.title)} de mi iniciativa</label>
+    <textarea id="f_${s.key}" data-bind="${s.key}" placeholder="${esc(s.ph)}"></textarea>
+    <div class="saved" data-saved="${s.key}"></div>
+  </div>
+
+  ${reviewBlock("r"+s.n, s.review, "Marca cada pregunta cuando tu definición la responda. Sirven para revisar tu trabajo; no generan una calificación.")}
+  ${actions("Anterior","Siguiente")}
+</section>`;
+}
+
+function buildStep13(){
+  return `<section class="screen" data-screen="13">
+  <div class="step-meta"><span class="chip">Paso 13 de 13</span><span class="chip">Integrar</span><span class="chip">Campo 1 de la Ficha Ejecutiva y revisión integral</span></div>
+  <h2>Iniciativa completa</h2>
+  <p class="lead">Cuando una iniciativa llega a una instancia directiva, la primera pregunta es qué se quiere resolver y qué se necesita decidir. En este paso las doce definiciones anteriores se integran en una sola historia ejecutiva: parte de una necesidad concreta, explica la oportunidad, muestra cómo se probaría y con qué controles, y termina en una decisión que la organización puede tomar.</p>
+
+  <div class="callout">
+    <div class="cycle"><b>1</b>Observa y pregúntate</div>
+    <p><strong>Lee tus respuestas como si fueras una persona de tu entidad que no participó en este ejercicio.</strong></p>
+    <ul><li>¿Entendería qué problema quieres resolver y quién se beneficia?</li><li>¿Entendería cómo funciona hoy el proceso?</li><li>¿Vería con claridad qué haría la IA y con qué información trabajaría?</li><li>¿Encontraría los riesgos principales y los controles previstos?</li><li>¿Identificaría cómo se medirá el resultado y qué situación llevaría a detener la iniciativa?</li><li>¿Sabría quién responde por la iniciativa y cuál es la próxima decisión?</li></ul>
+  </div>
+
+  ${audioBlock(13, STEP13.ep)}
+
+  <div class="now">
+    <div class="cycle"><b>3</b>Aplica a tu iniciativa</div>
+    <h3>Qué debes hacer ahora</h3>
+    <p>Revisa el estado de cada campo y compara los pares de coherencia. Si alguna respuesta queda incompleta, ajústala en el paso correspondiente. Después confirma el nombre definitivo del caso. Esta ficha será la base de tu presentación ante el comité directivo.</p>
+    ${supportBlock({monitor:"para revisar cómo se conectan los elementos de una iniciativa.", chat:"para contrastar la ficha con la solución que construiste."})}
+    <label for="f13name">Nombre del caso</label>
+    <input type="text" id="f13name" data-bind="nombre" placeholder="Nombre breve que identifique la iniciativa y la necesidad que atiende"/>
+    <div class="saved" data-saved="nombre"></div>
+  </div>
+
+  <div class="case">
+    <div class="label">Estado de la ficha</div>
+    <h3>Campos completos y pendientes</h3>
+    <p>Selecciona cualquier campo para regresar al paso y corregirlo.</p>
+    <div class="status-grid" id="statusGrid"></div>
+    <ul class="alerts" id="alerts"></ul>
+  </div>
+
+  <div class="case">
+    <div class="label">Revisión de coherencia</div>
+    <h3>Compara las decisiones relacionadas</h3>
+    <p>Lee cada par y marca la casilla cuando hayas confirmado que las dos definiciones son coherentes. Si encuentras una contradicción, ve al paso y corrígela.</p>
+    <div id="pairs"></div>
+  </div>
+
+  <div class="kicker" style="margin-top:60px">Vista consolidada</div>
+  <h2 style="font-size:clamp(2.4rem,4.4vw,3.8rem)">Mi iniciativa de IA</h2>
+  <div class="ficha" id="fichaView"></div>
+
+  ${reviewBlock("r13", REVIEW13, "Marca cada pregunta cuando la ficha la cumpla.")}
+  ${actions("Anterior","Preparar documento final")}
+</section>`;
+}
+
+function buildClose(){
+  return `<section class="screen" data-screen="14">
+  <div class="step-meta"><span class="chip">Cierre</span><span class="chip">Presentar</span></div>
+  <h2>Prepara tu presentación para el comité directivo</h2>
+  <p class="lead">El documento final reúne los trece campos de la Ficha Ejecutiva de Oportunidad de IA. Ese documento es la fuente con la que Gamma construirá la presentación.</p>
+
+  <div class="case">
+    <div class="label">Documento final</div>
+    <h3>Descarga la Ficha Ejecutiva de tu iniciativa</h3>
+    <p>El documento contiene toda la información registrada, organizada en los trece campos. Los campos sin contenido aparecen como «Pendiente de definición».</p>
+    <div id="docNotice"></div>
+    <div class="btn-row">
+      <button type="button" class="dark" id="btnPdf">Descargar documento PDF</button>
+      <button type="button" class="ghost-dark" id="btnPrint">Imprimir o guardar como PDF</button>
+    </div>
+    <p class="small-note" style="color:#6b7890">La descarga se genera en tu navegador, sin enviar información a ningún servicio.</p>
+  </div>
+
+  <div class="case">
+    <div class="label">Presentación en Gamma</div>
+    <h3>Paso a paso</h3>
+    <ol class="steps-list">
+      <li>Descarga el documento final de tu iniciativa.</li>
+      <li>Abre Gamma.</li>
+      <li>Crea una nueva presentación.</li>
+      <li>Carga el documento final como fuente, con la opción de importar un archivo.</li>
+      <li>Copia el único prompt que aparece en esta sección.</li>
+      <li>Pega el prompt en Gamma.</li>
+      <li>Revisa la presentación generada.</li>
+      <li>Comprueba que la información corresponde exactamente con tu iniciativa.</li>
+      <li>Corrige o completa lo que sea necesario.</li>
+      <li>Prepárate para presentar la iniciativa ante el comité directivo.</li>
+    </ol>
+    <div class="btn-row"><a class="btn dark" href="${GAMMA_URL}" target="_blank" rel="noopener">Abrir Gamma</a></div>
+  </div>
+
+  <div class="now">
+    <div class="label">Prompt para Gamma</div>
+    <h3>El único prompt de esta segunda parte</h3>
+    <p>Úsalo junto con el documento final. Indica a Gamma que trabaje exclusivamente con la información de tu ficha.</p>
+    <div class="prompt-bar"><span class="saved" id="copyStatus"></span><button type="button" class="primary" id="btnCopy">Copiar prompt para Gamma</button></div>
+    <textarea class="prompt" id="gammaPrompt" readonly></textarea>
+  </div>
+
+  <div class="callout">
+    <p><strong>Antes de presentar.</strong> Compara cada diapositiva con tu ficha. Si Gamma agregó datos, ejemplos o afirmaciones que no están en tu documento, elimínalos. Los campos pendientes deben presentarse como pendientes de definición.</p>
+  </div>
+
+  ${actions("Volver al paso 13",null)}
+  <div class="reset"><button type="button" id="btnReset">Borrar todas mis respuestas</button></div>
+</section>`;
+}
+
+const GAMMA_PROMPT = `Construye una presentación ejecutiva para el comité directivo de una entidad pública a partir del documento adjunto. El documento contiene la Ficha Ejecutiva de Oportunidad de IA de una iniciativa institucional concreta.
+
+PROPÓSITO
+Presentar la iniciativa como una propuesta institucional para que el comité comprenda qué se propone, por qué, para quién, cómo funcionaría, qué riesgos tiene, cómo se controlaría, cómo se mediría, cuándo se detendría, quién respondería y qué decisión se solicita.
+
+REGLAS DE CONTENIDO
+- Utiliza exclusivamente la información contenida en el documento adjunto.
+- NO inventes información: ni cifras, ni nombres, ni normas, ni resultados, ni plazos.
+- NO completes vacíos con supuestos.
+- NO introduzcas datos externos ni ejemplos de otras entidades.
+- NO conviertas la presentación en una clase general sobre inteligencia artificial.
+- Centra toda la presentación en la iniciativa concreta descrita en el documento.
+- Si un campo está incompleto o aparece como "Pendiente de definición", preséntalo en su diapositiva como pendiente de definición.
+- Conserva las cifras, los cargos y los términos tal como aparecen en el documento.
+
+ESTRUCTURA
+1. Portada: nombre del caso y decisión que se solicita al comité.
+2. Problema público o institucional.
+3. Usuario y beneficiario.
+4. Proceso actual y línea base.
+5. Alternativa sin IA y comparación con la propuesta.
+6. Papel de la IA: nivel de autoridad, qué hará, qué no hará y qué decisiones conserva una persona.
+7. Información necesaria y fuentes autorizadas.
+8. Riesgos principales.
+9. Controles iniciales, asociados a cada riesgo.
+10. Métricas de éxito, con línea base y valor esperado.
+11. Condiciones de parada.
+12. Propietario del proceso.
+13. Próxima decisión solicitada al comité: qué se solicita, con qué evidencia, quién decide y en qué plazo.
+14. Síntesis final: resumen de la propuesta y de la decisión solicitada, usando solo el contenido del documento.
+
+ESTILO
+- Lenguaje ejecutivo e institucional, claro y en tercera persona.
+- Frases breves; como máximo cinco ideas por diapositiva.
+- Sin lenguaje publicitario, sin frases de efecto y sin adjetivos promocionales.
+- Diseño sobrio: fondo claro, azul institucional oscuro como color principal, jerarquía visual clara.
+- Usa tablas o esquemas simples cuando faciliten la comparación, por ejemplo riesgos frente a controles o línea base frente a valor esperado.
+- Sin imágenes decorativas que no aporten información.
+- Idioma: español.`;
+
+function buildSide(){
+  const items = [`<button type="button" class="side-step" data-go="0"><span class="n">·</span><span>Inicio</span></button><div class="side-sep"></div>`];
+  STEPS.forEach(s=>items.push(`<button type="button" class="side-step" data-go="${s.n}" data-key="${s.key}"><span class="n">${s.n}</span><span>${esc(s.title)}</span></button>`));
+  items.push(`<button type="button" class="side-step" data-go="13" data-key="__13"><span class="n">13</span><span>Iniciativa completa</span></button>`);
+  items.push(`<div class="side-sep"></div><button type="button" class="side-step" data-go="14"><span class="n">·</span><span>Documento y presentación</span></button>`);
+  document.getElementById("sideList").innerHTML = items.join("");
+}
+
+function buildAll(){
+  main.innerHTML = buildHome() + STEPS.map(buildStep).join("") + buildStep13() + buildClose();
+  buildSide();
+  document.getElementById("gammaPrompt").value = GAMMA_PROMPT;
+}
+
+/* =========================================================
+   INTERACCIÓN
+   ========================================================= */
+function bindInputs(){
+  document.querySelectorAll("[data-bind]").forEach(el=>{
+    const k = el.dataset.bind;
+    el.value = S[k]||"";
+    el.addEventListener("input", ()=>{
+      S[k] = el.value; save();
+      document.querySelectorAll(`[data-bind="${k}"]`).forEach(o=>{ if(o!==el) o.value = el.value; });
+      const sv = document.querySelector(`[data-saved="${k}"]`);
+      if(sv){ sv.textContent="Guardado"; clearTimeout(sv._t); sv._t=setTimeout(()=>sv.textContent="",1500); }
+      refreshSide();
+    });
+  });
+  document.querySelectorAll("[data-radio]").forEach(el=>{
+    const k = el.dataset.radio;
+    if(S[k]===el.value) el.checked = true;
+    el.addEventListener("change", ()=>{ if(el.checked){ S[k]=el.value; save(); refreshSide(); } });
+  });
+  document.querySelectorAll("[data-check]").forEach(el=>{
+    const k = "chk_"+el.dataset.check;
+    el.checked = !!S[k];
+    el.addEventListener("change", ()=>{ S[k]=el.checked; save(); });
+  });
+}
+
+function bindAudio(){
+  document.querySelectorAll("audio[data-audio]").forEach(a=>{
+    const n = a.dataset.audio;
+    /* Variantes aceptadas del nombre: original, con guiones bajos y con espacios */
+    const base = AUDIOS[n].normalize("NFC");
+    const cands = [...new Set([base, base.replace(/ /g,"_"), base.replace(/_/g," "), base.normalize("NFD")])];
+    let ci = 0;
+    a.src = encodeURIComponent(cands[0]);
+    a.addEventListener("error", ()=>{
+      ci++;
+      if(ci < cands.length){ const playing = !a.paused; a.src = encodeURIComponent(cands[ci]); a.load(); if(playing) a.play().catch(()=>{}); }
+      else document.getElementById("aerr-"+n).style.display="block";
+    });
+    a.addEventListener("ended", ()=>{ S["aud_"+n]=true; save(); markListened(n); });
+    a.addEventListener("play", ()=>{ document.querySelectorAll("audio").forEach(o=>{ if(o!==a) o.pause(); }); });
+    markListened(n);
+  });
+}
+function markListened(n){
+  const el = document.getElementById("listen-"+n);
+  if(!el) return;
+  if(S["aud_"+n]){ el.className="listen-note ok"; el.textContent="✓ Episodio escuchado. Puedes aplicarlo a tu iniciativa."; }
+  else { el.className="listen-note"; el.textContent="Escucha el episodio antes de registrar tu definición."; }
+}
+
+function go(n){
+  n = Math.max(0, Math.min(TOTAL-1, n));
+  document.querySelectorAll("audio").forEach(a=>a.pause());
+  current = n;
+  document.querySelectorAll(".screen").forEach(sc=>sc.classList.toggle("active", +sc.dataset.screen===n));
+  S.__screen = n; save();
+  if(n===13) renderIntegration();
+  if(n===14) renderClose();
+  refreshRefs();
+  refreshSide();
+  updateProgress();
+  window.scrollTo({top:0, behavior:"auto"});
+  const h = document.querySelector(".screen.active h2, .screen.active h1");
+  if(h){ h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); }
+}
+
+function updateProgress(){
+  const pt = document.getElementById("progressText");
+  let pct=0;
+  if(current===0){ pt.textContent="Inicio"; pct=0; }
+  else if(current<=12){ pt.textContent=`Paso ${current} de 13 · ${STEPS[current-1].title}`; pct=current/13*100; }
+  else if(current===13){ pt.textContent="Paso 13 de 13 · Iniciativa completa"; pct=100; }
+  else { pt.textContent="Cierre · Documento y presentación"; pct=100; }
+  document.getElementById("fill").style.width = pct+"%";
+  const phaseStart = current>=14?14: current>=13?13: current>=9?9: current>=7?7: current>=5?5: current>=1?1: -1;
+  document.querySelectorAll(".phase").forEach(p=>p.classList.toggle("on", +p.dataset.go===phaseStart));
+}
+
+function refreshSide(){
+  document.querySelectorAll(".side-step").forEach(b=>{
+    const g = +b.dataset.go, k = b.dataset.key;
+    b.classList.toggle("active", g===current && (g!==13 || k==="__13"));
+    let done=false;
+    if(k && k!=="__13") done = !!val(k);
+    if(k==="__13") done = FICHA.every(f=>!!fieldText(f.key));
+    b.classList.toggle("done", done && !(g===current));
+  });
+}
+
+function refreshRefs(){
+  document.querySelectorAll("[data-ref]").forEach(p=>{
+    const k=p.dataset.ref, t=fieldText(k);
+    p.textContent = t || ("Aún no registrado en el paso "+STEP_OF[k]+".");
+    p.classList.toggle("empty", !t);
+  });
+}
+
+/* =========================================================
+   PASO 13: INTEGRACIÓN
+   ========================================================= */
+function fieldStatus(key){
+  const t = fieldText(key);
+  if(!t) return "empty";
+  const min = key==="nombre"? 4 : 60;
+  return t.length < min ? "short" : "ok";
+}
+function renderIntegration(){
+  const grid = document.getElementById("statusGrid");
+  grid.innerHTML = FICHA.map(f=>{
+    const st = fieldStatus(f.key);
+    const lbl = st==="ok"?"Completo": st==="short"?"Muy breve: conviene ampliarlo":"Pendiente";
+    return `<div class="st ${st}"><div class="t"><span>${f.n}</span>${esc(f.title)}</div><div class="s">${lbl}</div><button type="button" class="linkbtn" data-go="${STEP_OF[f.key]}">Ir al paso ${STEP_OF[f.key]}</button></div>`;
+  }).join("");
+
+  const al = [];
+  const pend = FICHA.filter(f=>fieldStatus(f.key)==="empty").map(f=>f.title);
+  if(pend.length) al.push(`Campos pendientes: ${pend.join(", ")}.`);
+  const hasNum = k => /\d/.test(val(k));
+  if(val("proceso") && !hasNum("proceso")) al.push("La línea base no incluye datos numéricos. Revisa si puedes registrar volumen, tiempo, errores o reprocesos, o indicar cómo se obtendrán.");
+  if(val("metricas") && !hasNum("metricas")) al.push("Las métricas no incluyen valores. Revisa si cada métrica tiene valor actual y valor esperado.");
+  if(val("parada") && !hasNum("parada")) al.push("La condición de parada no incluye un umbral numérico. Revisa si es observable y medible.");
+  if(!val("papel_nivel") && val("papel")) al.push("No has seleccionado el nivel de autoridad de la IA en el paso 5.");
+  if(!val("decision_tipo") && val("decision")) al.push("No has seleccionado el tipo de decisión en el paso 12.");
+  if(val("papel_nivel")==="Ejecutar" && val("controles").length<150) al.push("La IA tiene nivel «Ejecutar» y los controles son breves. Revisa si el rigor de los controles corresponde a ese nivel de autoridad.");
+  const nR = (val("riesgos").match(/riesgo\s*\d/gi)||[]).length;
+  if(nR>=2 && val("controles") && (val("controles").match(/riesgo\s*\d/gi)||[]).length < nR) al.push("Registraste varios riesgos numerados; revisa que cada uno tenga un control asociado.");
+  document.getElementById("alerts").innerHTML = al.length
+    ? al.map(a=>`<li>${esc(a)}</li>`).join("")
+    : `<li class="none">No se detectan campos pendientes ni alertas automáticas. Completa la revisión de coherencia.</li>`;
+
+  document.getElementById("pairs").innerHTML = PAIRS.map((p,i)=>`
+    <div class="pair"><h4>${esc(p.t)}</h4><p class="q">${esc(p.q)}</p>
+      <div class="pair-cols">${refCard(p.a)}${refCard(p.b)}</div>
+      <label class="checkline" style="border-top:0;margin-top:6px"><input type="checkbox" data-coh="${i}" ${S["coh_"+i]?"checked":""}><span>Revisé la coherencia de este par.</span></label>
+    </div>`).join("");
+  document.querySelectorAll("[data-coh]").forEach(el=>el.addEventListener("change",()=>{ S["coh_"+el.dataset.coh]=el.checked; save(); }));
+
+  renderFicha();
+}
+function renderFicha(){
+  const name = val("nombre") || "Iniciativa sin nombre";
+  const halves = {alternativa:"left",papel:"",parada:"left",propietario:""};
+  const cells = FICHA.filter(f=>f.key!=="nombre").map(f=>{
+    const t = fieldText(f.key);
+    return `<div class="ficha-cell ${f.key in halves? halves[f.key] : "wide"}"><b>${f.n}. ${esc(f.title)}</b><p class="${t?"":"pending"}">${t?esc(t):"Pendiente de definición."}</p></div>`;
+  }).join("");
+  document.getElementById("fichaView").innerHTML =
+    `<div class="ficha-head"><small>Ficha Ejecutiva de Oportunidad de IA</small><h3>${esc(name)}</h3><p>1. Nombre del caso · ${new Date().toLocaleDateString("es-CO",{year:"numeric",month:"long",day:"numeric"})}</p></div><div class="ficha-body">${cells}</div>`;
+}
+
+/* =========================================================
+   CIERRE: DOCUMENTO Y PROMPT
+   ========================================================= */
+function renderClose(){
+  const pend = FICHA.filter(f=>!fieldText(f.key));
+  document.getElementById("docNotice").innerHTML = pend.length
+    ? `<div class="notice">Tu ficha tiene ${pend.length} ${pend.length===1?"campo pendiente":"campos pendientes"}: ${esc(pend.map(f=>f.title).join(", "))}. Aparecerán como «Pendiente de definición». <button type="button" class="linkbtn" data-go="13">Revisar en el paso 13</button></div>`
+    : `<div class="notice ok">Los trece campos tienen contenido. El documento está listo para descargarse.</div>`;
+}
+
+function docData(){
+  return {
+    name: val("nombre") || "Iniciativa sin nombre",
+    date: new Date().toLocaleDateString("es-CO",{year:"numeric",month:"long",day:"numeric"}),
+    sections: FICHA.map(f=>({n:f.n, title:f.title, body: f.key==="nombre"? val("nombre") : fieldText(f.key)}))
+  };
+}
+function slug(s){ return (s||"iniciativa").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Za-z0-9]+/g,"_").replace(/^_|_$/g,"").slice(0,50) || "iniciativa"; }
+
+function printDoc(){
+  const d = docData();
+  document.getElementById("printDoc").innerHTML =
+    `<div class="ph"><small>Ficha Ejecutiva de Oportunidad de IA</small><h1>${esc(d.name)}</h1><p>Iniciativa institucional de IA · ${esc(d.date)}</p></div>` +
+    d.sections.map(s=>`<section><h2>${s.n}. ${esc(s.title)}</h2><p class="${s.body?"":"pending"}">${s.body?esc(s.body):"Pendiente de definición."}</p></section>`).join("");
+  window.print();
+}
+
+/* ---------- Generador PDF autocontenido (Helvetica, WinAnsi) ---------- */
+const WH = [278, 278, 355, 556, 556, 889, 667, 191, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 278, 278, 584, 584, 584, 556, 1015, 667, 667, 722, 722, 667, 611, 778, 722, 278, 500, 667, 556, 833, 722, 778, 667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 278, 278, 278, 469, 556, 333, 556, 556, 500, 556, 556, 278, 556, 556, 222, 222, 500, 222, 833, 556, 556, 556, 556, 333, 500, 278, 556, 500, 722, 500, 500, 500, 334, 260, 334, 584, 761, 556, 556, 222, 556, 333, 1000, 556, 556, 333, 1000, 667, 333, 1000, 556, 611, 556, 556, 222, 222, 333, 333, 350, 556, 1000, 333, 1000, 500, 333, 944, 556, 500, 667, 278, 333, 556, 556, 556, 556, 260, 556, 333, 737, 370, 556, 584, 333, 737, 333, 400, 584, 333, 333, 333, 556, 537, 278, 333, 333, 365, 556, 834, 834, 834, 611, 667, 667, 667, 667, 667, 667, 1000, 722, 667, 667, 667, 667, 278, 278, 278, 278, 722, 722, 778, 778, 778, 778, 778, 584, 778, 722, 722, 722, 722, 667, 667, 611, 556, 556, 556, 556, 556, 556, 889, 500, 556, 556, 556, 556, 278, 278, 278, 278, 556, 556, 556, 556, 556, 556, 556, 584, 611, 556, 556, 556, 556, 500, 556, 500];
+const WB = [278, 333, 474, 556, 556, 889, 722, 238, 333, 333, 389, 584, 278, 333, 278, 278, 556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 333, 333, 584, 584, 584, 611, 975, 722, 722, 722, 722, 667, 611, 778, 722, 278, 556, 722, 611, 833, 722, 778, 667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 333, 278, 333, 584, 556, 333, 556, 611, 556, 611, 556, 333, 611, 611, 278, 278, 556, 278, 889, 611, 611, 611, 611, 389, 556, 333, 611, 556, 778, 556, 556, 500, 389, 280, 389, 584, 761, 556, 611, 278, 556, 500, 1000, 556, 556, 333, 1000, 667, 333, 1000, 611, 611, 611, 611, 278, 278, 500, 500, 350, 556, 1000, 333, 1000, 556, 333, 944, 611, 500, 667, 278, 333, 556, 556, 556, 556, 280, 556, 333, 737, 370, 556, 584, 333, 737, 333, 400, 584, 333, 333, 333, 611, 556, 278, 333, 333, 365, 556, 834, 834, 834, 611, 722, 722, 722, 722, 722, 722, 1000, 722, 667, 667, 667, 667, 278, 278, 278, 278, 722, 722, 778, 778, 778, 778, 778, 584, 778, 722, 722, 722, 722, 667, 667, 611, 556, 556, 556, 556, 556, 556, 889, 556, 556, 556, 556, 556, 278, 278, 278, 278, 611, 611, 611, 611, 611, 611, 611, 584, 611, 611, 611, 611, 611, 556, 611, 556];
+const CP = {0x20AC:0x80,0x201A:0x82,0x0192:0x83,0x201E:0x84,0x2026:0x85,0x2020:0x86,0x2021:0x87,0x02C6:0x88,0x2030:0x89,0x0160:0x8A,0x2039:0x8B,0x0152:0x8C,0x017D:0x8E,0x2018:0x91,0x2019:0x92,0x201C:0x93,0x201D:0x94,0x2022:0x95,0x2013:0x96,0x2014:0x97,0x02DC:0x98,0x2122:0x99,0x0161:0x9A,0x203A:0x9B,0x0153:0x9C,0x017E:0x9E,0x0178:0x9F};
+function toWin(str){
+  let out="";
+  for(const ch of str.normalize("NFC")){
+    const c = ch.codePointAt(0);
+    if(c===9){ out+=" "; continue; }
+    if(c>=32 && c<127) out+=ch;
+    else if(c>=160 && c<256) out+=String.fromCharCode(c);
+    else if(CP[c]) out+=String.fromCharCode(CP[c]);
+    else if(c===0x2192) out+="->";
+    else out+="?";
+  }
+  return out;
+}
+function wOf(s, bold, size){
+  const T = bold? WB : WH; let w=0;
+  for(let i=0;i<s.length;i++){ const c=s.charCodeAt(i); w += (c>=32 && c<256)? T[c-32] : 556; }
+  return w*size/1000;
+}
+function pdfStr(s){ return "(" + s.replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)") + ")"; }
+function wrap(text, bold, size, maxW){
+  const lines=[];
+  toWin(text.replace(/\r/g,"")).split("\n").forEach(par=>{
+    if(!par.trim()){ lines.push(""); return; }
+    const words = par.split(/ +/); let line="";
+    words.forEach(w=>{
+      while(wOf(w,bold,size) > maxW){
+        let cut=w.length; while(cut>1 && wOf(w.slice(0,cut),bold,size)>maxW) cut--;
+        if(line){ lines.push(line); line=""; }
+        lines.push(w.slice(0,cut)); w=w.slice(cut);
+      }
+      const test = line? line+" "+w : w;
+      if(wOf(test,bold,size) <= maxW) line=test; else { if(line) lines.push(line); line=w; }
+    });
+    lines.push(line);
+  });
+  while(lines.length && lines[lines.length-1]==="") lines.pop();
+  return lines;
+}
+function buildPDF(d){
+  const PW=595.28, PH=841.89, M=56, CW=PW-2*M, BOTTOM=64;
+  const NAVY="0.024 0.184 0.388", STEEL="0.192 0.373 0.510", INK="0.090 0.125 0.200", RED="0.635 0.231 0.192", GREY="0.42 0.47 0.56";
+  const pages=[]; let ops, y;
+  const text=(s,x,yy,font,size,color)=>ops.push(`BT /${font} ${size} Tf ${color} rg ${x.toFixed(2)} ${yy.toFixed(2)} Td ${pdfStr(s)} Tj ET`);
+  const rect=(x,yy,w,h,color)=>ops.push(`q ${color} rg ${x.toFixed(2)} ${yy.toFixed(2)} ${w.toFixed(2)} ${h.toFixed(2)} re f Q`);
+  const hline=(x,yy,w,color)=>ops.push(`q ${color} RG 0.6 w ${x.toFixed(2)} ${yy.toFixed(2)} m ${(x+w).toFixed(2)} ${yy.toFixed(2)} l S Q`);
+  const newPage=()=>{ ops=[]; pages.push(ops); y=PH-M; };
+  newPage();
+  // Encabezado
+  const bandH = 118; rect(0, PH-bandH, PW, bandH, NAVY);
+  text(toWin("FICHA EJECUTIVA DE OPORTUNIDAD DE IA"), M, PH-44, "F2", 9, "0.72 0.93 0.96");
+  const tl = wrap(d.name, true, 20, CW); let ty = PH-70;
+  tl.slice(0,2).forEach(l=>{ text(l, M, ty, "F2", 20, "1 1 1"); ty-=24; });
+  text(toWin("Iniciativa institucional de IA · "+d.date), M, PH-bandH+16, "F1", 9.5, "0.85 0.95 0.97");
+  y = PH-bandH-34;
+  d.sections.forEach(s=>{
+    const pending = !s.body;
+    const body = wrap(pending? "Pendiente de definición." : s.body, false, 10.5, CW);
+    const title = wrap(s.n+". "+s.title, true, 11.5, CW);
+    const need = title.length*15 + Math.min(body.length,3)*15 + 20;
+    if(y - need < BOTTOM) newPage();
+    hline(M, y+6, CW, "0.79 0.84 0.87"); y-=12;
+    title.forEach(l=>{ text(l, M, y, "F2", 11.5, NAVY); y-=15; });
+    y-=2;
+    body.forEach(l=>{
+      if(y < BOTTOM){ newPage(); }
+      if(l) text(l, M, y, pending?"F3":"F1", 10.5, pending?RED:INK);
+      y-=15;
+    });
+    y-=14;
+  });
+  // Pie de página
+  pages.forEach((p,i)=>{ ops=p;
+    hline(M, 42, CW, "0.79 0.84 0.87");
+    text(toWin("Ficha Ejecutiva de Oportunidad de IA · "+d.name).slice(0,95), M, 28, "F1", 8, GREY);
+    const pg = toWin("Página "+(i+1)+" de "+pages.length);
+    text(pg, PW-M-wOf(pg,false,8), 28, "F1", 8, GREY);
+  });
+  // Ensamblado
+  const objs=[]; const add=s=>{ objs.push(s); return objs.length; };
+  add("<< /Type /Catalog /Pages 2 0 R >>");
+  add("PAGES");
+  add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
+  add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
+  add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>");
+  const kids=[];
+  pages.forEach(p=>{
+    const content = p.join("\n");
+    const c = add(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`);
+    const pg = add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents ${c} 0 R >>`);
+    kids.push(pg+" 0 R");
+  });
+  objs[1] = `<< /Type /Pages /Kids [${kids.join(" ")}] /Count ${kids.length} >>`;
+  const info = add(`<< /Title ${pdfStr(toWin("Ficha Ejecutiva de Oportunidad de IA - "+d.name))} /Producer (Curso IA en entidades publicas) >>`);
+  let out = "%PDF-1.4\n%\xE2\xE3\xCF\xD3\n"; const offs=[];
+  objs.forEach((o,i)=>{ offs.push(out.length); out += `${i+1} 0 obj\n${o}\nendobj\n`; });
+  const xref = out.length;
+  out += `xref\n0 ${objs.length+1}\n0000000000 65535 f \n` + offs.map(o=>String(o).padStart(10,"0")+" 00000 n \n").join("");
+  out += `trailer\n<< /Size ${objs.length+1} /Root 1 0 R /Info ${info} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  const bytes = new Uint8Array(out.length);
+  for(let i=0;i<out.length;i++) bytes[i] = out.charCodeAt(i) & 255;
+  return bytes;
+}
+function downloadPDF(){
+  const d = docData();
+  const blob = new Blob([buildPDF(d)], {type:"application/pdf"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "Ficha_Ejecutiva_IA_" + slug(d.name) + ".pdf";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+}
+
+async function copyPrompt(){
+  const st = document.getElementById("copyStatus");
+  try{ await navigator.clipboard.writeText(GAMMA_PROMPT); }
+  catch(e){ const t=document.getElementById("gammaPrompt"); t.focus(); t.select(); document.execCommand("copy"); }
+  st.textContent = "Prompt copiado. Pégalo en Gamma junto con tu documento.";
+  setTimeout(()=>st.textContent="", 4000);
+}
+
+/* =========================================================
+   INICIO
+   ========================================================= */
+load();
+buildAll();
+bindInputs();
+bindAudio();
+document.addEventListener("click", e=>{
+  const g = e.target.closest("[data-go]"); if(g){ go(+g.dataset.go); return; }
+  const nv = e.target.closest("[data-nav]"); if(nv){ go(current + (+nv.dataset.nav)); return; }
+});
+document.addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  if(b.id==="btnPdf") downloadPDF();
+  else if(b.id==="btnPrint") printDoc();
+  else if(b.id==="btnCopy") copyPrompt();
+  else if(b.id==="btnReset"){
+    if(confirm("Se borrarán todas las respuestas registradas en este navegador. ¿Deseas continuar?")){
+      localStorage.removeItem(STORE); S={}; buildAll(); bindInputs(); bindAudio(); go(0);
+    }
+  }
+});
+go(typeof S.__screen==="number"? S.__screen : 0);
+</script>
+</body>
+</html>
