@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Crear un asistente de IA | Taller guiado</title>
+<style>
+:root{
+  --navy:#062f63;--navy-deep:#032957;--blue:#7fd7ea;--ice:#dff5fa;
+  --paper:#062f63;--card:#f8f9fa;--ink:#172033;--muted:#6b7890;
+  --line:rgba(255,255,255,.18);--soft:#eaf4f7;--white:#fff;
+  --serif:Georgia,"Times New Roman",serif;--sans:Inter,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{overflow-x:hidden}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:#fff;font-family:var(--sans);line-height:1.6}
+button,input,textarea{font:inherit}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #9de4ef;outline-offset:3px}
+
+header{background:#062f63;color:#fff;padding:0 5.5vw;position:sticky;top:0;z-index:30;border-bottom:1px solid rgba(255,255,255,.13)}.header{max-width:1280px;margin:auto;min-height:74px;display:flex;align-items:center;gap:38px}.navcontext{display:flex;gap:22px;font-size:.75rem;font-weight:800;color:#b9cce0;letter-spacing:.03em}.logo{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;font-weight:900;color:#fff;white-space:nowrap}.progress{flex:1}.progress-top{display:flex;justify-content:space-between;font-size:.72rem;color:#b9d0df;margin-bottom:7px}.track{height:4px;background:rgba(255,255,255,.2);border-radius:9px}.fill{height:100%;width:10%;background:#9de4ef;border-radius:9px;transition:.3s}.layout{max-width:1320px;margin:auto;display:grid;grid-template-columns:290px minmax(0,1fr);gap:44px;padding:0 5.5vw 90px}
+aside{position:sticky;top:98px;height:max-content;align-self:start}.project-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:18px;margin-bottom:18px;border-radius:14px}.project-card small{display:block;color:#b9d0df;font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;font-weight:800}.project-name{font-weight:800;margin-top:7px;word-break:break-word;color:#fff}.side-list{border-left:1px solid rgba(255,255,255,.16);padding-left:8px}.side-step{padding:10px 12px;border-left:3px solid transparent;color:#9fb5ca;font-size:.84rem;cursor:pointer;border-radius:0 8px 8px 0}.side-step.active{border-left-color:#7fd7ea;color:#fff;background:rgba(255,255,255,.07);font-weight:800}.side-step.done{color:#9de4af}main{min-width:0}.screen{display:none}.screen.active{display:block}.opening{min-height:calc(100vh - 74px);display:grid;grid-template-columns:1.08fr.92fr;gap:70px;align-items:center;padding:72px 0 86px;position:relative}.opening:after{content:"";position:absolute;left:50%;right:-20vw;bottom:0;height:1px;background:rgba(255,255,255,.16)}.kicker{font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;font-weight:900;color:#b9edf5;margin-bottom:26px}.hero-copy.kicker:before{content:"";display:inline-block;width:42px;height:3px;background:#fff;margin:0 14px 3px 0}.opening h1{font-family:var(--serif);font-size:clamp(4rem,7vw,7rem);line-height:.9;letter-spacing:-.055em;margin:0 0 32px;font-weight:700;color:#fff}.opening h1 em{font-style:italic;font-weight:400}.opening p,.lead{font-size:clamp(1.05rem,1.5vw,1.28rem);max-width:760px;color:#bcd0e2;line-height:1.65}.hero-copy{position:relative;z-index:2}.hero-copy.kicker{color:#d8f2f6}.hero-visual{background:linear-gradient(145deg,#0b527d,#087d98);border-radius:16px;min-height:430px;position:relative;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.18)}.hero-visual:before,.hero-visual:after{content:"";position:absolute;border:1px solid rgba(218,247,255,.65);border-radius:50%}.hero-visual:before{width:280px;height:280px;left:18%;top:18%}.hero-visual:after{width:390px;height:390px;right:-25%;top:-25%}.shape{position:absolute;background:linear-gradient(145deg,#e8fbff,#a6dce7);opacity:.9;clip-path:polygon(50% 0,100% 100%,0 100%)}.shape.one{width:105px;height:105px;right:25%;top:4%}.shape.two{width:170px;height:170px;right:-2%;top:28%}.shape.three{width:230px;height:160px;left:28%;bottom:5%;transform:rotate(27deg)}.shape.four{width:120px;height:120px;left:10%;top:45%;transform:rotate(12deg)}.hero-note{position:absolute;left:0;right:0;bottom:0;background:#f8f9fa;padding:22px 28px;color:#617087;font-size:.98rem;border-radius:0 0 16px 16px}.hero-note strong{color:#172033}.hero-dark{background:transparent;color:#fff;padding:0}.hero-dark.opening{max-width:1280px;margin:auto}
+
+main>.screen:not(.active){display:none}
+main>.screen.active:not(:first-child){padding-top:78px}
+main>.screen.active:not(:first-child)>.kicker{max-width:980px;margin-left:auto;margin-right:auto}
+main>.screen.active:not(:first-child)>h2,main>.screen.active:not(:first-child)>.lead,main>.screen.active:not(:first-child)>.case,main>.screen.active:not(:first-child)>.callout,main>.screen.active:not(:first-child)>.now,main>.screen.active:not(:first-child)>.check{max-width:980px;margin-left:auto;margin-right:auto}
+
+h2{font-family:var(--serif);font-size:clamp(3.2rem,6vw,5.7rem);line-height:.95;letter-spacing:-.045em;margin:0 0 24px;font-weight:700;color:#fff}
+h3{font-family:var(--serif);font-size:2.2rem;line-height:1.05;margin:0 0 15px;color:#172033}.case{background:#f8f9fa;border:1px solid rgba(255,255,255,.35);padding:36px 40px;border-radius:16px;margin:34px auto;color:#172033;box-shadow:0 10px 30px rgba(0,0,0,.08)}.case-title,.label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:#315f82;margin-bottom:12px}.case h3{font-size:2.25rem}.case p{max-width:850px;color:#53647a}.now{background:#073d72;color:#fff;border-radius:16px;padding:34px 40px;margin:34px auto;border:1px solid rgba(255,255,255,.12)}.now p{color:#c7d9e7}.now h3{margin-top:0;color:#fff}.now label{color:#fff}.callout{border-left:4px solid #7fd7ea;background:#e7f5f8;padding:24px 28px;border-radius:0 14px 14px 0;margin:30px auto;color:#172033}.callout strong{font-size:1.08rem}
+label{display:block;font-weight:800;margin:20px 0 8px}
+textarea,input{width:100%;border:1px solid #b9c8d4;border-radius:8px;background:#fff;padding:14px;color:#172033}textarea{min-height:125px;resize:vertical}.check{background:#f8f9fa;border:1px solid rgba(255,255,255,.35);color:#172033;border-radius:14px;padding:20px 24px;margin:28px auto}.checkline{display:flex;gap:10px}.checkline input{width:auto;min-height:0;margin-top:7px}.actions{max-width:980px;margin:45px auto 0;display:flex;justify-content:space-between;gap:14px;border-top:1px solid rgba(255,255,255,.18);padding-top:22px}.actions button{min-width:145px}
+button{border:0;border-radius:4px;padding:13px 20px;font-weight:800;cursor:pointer}.primary{background:#f8fbfc;color:#062f63;border:1px solid #dce6ed}.secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.48)}.now.secondary,.final.secondary{color:#fff;border-color:rgba(255,255,255,.45)}.copybox{position:relative}.copybox textarea{min-height:620px;height:620px;width:100%;box-sizing:border-box;background:#032957;color:#dcebf3;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:27px 28px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.91rem;line-height:1.65;resize:vertical;overflow:auto}.copy{position:static;display:inline-flex;margin:0 0 10px auto;float:right;background:#f8fbfc;color:#062f63;border:1px solid #dce6ed}.copybox:after{content:"";display:block;clear:both}.status{font-size:.9rem;color:#9de4af;margin-top:8px;min-height:18px}.final{background:#f8f9fa;color:#172033;padding:38px 40px;border-radius:16px;margin-top:34px}.final h3{color:#172033}.final p{color:#5b6b7d}.summary{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}.summary div{padding:18px;border-radius:10px;background:#eef4f7;color:#172033;border:1px solid #d8e1e6}.summary b{display:block;margin-bottom:5px;color:#617589;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em}
+main>.callout:last-child{max-width:980px;margin:55px auto 0}
+
+@media(max-width:1050px){.layout{grid-template-columns:220px minmax(0,1fr);gap:28px}.opening{grid-template-columns:1fr;gap:35px;min-height:auto;padding:55px 0 65px}.hero-visual{min-height:330px}.header{gap:16px}.logo{font-size:.68rem}.layout{padding-left:5vw;padding-right:5vw}.hero-dark{margin:0;padding:0}}
+@media(max-width:760px){aside{position:relative;top:auto;order:2}.layout{display:flex;flex-direction:column;padding-left:6vw;padding-right:6vw}.side-list{max-height:none}.opening{grid-template-columns:1fr}}
+@media(max-width:760px){.navcontext{display:none}}
+@media(max-width:600px){.opening h1{font-size:3.8rem}.opening p{font-size:1.05rem}.case,.now,.final{padding:26px}.summary{grid-template-columns:1fr}.progress-top span:last-child{display:none}}.small-note{font-size:.88rem;color:var(--muted);margin-top:10px}.inline-check{margin-top:18px;padding:12px 0}.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.summary>div{background:rgba(255,255,255,.05);border:1px solid var(--line);padding:14px;border-radius:14px}.summary b{display:block;margin-bottom:5px;color:var(--blue)}.mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.mini-card{background:rgba(255,255,255,.72);border:1px solid rgba(223,228,236,.9);border-radius:16px;padding:16px}.mini-card strong{display:block;margin-bottom:7px}.mini-card p{margin:0}.mini-card +.mini-card{}@media(max-width:760px){.mini-grid{grid-template-columns:1fr}}
+
+/* Correcciones de legibilidad de la primera pantalla */
+.case .concept-grid{margin-top:24px}
+.case .concept-card{background:#eef6f8;border:1px solid #d5e5ea;color:#172033;box-shadow:none}
+.case .concept-card strong{color:#17324f}
+.case .concept-card span{color:#53677a}
+.project-card input{font-size:.9rem;letter-spacing:-.01em}
+@media(max-width:1050px){.layout{grid-template-columns:240px minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{scroll-behavior:auto!important;transition:none!important}}
+
+@media(max-width:1050px){.opening:after{right:0!important}}
+</style>
+<style>
+:root{
+  --navy:#062f63;--navy-deep:#032957;--blue:#7fd7ea;--ice:#dff5fa;
+  --paper:#062f63;--card:#f8f9fa;--ink:#172033;--muted:#6b7890;
+  --line:rgba(255,255,255,.18);--soft:#eaf4f7;--white:#fff;
+  --serif:Georgia,"Times New Roman",serif;--sans:Inter,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:#fff;font-family:var(--sans);line-height:1.6}
+button,input,textarea{font:inherit}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #9de4ef;outline-offset:3px}
+
+header{background:#062f63;color:#fff;padding:0 5.5vw;position:sticky;top:0;z-index:30;border-bottom:1px solid rgba(255,255,255,.13)}.header{max-width:1280px;margin:auto;min-height:74px;display:flex;align-items:center;gap:38px}.navcontext{display:flex;gap:22px;font-size:.75rem;font-weight:800;color:#b9cce0;letter-spacing:.03em}.logo{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;font-weight:900;color:#fff;white-space:nowrap}.progress{flex:1}.progress-top{display:flex;justify-content:space-between;font-size:.72rem;color:#b9d0df;margin-bottom:7px}.track{height:4px;background:rgba(255,255,255,.2);border-radius:9px}.fill{height:100%;width:10%;background:#9de4ef;border-radius:9px;transition:.3s}.layout{max-width:1320px;margin:auto;display:grid;grid-template-columns:290px minmax(0,1fr);gap:44px;padding:0 5.5vw 90px}
+aside{position:sticky;top:98px;height:max-content;align-self:start}.project-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);padding:18px;margin-bottom:18px;border-radius:14px}.project-card small{display:block;color:#b9d0df;font-size:.68rem;text-transform:uppercase;letter-spacing:.14em;font-weight:800}.project-name{font-weight:800;margin-top:7px;word-break:break-word;color:#fff}.side-list{border-left:1px solid rgba(255,255,255,.16);padding-left:8px}.side-step{padding:10px 12px;border-left:3px solid transparent;color:#9fb5ca;font-size:.84rem;cursor:pointer;border-radius:0 8px 8px 0}.side-step.active{border-left-color:#7fd7ea;color:#fff;background:rgba(255,255,255,.07);font-weight:800}.side-step.done{color:#9de4af}main{min-width:0}.screen{display:none}.screen.active{display:block}.opening{min-height:calc(100vh - 74px);display:grid;grid-template-columns:1.08fr.92fr;gap:70px;align-items:center;padding:72px 0 86px;position:relative}.opening:after{content:"";position:absolute;left:50%;right:-20vw;bottom:0;height:1px;background:rgba(255,255,255,.16)}.kicker{font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;font-weight:900;color:#b9edf5;margin-bottom:26px}.hero-copy.kicker:before{content:"";display:inline-block;width:42px;height:3px;background:#fff;margin:0 14px 3px 0}.opening h1{font-family:var(--serif);font-size:clamp(4rem,7vw,7rem);line-height:.9;letter-spacing:-.055em;margin:0 0 32px;font-weight:700;color:#fff}.opening h1 em{font-style:italic;font-weight:400}.opening p,.lead{font-size:clamp(1.05rem,1.5vw,1.28rem);max-width:760px;color:#bcd0e2;line-height:1.65}.hero-copy{position:relative;z-index:2}.hero-copy.kicker{color:#d8f2f6}.hero-visual{background:linear-gradient(145deg,#0b527d,#087d98);border-radius:16px;min-height:430px;position:relative;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.18)}.hero-visual:before,.hero-visual:after{content:"";position:absolute;border:1px solid rgba(218,247,255,.65);border-radius:50%}.hero-visual:before{width:280px;height:280px;left:18%;top:18%}.hero-visual:after{width:390px;height:390px;right:-25%;top:-25%}.shape{position:absolute;background:linear-gradient(145deg,#e8fbff,#a6dce7);opacity:.9;clip-path:polygon(50% 0,100% 100%,0 100%)}.shape.one{width:105px;height:105px;right:25%;top:4%}.shape.two{width:170px;height:170px;right:-2%;top:28%}.shape.three{width:230px;height:160px;left:28%;bottom:5%;transform:rotate(27deg)}.shape.four{width:120px;height:120px;left:10%;top:45%;transform:rotate(12deg)}.hero-note{position:absolute;left:0;right:0;bottom:0;background:#f8f9fa;padding:22px 28px;color:#617087;font-size:.98rem;border-radius:0 0 16px 16px}.hero-note strong{color:#172033}.hero-dark{background:transparent;color:#fff;padding:0}.hero-dark.opening{max-width:1280px;margin:auto}
+
+main>.screen:not(.active){display:none}
+main>.screen.active:not(:first-child){padding-top:78px}
+main>.screen.active:not(:first-child)>.kicker{max-width:980px;margin-left:auto;margin-right:auto}
+main>.screen.active:not(:first-child)>h2,main>.screen.active:not(:first-child)>.lead,main>.screen.active:not(:first-child)>.case,main>.screen.active:not(:first-child)>.callout,main>.screen.active:not(:first-child)>.now,main>.screen.active:not(:first-child)>.check{max-width:980px;margin-left:auto;margin-right:auto}
+
+h2{font-family:var(--serif);font-size:clamp(3.2rem,6vw,5.7rem);line-height:.95;letter-spacing:-.045em;margin:0 0 24px;font-weight:700;color:#fff}
+h3{font-family:var(--serif);font-size:2.2rem;line-height:1.05;margin:0 0 15px;color:#172033}.case{background:#f8f9fa;border:1px solid rgba(255,255,255,.35);padding:36px 40px;border-radius:16px;margin:34px auto;color:#172033;box-shadow:0 10px 30px rgba(0,0,0,.08)}.case-title,.label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:#315f82;margin-bottom:12px}.case h3{font-size:2.25rem}.case p{max-width:850px;color:#53647a}.now{background:#073d72;color:#fff;border-radius:16px;padding:34px 40px;margin:34px auto;border:1px solid rgba(255,255,255,.12)}.now p{color:#c7d9e7}.now h3{margin-top:0;color:#fff}.now label{color:#fff}.callout{border-left:4px solid #7fd7ea;background:#e7f5f8;padding:24px 28px;border-radius:0 14px 14px 0;margin:30px auto;color:#172033}.callout strong{font-size:1.08rem}
+label{display:block;font-weight:800;margin:20px 0 8px}
+textarea,input{width:100%;border:1px solid #b9c8d4;border-radius:8px;background:#fff;padding:14px;color:#172033}textarea{min-height:125px;resize:vertical}.check{background:#f8f9fa;border:1px solid rgba(255,255,255,.35);color:#172033;border-radius:14px;padding:20px 24px;margin:28px auto}.checkline{display:flex;gap:10px}.checkline input{width:auto;min-height:0;margin-top:7px}.actions{max-width:980px;margin:45px auto 0;display:flex;justify-content:space-between;gap:14px;border-top:1px solid rgba(255,255,255,.18);padding-top:22px}.actions button{min-width:145px}
+button{border:0;border-radius:4px;padding:13px 20px;font-weight:800;cursor:pointer}.primary{background:#f8fbfc;color:#062f63;border:1px solid #dce6ed}.secondary{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.48)}.now.secondary,.final.secondary{color:#fff;border-color:rgba(255,255,255,.45)}.copybox{position:relative}.copybox textarea{min-height:620px;height:620px;width:100%;box-sizing:border-box;background:#032957;color:#dcebf3;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:27px 28px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.91rem;line-height:1.65;resize:vertical;overflow:auto}.copy{position:static;display:inline-flex;margin:0 0 10px auto;float:right;background:#f8fbfc;color:#062f63;border:1px solid #dce6ed}.copybox:after{content:"";display:block;clear:both}.status{font-size:.9rem;color:#9de4af;margin-top:8px;min-height:18px}.final{background:#f8f9fa;color:#172033;padding:38px 40px;border-radius:16px;margin-top:34px}.final h3{color:#172033}.final p{color:#5b6b7d}.summary{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}.summary div{padding:18px;border-radius:10px;background:#eef4f7;color:#172033;border:1px solid #d8e1e6}.summary b{display:block;margin-bottom:5px;color:#617589;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em}
+main>.callout:last-child{max-width:980px;margin:55px auto 0}
+
+@media(max-width:1050px){.layout{grid-template-columns:220px minmax(0,1fr);gap:28px}.opening{grid-template-columns:1fr;gap:35px;min-height:auto;padding:55px 0 65px}.hero-visual{min-height:330px}.header{gap:16px}.logo{font-size:.68rem}.layout{padding-left:5vw;padding-right:5vw}.hero-dark{margin:0;padding:0}}
+@media(max-width:760px){aside{position:relative;top:auto;order:2}.layout{display:flex;flex-direction:column;padding-left:6vw;padding-right:6vw}.side-list{max-height:none}.opening{grid-template-columns:1fr}}
+@media(max-width:760px){.navcontext{display:none}}
+@media(max-width:600px){.opening h1{font-size:3.8rem}.opening p{font-size:1.05rem}.case,.now,.final{padding:26px}.summary{grid-template-columns:1fr}.progress-top span:last-child{display:none}}.small-note{font-size:.88rem;color:var(--muted);margin-top:10px}.inline-check{margin-top:18px;padding:12px 0}.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.summary>div{background:rgba(255,255,255,.05);border:1px solid var(--line);padding:14px;border-radius:14px}.summary b{display:block;margin-bottom:5px;color:var(--blue)}.mini-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.mini-card{background:rgba(255,255,255,.72);border:1px solid rgba(223,228,236,.9);border-radius:16px;padding:16px}.mini-card strong{display:block;margin-bottom:7px}.mini-card p{margin:0}.mini-card +.mini-card{}@media(max-width:760px){.mini-grid{grid-template-columns:1fr}}
+
+/* Correcciones de legibilidad de la primera pantalla */
+.case .concept-grid{margin-top:24px}
+.case .concept-card{background:#eef6f8;border:1px solid #d5e5ea;color:#172033;box-shadow:none}
+.case .concept-card strong{color:#17324f}
+.case .concept-card span{color:#53677a}
+.project-card input{font-size:.9rem;letter-spacing:-.01em}
+@media(max-width:1050px){.layout{grid-template-columns:240px minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{scroll-behavior:auto!important;transition:none!important}}
+
+.step-intro{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:22px 26px;margin:24px auto;max-width:980px}.step-intro strong{color:#fff}.step-intro p{margin:6px 0;color:#d2e1ec}.do-this{background:#f8f9fa;color:#172033;border-radius:16px;padding:30px 34px;margin:30px auto;max-width:980px}.do-this h3{margin-bottom:10px}.do-this .instruction{font-size:1.05rem;color:#30445a;margin:0 0 18px}.field-help{font-size:.92rem;color:#627386;margin:-2px 0 15px}.example-question{background:#edf7fa;border-radius:12px;padding:18px 20px;margin:20px 0;color:#203449}.example-question strong{color:#315f82}.concept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px auto;max-width:980px}.concept-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:18px}.concept-card strong{display:block;color:#fff;margin-bottom:6px}.concept-card span{color:#bfd0df;font-size:.93rem}.step-intro ul,.do-this ul{margin:10px 0 0 20px}.do-this li{margin:6px 0}.project-card label{color:#fff;font-size:.85rem;margin:0 0 8px}.project-card input{background:#fff}.project-card .small-note{color:#bfd0df}.side-step{cursor:pointer}.hero-copy .lead2{color:#d4e3ed;max-width:760px;font-size:1.1rem}.finalPromptWrap{margin-top:20px}.no-tech{color:#9de4af;font-size:.9rem;margin-top:12px}@media(max-width:760px){.concept-grid{grid-template-columns:1fr}.do-this,.step-intro{padding:24px}.project-card{margin-bottom:10px}}
+
+.demo-box{background:#e7f5f8;border-left:4px solid #0b527d;border-radius:0 14px 14px 0;padding:22px 26px;margin:24px 0;color:#172033}
+.demo-box>strong{font-size:1.08rem;color:#062f63}
+.case .demo-box p{color:#30445a;margin:8px 0}
+.demo-box ol{margin:6px 0 10px 22px;padding:0;color:#172033}
+.demo-link{display:inline-block;background:#062f63;color:#fff;padding:12px 20px;border-radius:6px;font-weight:800;text-decoration:none;margin:8px 0 6px}
+.demo-link:hover,.demo-link:focus-visible{background:#0b527d;outline:3px solid #9de4ef;outline-offset:2px}
+.inline-link{color:#0b527d;font-weight:800}
+.criteria{background:#edf7fa;border-radius:12px;padding:20px 24px;margin:0 0 22px;color:#203449}
+.criteria>strong{color:#062f63;font-size:1.05rem}
+.criteria p{margin:8px 0}
+.criteria ol{margin:8px 0 12px 22px;padding:0}
+.criteria li{margin:6px 0}
+.instr-example{background:#fff;border:1px solid #d5e5ea;border-left:4px solid #315f82;border-radius:0 12px 12px 0;padding:20px 24px;margin:18px 0 26px}
+.case .instr-example p{color:#172033;margin:0 0 9px;max-width:none}
+.case h4.sub{font-family:var(--serif);font-size:1.45rem;color:#172033;margin:10px 0 8px}
+.structure-wrap{overflow-x:auto;margin:14px 0 18px}
+table.structure{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem;color:#172033;background:#fff}
+table.structure th,table.structure td{border-bottom:1px solid #d5e5ea;padding:10px 12px;text-align:left;vertical-align:top}
+table.structure th{background:#eef6f8;color:#315f82;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em}
+
+.tools-box{background:#f8f9fa;color:#172033;border-radius:16px;padding:32px 36px;margin:30px auto;max-width:980px;border-left:5px solid #7fd7ea}
+.tools-box h3{margin-bottom:12px}
+.tools-box p{color:#30445a}
+.tools-box ol{margin:8px 0 0 22px;padding:0;color:#172033}
+.tools-box li{margin:7px 0}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.tool-card{background:#eef6f8;border:1px solid #d5e5ea;border-radius:12px;padding:16px 18px}
+.tool-card strong{display:block;font-size:1.1rem;color:#062f63;margin:4px 0 6px}
+.tool-card p{margin:0;font-size:.93rem}
+.tool-tag{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:900;color:#315f82}
+.tools-flow{background:#062f63;color:#dcebf3!important;border-radius:10px;padding:14px 18px;font-size:.92rem;text-align:center;line-height:1.9}
+.tools-flow b{color:#9de4ef}
+.plan-title{margin-top:30px!important;padding-top:24px;border-top:1px solid #d5e5ea}
+.planned{background:#edf7fa;border-radius:10px;padding:14px 16px;margin:0 0 6px;color:#203449;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.planned b{color:#315f82}
+.planned span{flex:1 1 260px}
+.use-planned{background:#062f63;color:#fff;border-radius:6px;padding:8px 14px;min-width:0;font-size:.85rem}
+.exchange{background:#edf7fa;border-left:4px solid #315f82;border-radius:0 10px 10px 0;padding:14px 18px;margin:0 0 20px;color:#203449}
+.do-this ol{margin:8px 0 10px 22px;padding:0}
+@media(max-width:760px){.tools-grid{grid-template-columns:1fr}.tools-box{padding:24px}}
+
+.where-test{max-width:980px;margin:24px auto}
+
+.navcontext .phase{background:none;border:0;border-bottom:2px solid transparent;border-radius:0;min-width:0;padding:4px 0;color:#b9cce0;font-size:.75rem;font-weight:800;letter-spacing:.03em;cursor:pointer}
+.navcontext .phase:hover{color:#fff}
+.navcontext .phase.on{color:#fff;border-bottom-color:#9de4ef}
+</style></head><body>
+<header><div class="header"><div class="logo">RETOS / IA</div><div class="progress"><div class="progress-top"><span id="progressText">Paso 1 de 10 · Qué vamos a construir</span><span id="saveText">Guardado automáticamente</span></div><div class="track"><div class="fill" id="fill"></div></div></div><nav class="navcontext" aria-label="Fases del ejercicio"><button type="button" class="phase" data-phase="0">Comprender</button><button type="button" class="phase" data-phase="1">Diseñar</button><button type="button" class="phase" data-phase="5">Construir</button><button type="button" class="phase" data-phase="6">Probar</button><button type="button" class="phase" data-phase="9">Presentar</button></nav></div></header>
+<div class="layout">
+<aside>
+<div class="project-card">
+<label for="projectName">Nombre de su proyecto</label>
+<input id="projectName" data-key="gemName" placeholder="Escriba aquí el nombre de su proyecto" aria-label="Nombre de su proyecto">
+<p class="small-note">Escriba un nombre corto que le permita identificar el proyecto durante todo el ejercicio.</p>
+</div>
+<div class="side-list" id="sideList"></div>
+</aside>
+<main>
+<section class="screen active" data-title="Qué vamos a construir">
+<div class="opening">
+<div class="hero-copy"><div class="kicker">Aprender haciendo</div>
+<h1>Vamos a crear un asistente de IA.</h1>
+<p>Durante este ejercicio va a diseñar, construir y probar un asistente que conversa con las personas para ayudarlas a realizar una tarea concreta.</p>
+<p class="hero-copy lead2">Primero vamos a entender qué hace un asistente y qué decisiones hay detrás. Lo construiremos como un Gem de Gemini: un asistente personalizado que se configura con un nombre, una descripción, unas instrucciones y unos documentos de referencia.</p>
+</div>
+<div class="hero-visual"><span class="shape one"></span><span class="shape two"></span><span class="shape three"></span><span class="shape four"></span><div class="hero-note"><strong>La ruta del ejercicio:</strong> entender la necesidad → definir el usuario → preparar el conocimiento → decidir cómo debe responder → revisar el diseño → construir → probar → mejorar → comprobar el uso → presentar.</div></div>
+</div>
+<div class="case"><div class="case-title">Primero, entendamos el concepto</div><h3>¿Qué es un chatbot o asistente conversacional?</h3>
+<p>Es una aplicación que permite que una persona interactúe con un sistema mediante una conversación escrita. La persona formula una pregunta o describe una tarea y el sistema genera una respuesta de acuerdo con la información y las instrucciones con las que fue configurado.</p>
+<p>En este ejercicio construiremos un asistente especializado. Su utilidad dependerá de <strong>qué tarea queremos facilitar, qué información puede utilizar, cómo debe responder y qué límites debe respetar</strong>.</p>
+<div class="concept-grid"><div class="concept-card"><strong>La persona</strong><span>formula una pregunta o solicita una tarea.</span></div><div class="concept-card"><strong>El conocimiento</strong><span>aporta las fuentes que el asistente puede utilizar.</span></div><div class="concept-card"><strong>Las instrucciones</strong><span>definen cómo debe comportarse y cuáles son sus límites.</span></div></div>
+</div>
+<div class="step-intro"><strong>Primero vamos a mirar un caso terminado</strong><p>Antes de pedirle que diseñe su propio asistente, observe un ejemplo concreto: el <strong>Asistente de Convivencia</strong>. Este es el caso que utilizaremos durante el ejercicio para entender cómo se toman las decisiones de diseño.</p></div>
+<div class="case case-main"><div class="case-title">Caso de demostración · Asistente de Convivencia</div><h3>Una persona tiene una duda sobre las reglas de su conjunto residencial</h3>
+<p>El asistente fue construido para ayudar a las personas de una comunidad residencial a consultar y comprender las reglas de convivencia. La persona puede formular su pregunta con sus propias palabras y recibir una respuesta basada en dos documentos autorizados:</p>
+<div class="source-list"><strong>1. Reglamento de Propiedad Horizontal</strong><strong>2. Manual de Convivencia</strong></div>
+<p>Por ejemplo, una persona podría preguntar: <strong>“Quiero hacer una actividad en una zona común. ¿Qué debo tener en cuenta?”</strong></p>
+<p>El asistente busca la información pertinente en esos documentos, explica qué encuentra e identifica la fuente. Cuando los documentos no contienen la información necesaria, lo reconoce. Cuando una situación requiere una decisión o autorización de la administración, señala ese límite.</p>
+<div class="demo-box"><strong>Pruebe el asistente terminado</strong>
+<p>Abra el Asistente de Convivencia y converse con él durante unos minutos. Se abrirá en una pestaña nueva de Gemini; para utilizarlo es necesario haber iniciado sesión con una cuenta de Google.</p>
+<a class="demo-link" href="https://gemini.google.com/gem/1vyBCgD_mxzczgZisveCTmGgZqcUREgqR?usp=sharing" target="_blank" rel="noopener noreferrer">Abrir el Asistente de Convivencia ↗</a>
+<p>Preguntas sugeridas para la prueba:</p>
+<ol><li>“Quiero hacer una actividad en una zona común. ¿Qué debo tener en cuenta?”</li><li>“¿Qué normas aplican a los parqueaderos?”</li><li>“¿Qué restaurantes me recomiendas cerca del conjunto?”</li></ol>
+<p>Durante la prueba observe tres aspectos: cómo saluda y presenta los temas que atiende, si indica el documento que sustenta cada respuesta y cómo responde cuando la pregunta se refiere a un tema que no está en los documentos.</p></div>
+<div class="callout"><strong>Observe la idea central del caso:</strong><p>Hay una persona con una necesidad concreta, unas fuentes de conocimiento y unas reglas que determinan cómo debe responder el asistente. Esas decisiones son las que vamos a aprender a construir.</p></div></div>
+<div class="do-this"><h3>Ahora haga la primera decisión de su proyecto</h3><p class="instruction">Primero escriba el nombre de su proyecto en el recuadro «Nombre de su proyecto», ubicado en la columna izquierda en computador y al final de la página en celular. Después describa una necesidad concreta que quiera atender y el resultado que espera conseguir.</p>
+<div class="criteria"><strong>Criterios para elegir un proyecto viable</strong>
+<p>Un buen primer proyecto cumple estas cuatro condiciones:</p>
+<ol>
+<li><b>Atiende una consulta frecuente.</b> Personas de un área o de la organización hacen la misma pregunta con regularidad.</li>
+<li><b>La respuesta ya está documentada.</b> La información existe en uno a tres documentos disponibles, como una política, un manual, un reglamento o un documento de preguntas frecuentes.</li>
+<li><b>Tiene un usuario identificable.</b> Se puede describir quién hace la consulta y en qué momento la necesita.</li>
+<li><b>Es exclusivamente de consulta.</b> El asistente informa, explica y orienta con base en los documentos. Los trámites, solicitudes, reservas, aprobaciones, registros y cualquier acción sobre sistemas o personas permanecen a cargo de las áreas responsables.</li>
+</ol>
+<p><b>Ejemplos de proyectos de consulta:</b> un asistente que explique la política de viajes y gastos; uno que responda las preguntas frecuentes del personal nuevo a partir del manual de inducción; uno que oriente sobre el procedimiento de compras según el documento vigente; uno que explique el reglamento de uso de los espacios compartidos.</p>
+<p><b>Cómo llevar una idea de trámite a una versión de consulta:</b> la idea «un asistente que reserve salas de reunión» se formula como «un asistente que explique cómo se reservan las salas, qué condiciones aplican y a quién acudir, según el procedimiento vigente».</p></div>
+<label>¿Qué situación o necesidad quiere atender?</label><textarea data-key="need" placeholder="Describa quién vive la situación, qué necesita resolver y cuándo aparece esa necesidad..."></textarea>
+<p class="field-help">Piense primero en la situación de las personas. El nombre de una herramienta puede aparecer después.</p>
+<label>¿Qué espera conseguir?</label><textarea data-key="result" placeholder="Describa qué debería poder conseguir la persona si la solución funciona como espera..."></textarea>
+<p class="field-help">Escriba un resultado observable: qué podrá hacer, encontrar, comprender o producir.</p></div>
+<div class="check"><div class="checkline"><input data-check="0" type="checkbox"><span>Mi proyecto tiene un nombre y puedo explicar la necesidad y el resultado esperado sin empezar por una herramienta.</span></div></div>
+</section>
+
+<section class="screen" data-title="El usuario">
+<div class="kicker">Paso 2 · El usuario</div><h2>Definamos quién utilizará el asistente.</h2>
+<p class="lead">Ahora convertimos la necesidad general en una situación de uso concreta. El usuario nos ayuda a decidir qué debe hacer el asistente y cómo podremos probarlo.</p>
+<div class="step-intro"><strong>En este paso va a producir:</strong><p>Una descripción concreta de la persona o grupo que utilizará el asistente y de la tarea que quiere realizar.</p></div>
+<div class="case"><div class="case-title">Observe el ejemplo · Asistente de Convivencia</div><h3>La persona llega con una pregunta, no con el documento</h3>
+<p>El usuario es una persona de la comunidad que tiene una duda concreta sobre convivencia. Puede necesitar saber si una actividad está permitida, qué horario aplica o qué regla corresponde a una situación.</p><p>Su punto de partida es la pregunta. No necesita conocer previamente el Reglamento de Propiedad Horizontal, el Manual de Convivencia ni el número del artículo. El asistente le permite formular la situación con sus propias palabras y buscar la información pertinente.</p>
+<div class="example-question"><strong>Situación:</strong> “Quiero hacer una actividad en una zona común. ¿Qué debo tener en cuenta?”<br><strong>Resultado esperado:</strong> encontrar la regla pertinente, conocer la fuente y saber cuándo la situación requiere intervención de la administración.</div>
+<p>El alcance queda definido: el asistente consulta y explica información documentada. Las autorizaciones y decisiones que corresponden a la administración permanecen en esa instancia.</p></div>
+<div class="do-this"><h3>Ahora haga lo mismo con su proyecto</h3><p class="instruction">Imagine a una persona utilizando su asistente por primera vez. Describa quién es y qué intenta conseguir en una situación concreta.</p>
+<label>¿Quién utilizará principalmente el asistente?</label><textarea data-key="user" placeholder="Describa la persona, grupo o rol principal..."></textarea>
+<label>¿Qué intenta conseguir esa persona?</label><textarea data-key="userTask" placeholder="Describa la tarea concreta que quiere realizar y el resultado que espera..."></textarea>
+<p class="field-help">Al leer su respuesta, otra persona debería poder imaginar una interacción real.</p></div>
+<div class="check"><div class="checkline"><input data-check="1" type="checkbox"><span>He definido un usuario concreto y puedo describir la tarea que quiere realizar.</span></div></div>
+</section>
+
+<section class="screen" data-title="El conocimiento">
+<div class="kicker">Paso 3 · El conocimiento</div><h2>Decidamos qué información puede utilizar el asistente.</h2>
+<p class="lead">Un asistente necesita conocimiento de referencia para responder. Aquí definimos las fuentes y comprobamos si realmente son adecuadas para el uso que queremos darles.</p>
+<div class="step-intro"><strong>En este paso va a producir:</strong><p>Una lista de fuentes autorizadas y una lista de aspectos que todavía deben verificarse.</p></div>
+<div class="case"><div class="case-title">Observe el ejemplo · Asistente de Convivencia</div><h3>Dos documentos forman el conocimiento de referencia</h3>
+<p>El Asistente de Convivencia utiliza el <strong>Reglamento de Propiedad Horizontal</strong> y el <strong>Manual de Convivencia</strong>. Esas fuentes contienen las reglas que el asistente debe consultar.</p><p>Antes de utilizarlas hay que comprobar su vigencia, autoridad y condiciones de uso. También hay que decidir qué hará el asistente cuando una pregunta no tenga respuesta en las fuentes o cuando los documentos presenten información diferente.</p><p>La decisión queda clara: <strong>el asistente responde con base en las fuentes que fueron definidas para el caso y reconoce cuando esas fuentes no permiten responder.</strong></p></div>
+<div class="callout"><strong>Para su proyecto, piense en la fuente y en su calidad.</strong><p>Una fuente disponible técnicamente puede requerir verificación de versión, vigencia, permisos, autoridad, calidad o relación con otras fuentes.</p><p>Para este ejercicio utilice información pública, ficticia, sintética o expresamente autorizada. Mantenga fuera de herramientas abiertas la información personal, sensible, reservada, estratégica y las credenciales.</p></div>
+<div class="do-this"><h3>Ahora prepare el conocimiento</h3><p class="instruction">Escriba qué información utilizará el asistente y qué necesita verificar antes de incorporarla.</p><div class="exchange"><b>Prepare los archivos ahora.</b> Reúna en una carpeta de su computador los documentos que acaba de definir como fuentes (por ejemplo, archivos PDF o de texto). En el paso 6 los cargará en Gemini como base de conocimiento del Gem. El asistente responde con base en esos archivos; si no se cargan, responderá solo con conocimiento general y las pruebas del paso 7 no reflejarán su diseño.</div>
+<label>¿Qué fuentes utilizará?</label><textarea data-key="sources" placeholder="Documentos, páginas, bases de conocimiento, datos de prueba u otras fuentes autorizadas..."></textarea>
+<label>¿Qué debe verificar antes de utilizarlas?</label><textarea data-key="gaps" placeholder="Vigencia, versión, autoridad, permisos, calidad, información faltante, diferencias entre fuentes..."></textarea></div>
+<div class="check"><div class="checkline"><input data-check="2" type="checkbox"><span>He definido las fuentes, sé qué debo verificar y tengo los archivos listos para cargarlos en el paso 6.</span></div></div>
+</section>
+
+<section class="screen" data-title="El comportamiento">
+<div class="kicker">Paso 4 · El comportamiento</div><h2>Definamos cómo debe responder el asistente.</h2>
+<p class="lead">Aquí convertimos las decisiones anteriores en instrucciones concretas. Cada regla importante debe poder comprobarse después mediante una pregunta o situación.</p>
+<div class="step-intro"><strong>En este paso va a producir:</strong><p>Las reglas principales que orientarán las respuestas, el manejo de información ausente y las situaciones que quedan fuera del alcance.</p></div>
+<div class="case"><div class="case-title">Observe el ejemplo · Asistente de Convivencia</div><h3>Así quedaron escritas las instrucciones del ejemplo</h3>
+<p>Estas son las instrucciones configuradas en el Asistente de Convivencia que probó en el paso 1. Cada frase describe un comportamiento que puede observarse en una conversación.</p>
+<div class="instr-example"><p>Eres un asistente especializado en orientar a los residentes de un conjunto residencial sobre normas de convivencia, procedimientos, horarios, zonas comunes y parqueaderos.</p><p>Tu propósito es ayudar a los residentes a encontrar y comprender la información contenida en los documentos proporcionados.</p><p>Responde de manera clara, sencilla y práctica.</p><p>Responde únicamente con base en los documentos proporcionados en este Gem.</p><p>Cuando sea posible, indica el documento o apartado que sustenta la respuesta.</p><p>Si la información solicitada no aparece en los documentos, indícalo claramente.</p><p>No inventes normas, horarios, tarifas, procedimientos ni información que no esté disponible en las fuentes.</p><p>Si la pregunta trata un tema distinto de la convivencia en el conjunto, indica que está fuera de tus temas de consulta y recuerda qué puedes responder.</p><p>Si la consulta requiere una autorización, un trámite o una decisión de la administración, explica que corresponde a la administración y orienta al residente para que acuda a ella.</p><p>Primero entrega la respuesta concreta y después explica brevemente el fundamento.</p><p>El asistente está dirigido a residentes del conjunto residencial. Cuando una pregunta se refiera a un tema regulado en el Manual de Convivencia, utiliza primero el Manual de Convivencia como fuente. Si existen diferencias entre documentos, presenta las diferencias y señala qué documento contiene cada disposición. Nunca combines información de documentos diferentes como si proviniera de una misma fuente.</p><p>Al iniciar una conversación, saluda brevemente al usuario y dile qué tipo de consultas puede realizar. Por ejemplo: “Hola. Soy el Asistente de Convivencia. Puedes preguntarme sobre normas, horarios, parqueaderos, zonas comunes y procedimientos del conjunto.”</p></div>
+<h4 class="sub">Estructura de referencia para escribir instrucciones</h4>
+<p>Las instrucciones del ejemplo se organizan en nueve componentes. Utilice esta estructura como guía para redactar las de su asistente.</p>
+<div class="structure-wrap"><table class="structure"><thead><tr><th>Componente</th><th>Qué define</th><th>Cómo aparece en el ejemplo</th></tr></thead><tbody><tr><td><b>1. Rol y temas</b></td><td>Quién es el asistente y sobre qué temas orienta.</td><td>«Eres un asistente especializado en orientar a los residentes […] sobre normas de convivencia, procedimientos, horarios, zonas comunes y parqueaderos.»</td></tr><tr><td><b>2. Propósito</b></td><td>Qué debe conseguir la persona que lo usa.</td><td>«Tu propósito es ayudar a los residentes a encontrar y comprender la información […]»</td></tr><tr><td><b>3. Usuario</b></td><td>A quién se dirige.</td><td>«El asistente está dirigido a residentes del conjunto residencial.»</td></tr><tr><td><b>4. Fuentes y prioridad</b></td><td>Qué documentos utiliza, en qué orden y cómo los cita.</td><td>«Responde únicamente con base en los documentos […]», «utiliza primero el Manual de Convivencia», «indica el documento o apartado que sustenta la respuesta».</td></tr><tr><td><b>5. Forma de responder</b></td><td>Tono, orden y estructura de la respuesta.</td><td>«clara, sencilla y práctica»; «Primero entrega la respuesta concreta y después explica brevemente el fundamento.»</td></tr><tr><td><b>6. Información ausente</b></td><td>Qué hace cuando las fuentes no contienen la respuesta.</td><td>«Si la información solicitada no aparece en los documentos, indícalo claramente.» «No inventes normas, horarios, tarifas […]»</td></tr><tr><td><b>7. Diferencias entre fuentes</b></td><td>Cómo maneja documentos con contenidos distintos.</td><td>«presenta las diferencias y señala qué documento contiene cada disposición».</td></tr><tr><td><b>8. Inicio de la conversación</b></td><td>Cómo se presenta y qué consultas ofrece.</td><td>Saludo breve que indica los temas sobre los que se puede preguntar.</td></tr><tr><td><b>9. Límites</b></td><td>Qué temas o solicitudes quedan fuera y hacia dónde orienta a la persona.</td><td>«Si la pregunta trata un tema distinto de la convivencia en el conjunto, indica que está fuera de tus temas de consulta […]» «Si la consulta requiere una autorización, un trámite o una decisión de la administración, explica que corresponde a la administración y orienta al residente […]»</td></tr></tbody></table></div>
+<p><b>Relación con los campos de este paso:</b> el primer campo reúne los componentes 1 a 5, 7 y 8; el segundo corresponde al componente 6, y el tercero al componente 9.</p>
+<div class="example-question"><strong>Regla → prueba:</strong> si la instrucción dice “reconocer cuando la información no está en las fuentes”, una prueba útil será hacer una pregunta cuya respuesta deliberadamente no aparezca en ellas.</div></div>
+<div class="do-this"><h3>Ahora escriba las reglas de su asistente</h3><p class="instruction">Escriba instrucciones que otra persona pueda implementar y que después podamos comprobar.</p>
+<label>¿Cómo debe responder normalmente?</label><textarea data-key="behavior" placeholder="Rol y temas, propósito, usuario, fuentes y prioridad, forma de responder, manejo de diferencias entre fuentes y saludo inicial..."></textarea>
+<label>¿Qué debe hacer cuando no encuentra información suficiente?</label><textarea data-key="missing" placeholder="Explique cómo debe reconocer la ausencia y qué debe hacer después..."></textarea>
+<label>¿Qué debe hacer ante una pregunta fuera de alcance?</label><textarea data-key="outscope" placeholder="Describa qué queda fuera y cómo debe responder o remitir la situación..."></textarea>
+<h3 class="plan-title">Planee las pruebas</h3><p class="instruction">Cada regla que acaba de escribir debe poder comprobarse con una pregunta. Escriba ahora las dos preguntas que utilizará en el paso 7.</p>
+<label>Prueba 1 · Una pregunta cuya respuesta esté claramente en sus fuentes</label><textarea data-key="plannedTest1" placeholder="Escriba la pregunta tal como la haría el usuario. Ejemplo del caso: ¿Qué normas aplican a los parqueaderos?"></textarea>
+<label>Prueba 2 · Una pregunta que lleve al asistente a un límite</label><textarea data-key="plannedTest2" placeholder="Información ausente, fuentes con diferencias o un tema fuera de alcance. Ejemplo del caso: ¿Qué restaurantes me recomiendas cerca del conjunto?"></textarea>
+<p class="field-help">La primera pregunta comprueba cómo responde y cita la fuente. La segunda comprueba lo que escribió para información ausente o fuera de alcance.</p></div>
+<div class="check"><div class="checkline"><input data-check="3" type="checkbox"><span>Las reglas de mi asistente describen comportamientos que puedo observar y tengo dos preguntas planeadas para probarlas.</span></div></div>
+</section>
+
+<section class="screen" data-title="Revisión del diseño">
+<div class="kicker">Paso 5 · Revisión del diseño</div><h2>Antes de construir, revisemos que todo encaje.</h2>
+<p class="lead">Vamos a utilizar un prompt de tutoría para preparar el Gem que va a crear. La revisión se concentra en las cuatro piezas que necesita el Gem: nombre, descripción, instrucciones y base de conocimiento.</p>
+<div class="step-intro"><strong>En este paso va a producir:</strong><p>Una configuración clara para el Gem: nombre, descripción, instrucciones y base de conocimiento.</p></div>
+<div class="tools-box"><div class="case-title">Cómo va a trabajar desde este paso</div><h3>Dos IA al mismo tiempo, cada una con una función</h3>
+<p>A partir de este paso trabajará con dos inteligencias artificiales, además de esta página. Es la misma forma de trabajo que utilizó en los talleres de canciones, videos y podcast: una IA orienta el proceso y otra herramienta produce el resultado. En este paso empezará con ChatGPT; desde el paso 6 se suma Gemini.</p>
+<div class="tools-grid">
+<div class="tool-card"><span class="tool-tag">Registro</span><strong>Esta página</strong><p>Guarda sus decisiones y genera los prompts con la información que usted ya escribió.</p></div>
+<div class="tool-card"><span class="tool-tag">Tutor</span><strong>ChatGPT</strong><p>Revisa el diseño con usted, le hace preguntas y le indica cada acción, una a la vez.</p></div>
+<div class="tool-card"><span class="tool-tag">Construcción</span><strong>Gemini</strong><p>Es la herramienta donde se crea, se prueba y se comparte el Gem.</p></div>
+</div>
+<p class="tools-flow">Esta página <b>→</b> prompt <b>→</b> ChatGPT <b>→</b> indicación <b>→</b> Gemini <b>→</b> resultado o captura <b>→</b> ChatGPT <b>→</b> decisión <b>→</b> Esta página</p>
+<p><b>Recomendaciones para trabajar con las tres ventanas:</b></p>
+<ol>
+<li>Mantenga abiertas tres pestañas: esta página, ChatGPT y Gemini. Si su pantalla lo permite, ubique ChatGPT y Gemini lado a lado.</li>
+<li>Utilice un solo chat de ChatGPT desde este paso hasta el final. Así el tutor conserva el contexto de todo el proyecto.</li>
+<li>Cuando la pantalla de Gemini no coincida con lo que indica ChatGPT, tome una captura de pantalla y péguela en el chat para que el tutor lo oriente con base en lo que usted ve.</li>
+<li>Cada vez que el tutor le entregue un resultado aprobado, cópielo en el campo correspondiente de esta página.</li>
+</ol></div>
+<div class="case"><div class="case-title">Observe el ejemplo · Asistente de Convivencia</div><h3>La revisión conecta cada decisión con la siguiente</h3>
+<p>La necesidad pide facilitar el acceso a reglas de convivencia. El usuario llega con una pregunta. Las fuentes contienen esas reglas. El comportamiento indica cómo consultarlas, cómo citar su procedencia, qué hacer cuando falta información y cuándo debe intervenir una persona.</p><p>La revisión comprueba que esas decisiones sean coherentes entre sí. Si el propósito exige respuestas verificables, las instrucciones deben pedir referencias. Si el asistente debe reconocer sus límites, esos límites deben estar escritos y después deben poder probarse.</p></div>
+<div class="do-this"><h3>Ahora revise su diseño con el tutor</h3><p class="instruction">Abra un chat nuevo en ChatGPT, copie el prompt y péguelo. El tutor revisará con usted el nombre, la descripción, las instrucciones y la base de conocimiento, una decisión a la vez. Responda sus preguntas; las decisiones del proyecto son suyas. Al final, el tutor le entregará las instrucciones aprobadas para que las pegue en el campo de abajo.</p><div class="copybox"><textarea id="validationPrompt" readonly></textarea><button class="secondary copy" onclick="copyText('validationPrompt')">Copiar prompt</button></div><div class="status" id="copyStatus"></div>
+<p class="field-help">El tutor debe ayudarle a pensar y decidir. Debe avanzar una pregunta o decisión a la vez y esperar su respuesta antes de continuar.</p>
+<label>Cuando termine, pegue aquí las instrucciones finales aprobadas</label><textarea data-key="finalInstructions" placeholder="Pegue la versión consolidada que realmente llevará a Gemini..."></textarea>
+<p class="field-help">Esta es la versión que pasará al siguiente paso.</p></div>
+<div class="check"><div class="checkline"><input data-check="4" type="checkbox"><span>Revisé el diseño y tengo una versión consolidada de las instrucciones.</span></div></div>
+</section>
+
+<section class="screen" data-title="Construcción en Gemini">
+<div class="kicker">Paso 6 · Construcción en Gemini</div><h2>Ahora vamos a crear el Gem con ayuda de ChatGPT.</h2>
+<p class="lead">Usted ya definió lo que quiere construir. En este paso utilizará ChatGPT como guía para crear el Gem en Gemini, paso a paso.</p>
+<div class="step-intro"><strong>¿Qué vamos a configurar?</strong><p>Un Gem de Gemini para consultas. Su función será orientar y responder utilizando la base de conocimiento que usted autorice. No ejecutará acciones, no modificará registros y no tomará decisiones en nombre de la entidad.</p><p>El Gem necesita cuatro elementos: <strong>nombre, descripción, instrucciones y base de conocimiento.</strong></p></div>
+<div class="case"><div class="case-title">Observe el ejemplo · Asistente de Convivencia</div><h3>Las decisiones se convierten en una configuración</h3>
+<p>El ejemplo muestra cómo las decisiones tomadas durante el diseño se llevan a un Gem. Aquí usted hará lo mismo con su proyecto, con acompañamiento paso a paso.</p><p>Puede abrir de nuevo el ejemplo para recordar cómo se comporta un Gem terminado: <a class="inline-link" href="https://gemini.google.com/gem/1vyBCgD_mxzczgZisveCTmGgZqcUREgqR?usp=sharing" target="_blank" rel="noopener noreferrer">Asistente de Convivencia ↗</a></p></div>
+<div class="do-this"><h3>Use ChatGPT como guía</h3><p class="instruction">Copie este prompt en el mismo chat de ChatGPT que utilizó en el paso 5. El prompt le informa al tutor que es la primera vez que usted crea un Gem; deje que le indique qué hacer, una acción a la vez. Tenga a mano la carpeta con los archivos de sus fuentes. Cuando complete un paso, vuelva al chat y continúe desde allí.</p><div class="copybox"><button class="secondary copy" onclick="copyText('constructionPrompt')">Copiar prompt para crear el Gem</button><textarea id="constructionPrompt" readonly></textarea></div><div class="status" id="constructionCopyStatus"></div>
+<label>¿Qué cambió durante la configuración?</label><textarea data-key="constructionNotes" placeholder="Registre cualquier cambio realizado respecto al diseño aprobado y explique por qué..."></textarea>
+<p class="field-help">Si durante la creación Gemini presenta una opción que requiere una decisión, registre aquí el cambio y continúe siguiendo la guía de ChatGPT.</p></div>
+<div class="check"><div class="checkline"><input data-check="5" type="checkbox"><span>Mi Gem está creado y guardado, tiene nombre, descripción, instrucciones y base de conocimiento, y sé cómo abrirlo para conversar con él.</span></div></div>
+</section>
+
+<section class="screen" data-title="Pruebas">
+<div class="kicker">Paso 7 · Pruebas</div><h2>Ahora vamos a comprobar qué hace realmente el asistente.</h2>
+<p class="lead">Una prueba compara el comportamiento que esperábamos con el comportamiento que observamos. Así obtenemos evidencia para decidir qué conservar y qué mejorar.</p>
+<div class="step-intro"><strong>En este paso va a producir:</strong><p>Dos pruebas completas: pregunta o situación, resultado esperado, resultado observado y hallazgo.</p></div>
+<div class="case"><div class="case-title">Observe el ejemplo · Asistente de Convivencia</div><h3>Una prueba empieza con una pregunta y termina con un aprendizaje</h3>
+<p>Una primera prueba puede utilizar una pregunta cuya respuesta esté claramente en una de las fuentes. Esperamos que el asistente encuentre la información, la explique y permita reconocer la fuente.</p><p>Otra prueba puede buscar una situación más exigente: información ausente, documentos diferentes o una solicitud de decisión administrativa. Así comprobamos si conserva los límites que definimos.</p><div class="example-question"><strong>Registro de prueba:</strong> Pregunta → qué esperábamos → qué ocurrió → qué aprendimos.</div></div>
+<div class="exchange where-test"><b>Dónde se hacen las pruebas:</b> en Gemini, conversando con su Gem. ChatGPT acompaña el proceso, pero las preguntas de prueba se escriben en el chat del Gem. Abra una conversación nueva con su Gem para cada prueba, escriba la pregunta y copie aquí lo que respondió.</div>
+<div class="do-this"><h3>Prueba 1</h3><p class="instruction">Haga una pregunta cuya respuesta debería estar claramente en las fuentes.</p><div class="planned"><b>Pregunta planeada en el paso 4:</b> <span id="planned1Show"></span> <button type="button" class="use-planned" onclick="usePlanned(1)">Usar esta pregunta</button></div><label>¿Qué preguntó?</label><textarea data-key="test1Question" placeholder="Escriba la pregunta exacta..."></textarea><label>¿Qué esperaba que ocurriera?</label><textarea data-key="test1Expected" placeholder="Respuesta, fuente o comportamiento que esperaba comprobar..."></textarea><label>¿Qué ocurrió realmente?</label><textarea data-key="test1Observed" placeholder="Respuesta obtenida y comportamiento observado..."></textarea><label>¿Qué aprendió?</label><textarea data-key="test1Finding" placeholder="Qué confirma, qué problema revela o qué decisión sugiere..."></textarea></div>
+<div class="do-this"><h3>Prueba 2</h3><p class="instruction">Haga una prueba que lleve al asistente a un límite: información ausente, fuente en conflicto, pregunta fuera de alcance u otra situación relevante.</p><div class="planned"><b>Pregunta planeada en el paso 4:</b> <span id="planned2Show"></span> <button type="button" class="use-planned" onclick="usePlanned(2)">Usar esta pregunta</button></div><label>¿Qué preguntó?</label><textarea data-key="test2Question" placeholder="Escriba la pregunta exacta..."></textarea><label>¿Qué esperaba que ocurriera?</label><textarea data-key="test2Expected" placeholder="Comportamiento esperado y razón..."></textarea><label>¿Qué ocurrió realmente?</label><textarea data-key="test2Observed" placeholder="Respuesta obtenida y comportamiento observado..."></textarea><label>¿Qué aprendió?</label><textarea data-key="test2Finding" placeholder="Qué confirma, qué problema revela o qué decisión sugiere..."></textarea></div>
+<div class="check"><div class="checkline"><input data-check="6" type="checkbox"><span>Tengo dos pruebas documentadas y puedo comparar lo esperado con lo observado.</span></div></div>
+</section>
+
+<section class="screen" data-title="Mejora">
+<div class="kicker">Paso 8 · Mejora</div><h2>Ahora use el mismo chat para pensar cómo iterar.</h2>
+<p class="lead">La prueba ya produjo evidencia. Ahora volverá al mismo chat de trabajo para que ChatGPT le ayude a interpretar lo observado y decidir cómo hacer una nueva iteración.</p>
+<div class="step-intro"><strong>En este paso va a producir:</strong><p>Una iteración completa: hallazgo → decisión → cambio → nueva prueba → resultado → conclusión.</p></div>
+<div class="case"><div class="case-title">Observe el ejemplo · Asistente de Convivencia</div><h3>La mejora parte de lo que ocurrió durante la prueba</h3>
+<p>El asistente se prueba, se observa su comportamiento y se vuelve al diseño. El tutor ayuda a formular preguntas sobre lo ocurrido y a identificar qué conviene revisar. La decisión corresponde a quien diseña el asistente.</p></div>
+<div class="do-this"><h3>Vuelva al mismo chat y pida una nueva iteración</h3><p class="instruction">Copie este prompt en el mismo chat de ChatGPT que utilizó para construir el Gem. El prompt ya incluye los resultados de sus pruebas del paso 7. El tutor le hará preguntas y lo guiará para decidir qué cambiar, una decisión a la vez. Después de aplicar el cambio en Gemini, guarde el Gem y repita la prueba en una conversación nueva con él.</p><div class="copybox"><button class="secondary copy" onclick="copyText('iterationPrompt')">Copiar prompt para iterar</button><textarea id="iterationPrompt" readonly></textarea></div><div class="status" id="iterationCopyStatus"></div>
+<label>¿Qué observó?</label><textarea data-key="observation" placeholder="Describa el comportamiento observado y compárelo con lo esperado..."></textarea><label>¿Qué cambió y por qué?</label><textarea data-key="change" placeholder="Indique qué parte del Gem modificó y qué evidencia motivó el cambio..."></textarea><label>¿Qué volvió a probar?</label><textarea data-key="retestQuestion" placeholder="Escriba la pregunta o situación que volvió a probar..."></textarea><label>¿Qué resultado observó?</label><textarea data-key="retestObserved" placeholder="Describa el comportamiento después del cambio..."></textarea><label>¿Qué concluyó?</label><textarea data-key="retestConclusion" placeholder="Explique qué cambió y qué decisión toma a partir del resultado..."></textarea></div>
+<div class="check"><div class="checkline"><input data-check="7" type="checkbox"><span>Puedo explicar qué observé, qué cambié, por qué lo cambié y qué ocurrió al volver a probar.</span></div></div>
+</section>
+
+<section class="screen" data-title="Prueba de uso">
+<div class="kicker">Paso 9 · Prueba con otra persona</div><h2>Ahora comprobamos si otra persona puede utilizarlo.</h2>
+<p class="lead">Quien construyó el asistente conoce sus decisiones. Una persona que llega por primera vez permite observar si la experiencia resulta clara y si los límites se entienden.</p>
+<div class="step-intro"><strong>En este paso va a producir:</strong><p>Evidencia de uso: qué consultó la persona, qué ocurrió y qué aprendió de la prueba.</p></div>
+<div class="case"><div class="case-title">Observe el ejemplo · Asistente de Convivencia</div><h3>La prueba cambia cuando cambia la persona que usa el sistema</h3>
+<p>En el ejemplo, una persona que no participó en la construcción formula una consulta sobre convivencia. El equipo observa si puede hacer la pregunta sin instrucciones especiales, si entiende la respuesta, si reconoce la fuente y si identifica cuándo debe acudir a la administración.</p><p>El equipo registra lo observado y decide si hace falta otro ajuste.</p></div>
+<div class="do-this"><h3>Ahora haga una prueba de uso</h3><p class="instruction">Antes de compartirlo, pida al mismo chat de ChatGPT en el que viene trabajando que le explique cómo compartir el Gem. Es la primera vez que realiza este paso, así que deje que lo guíe una acción a la vez. Después comparta el Gem con otra persona, dé únicamente el contexto necesario para utilizarlo y permita que formule una consulta por su cuenta.</p><div class="exchange"><b>Si el ejercicio se realiza en grupo:</b> organice esta prueba como un intercambio. Cada participante o equipo comparte su Gem con otro, prueba el asistente que recibe sin explicaciones previas y le entrega sus observaciones. De esta forma todos obtienen su evidencia de uso en el mismo momento y conocen otro proyecto.</div><div class="copybox"><button class="secondary copy" onclick="copyText('sharingPrompt')">Copiar prompt para compartir</button><textarea id="sharingPrompt" readonly></textarea></div><div class="status" id="sharingCopyStatus"></div><label>¿Qué consulta hizo?</label><textarea data-key="shareQuestion" placeholder="Escriba la pregunta exacta..."></textarea><label>¿Qué ocurrió?</label><textarea data-key="shareTest" placeholder="Qué respondió el asistente, qué entendió la persona y qué dificultad apareció..."></textarea><label>¿Qué aprendió y qué ajustaría?</label><textarea data-key="shareFinding" placeholder="Registre el hallazgo principal y la decisión de ajuste, si corresponde..."></textarea></div>
+<div class="check"><div class="checkline"><input data-check="8" type="checkbox"><span>Otra persona utilizó el asistente y tengo evidencia sobre lo que entendió y sobre los límites que reconoció.</span></div></div>
+</section>
+
+<section class="screen" data-title="Presentación y documentación">
+<div class="kicker">Paso 10 · Presentación y documentación</div><h2>Ahora expliquemos qué construimos y qué aprendimos.</h2>
+<p class="lead">La presentación final cuenta la secuencia de decisiones y muestra la evidencia que produjo el trabajo.</p>
+<div class="step-intro"><strong>En este paso va a producir:</strong><p>La ficha de documentación del proyecto en PDF, una infografía para presentarlo y la presentación del proyecto ante el grupo.</p></div>
+<div class="case"><div class="case-title">Observe el ejemplo · Asistente de Convivencia</div><h3>La historia se cuenta desde la necesidad hasta la evidencia</h3>
+<p>Primero se explica qué necesidad tenía la comunidad y quién utilizaría el asistente. Después se muestran las fuentes y las reglas de comportamiento. Luego se presenta la primera versión, las pruebas, los hallazgos y la mejora realizada.</p><p>El cierre indica qué puede hacer la versión actual, cuáles son sus límites y qué tendría que comprobarse antes de llevar una solución similar a un contexto real.</p></div>
+<div class="do-this"><h3>Su presentación se arma con lo que ya hizo</h3><p class="instruction">Este paso se desarrolla en tres momentos: primero registre el aprendizaje que quiere destacar, luego genere la ficha y la infografía con el prompt de cierre y, finalmente, presente el proyecto.</p><p class="instruction">Revise el resumen. Después escriba una sola idea que quiera destacar como aprendizaje.</p><div class="summary" id="presentationSummary"></div><label>¿Qué aprendizaje quiere destacar?</label><textarea data-key="presHighlight" placeholder="Escriba una idea concreta sobre lo que aprendió al diseñar, construir o probar el asistente..."></textarea></div>
+<div class="final"><h3>Ficha de documentación e infografía</h3><p>El prompt siguiente reúne las decisiones y evidencias registradas durante el ejercicio. Cópielo en el mismo chat de ChatGPT en el que ha trabajado. La IA entregará primero la ficha de documentación en PDF y, después de su revisión, la infografía para presentar el proyecto.</p><div class="summary" id="summary"></div><div class="finalPromptWrap"><div class="copybox"><textarea id="finalPrompt" readonly></textarea><button class="secondary copy" onclick="copyText('finalPrompt')">Copiar prompt de ficha e infografía</button></div><div class="status" id="finalCopyStatus"></div></div><p class="small-note">La IA debe utilizar únicamente la información disponible. Cuando falte un dato debe marcarlo como pendiente, sin inventarlo. Revise el texto de la infografía antes de aprobarla.</p></div>
+<div class="do-this"><h3>Guion de la presentación</h3><p class="instruction">Presente el proyecto con la infografía como apoyo visual. Responda estas preguntas en este orden:</p>
+<ol><li>¿Qué necesidad atiende el asistente y para quién?</li><li>¿Qué fuentes utiliza?</li><li>¿Cómo responde y cuáles son sus límites?</li><li>¿Qué mostraron las pruebas?</li><li>¿Qué ajustes hizo a partir de la evidencia?</li><li>¿Qué aprendió?</li></ol>
+<p class="field-help">La infografía sigue este mismo orden, de modo que cada sección acompaña una respuesta.</p></div>
+<div class="check"><div class="checkline"><input data-check="9" type="checkbox"><span>Registré el aprendizaje principal, generé la ficha de documentación y la infografía, y presenté el proyecto.</span></div></div>
+</section>
+<div class="callout"><strong>Cómo avanzar:</strong><p>En cada pantalla primero observe el ejemplo, luego tome la decisión para su proyecto, escriba el resultado y revise el criterio de cierre. La página guarda sus respuestas automáticamente.</p></div>
+<div class="actions"><button class="secondary" id="back" onclick="go(-1)">← Anterior</button><button class="primary" id="next" onclick="go(1)">Continuar →</button></div>
+</main></div>
+<script>
+const screens=[...document.querySelectorAll('.screen')], titles=screens.map(x=>x.dataset.title);let current=0;let data={};
+try{data=JSON.parse(localStorage.getItem('gemWorkshop_v25')||'{}')||{};}catch(e){data={};}
+function save(){localStorage.setItem('gemWorkshop_v25',JSON.stringify(data));document.getElementById('saveText').textContent='Guardado';setTimeout(()=>document.getElementById('saveText').textContent='Guardado automáticamente',900)}
+document.querySelectorAll('[data-key]').forEach(el=>{if(data[el.dataset.key]!==undefined)el.value=data[el.dataset.key];el.addEventListener('input',()=>{data[el.dataset.key]=el.value;save();refresh()})});
+document.querySelectorAll('[data-check]').forEach(el=>{el.checked=!!data['check'+el.dataset.check];el.addEventListener('change',()=>{data['check'+el.dataset.check]=el.checked;save();refresh()})});
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function updatePlanned(){[1,2].forEach(n=>{const el=document.getElementById('planned'+n+'Show');if(!el)return;const q=data['plannedTest'+n];el.textContent=q||'Todavía no registrada. Puede volver al paso 4 para planearla.';const b=el.parentElement.querySelector('.use-planned');if(b)b.style.display=q?'inline-flex':'none'})}
+function usePlanned(n){const q=data['plannedTest'+n];if(!q)return;const el=document.querySelector('[data-key=test'+n+'Question]');if(!el)return;if(el.value.trim()&&el.value.trim()!==q.trim()&&!confirm('El campo ya tiene una pregunta escrita. ¿Desea reemplazarla por la pregunta planeada?'))return;el.value=q;data['test'+n+'Question']=q;save();refresh()}
+function updatePhases(){const starts=[...document.querySelectorAll('.phase')].map(b=>+b.dataset.phase);document.querySelectorAll('.phase').forEach((b,i)=>{const end=i+1<starts.length?starts[i+1]:screens.length;const on=current>=starts[i]&&current<end;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current')})}
+document.querySelectorAll('.phase').forEach(b=>b.addEventListener('click',()=>show(+b.dataset.phase)));
+function refresh(){updatePlanned();updatePhases();document.getElementById('fill').style.width=((current+1)/screens.length*100)+'%';document.getElementById('progressText').textContent=`Paso ${current+1} de ${screens.length} · ${titles[current]}`;document.querySelectorAll('.side-step').forEach((x,i)=>{x.className='side-step '+(i===current?'active ':'')+(data['check'+i]?'done':'')});const vp=document.getElementById('validationPrompt');if(vp)vp.value=buildValidationPrompt();const ai=document.getElementById('approvedInstructions');if(ai)ai.value=data.finalInstructions||'Las instrucciones finales aparecerán aquí después de la revisión.';const cp=document.getElementById('constructionPrompt');if(cp)cp.value=buildConstructionPrompt();const ip=document.getElementById('iterationPrompt');if(ip)ip.value=buildIterationPrompt();const sp=document.getElementById('sharingPrompt');if(sp)sp.value=buildSharingPrompt();const fp=document.getElementById('finalPrompt');if(fp)fp.value=buildFinalVerificationPrompt();const cs=document.getElementById('constructionSources');if(cs)cs.textContent=data.sources||'Todavía no registradas.';const sum=document.getElementById('summary');if(sum)sum.innerHTML=`<div><b>Necesidad</b>${esc(data.need||'Pendiente')}</div><div><b>Usuario</b>${esc(data.user||'Pendiente')}</div><div><b>Fuentes</b>${esc(data.sources||'Pendiente')}</div><div><b>Comportamiento</b>${esc(data.behavior||'Pendiente')}</div><div><b>Prueba 1</b>${esc(data.test1Finding||'Pendiente')}</div><div><b>Prueba 2</b>${esc(data.test2Finding||'Pendiente')}</div><div><b>Mejora</b>${esc(data.change||'Pendiente')}</div><div><b>Prueba de uso</b>${esc(data.shareFinding||'Pendiente')}</div>`;const ps=document.getElementById('presentationSummary');if(ps)ps.innerHTML=`<div><b>Necesidad</b>${esc(data.need||'Pendiente')}</div><div><b>Usuario</b>${esc(data.user||'Pendiente')}</div><div><b>Fuentes</b>${esc(data.sources||'Pendiente')}</div><div><b>Comportamiento</b>${esc(data.behavior||'Pendiente')}</div><div><b>Asistente</b>${esc(data.gemName||'Pendiente')}</div><div><b>Pruebas</b>${esc([data.test1Finding,data.test2Finding].filter(Boolean).join(' ')||'Pendiente')}</div><div><b>Iteración</b>${esc(data.retestConclusion||'Pendiente')}</div><div><b>Uso real</b>${esc(data.shareFinding||'Pendiente')}</div>`}
+function buildValidationPrompt(){return `Actúa como tutor de diseño para ayudarme a preparar un GEM DE GEMINI. Es la primera vez que voy a utilizar un Gem, así que guíame paso a paso, una decisión a la vez.
+
+REGLA IMPORTANTE SOBRE LA INFORMACIÓN QUE RECIBES
+Toda la información que aparece más abajo YA FUE DILIGENCIADA por mí en este ejercicio. Léela y úsala como contexto de trabajo. NO vuelvas a preguntarme por datos que ya están respondidos. No preguntes nuevamente cuál es el nombre, la necesidad, el usuario, la tarea, las fuentes o los límites si esa información ya está disponible. Pregunta únicamente cuando exista una información realmente faltante, una contradicción o una decisión que todavía no haya sido tomada.
+
+ALCANCE DEL GEM
+Este Gem será únicamente de CONSULTA. Su función será orientar y responder preguntas utilizando la base de conocimiento autorizada. No ejecutará acciones, no modificará registros, no tramitará solicitudes, no aprobará ni rechazará nada y no tomará decisiones en nombre de una persona o de la entidad. Si alguna idea del proyecto se sale de este alcance, señálalo y ayúdame a decidir cómo reformularla.
+
+EN ESTA REVISIÓN SOLO TRABAJAREMOS CON LO QUE NECESITA EL GEM:
+1. NOMBRE
+2. DESCRIPCIÓN
+3. INSTRUCCIONES
+4. BASE DE CONOCIMIENTO
+
+Tu trabajo es revisar esas cuatro piezas usando la información ya diligenciada. Primero identifica qué está suficientemente definido. Después señala solamente las decisiones que todavía requieren trabajo. Haz una sola pregunta o plantea una sola decisión a la vez y espera mi respuesta. No inventes contenido ni completes por tu cuenta una decisión que me corresponde.
+
+DATOS DEL PROYECTO QUE YA TENGO
+NOMBRE DEL PROYECTO:
+${data.gemName||'(pendiente)'}
+
+NECESIDAD:
+${data.need||'(pendiente)'}
+
+RESULTADO ESPERADO:
+${data.result||'(pendiente)'}
+
+USUARIO:
+${data.user||'(pendiente)'}
+
+TAREA:
+${data.userTask||'(pendiente)'}
+
+FUENTES DISPONIBLES PARA LA BASE DE CONOCIMIENTO:
+${data.sources||'(pendiente)'}
+
+ASPECTOS QUE DEBO VERIFICAR EN LAS FUENTES:
+${data.gaps||'(pendiente)'}
+
+COMPORTAMIENTO DEFINIDO:
+${data.behavior||'(pendiente)'}
+
+MANEJO DE INFORMACIÓN AUSENTE:
+${data.missing||'(pendiente)'}
+
+LÍMITES YA DEFINIDOS:
+${data.outscope||'(pendiente)'}
+
+PRUEBAS PLANEADAS:
+Prueba 1 (respuesta presente en las fuentes): ${data.plannedTest1||'(pendiente)'}
+Prueba 2 (límite del asistente): ${data.plannedTest2||'(pendiente)'}
+
+FORMA DE TRABAJO
+Revisa primero la información disponible. Si el nombre ya es claro, pasa a la descripción. Si la descripción ya está suficientemente definida a partir de la necesidad y el resultado esperado, continúa con las instrucciones. Usa el comportamiento, el manejo de información ausente y los límites ya definidos para revisar las instrucciones. Usa las fuentes y los aspectos de verificación ya definidos para revisar la base de conocimiento. Usa las pruebas planeadas para comprobar que las reglas principales puedan verificarse con una pregunta.
+
+No repitas preguntas ya contestadas. No me pidas que vuelva a describir el proyecto desde cero. Cuando detectes una decisión pendiente, explica brevemente qué debo decidir, formula una sola pregunta y espera. Cuando las cuatro piezas estén revisadas y aprobadas, entrega en un solo bloque, listo para copiar, el nombre del Gem, la descripción, el texto completo de las instrucciones y la lista de archivos que formarán la base de conocimiento. Después pregúntame si quiero dejarlo listo para crear el Gem. No avances a una nueva decisión sin mi respuesta.`}
+function buildConstructionPrompt(){return `Actúa como guía para ayudarme a CREAR UN GEM EN GEMINI. Es la primera vez que uso un Gem. Quiero que me acompañes paso a paso dentro de Gemini, una acción a la vez.
+
+REGLA IMPORTANTE
+Toda la información que aparece más abajo YA FUE DEFINIDA durante el ejercicio. Léela y úsala. No vuelvas a preguntarme por el propósito, usuario, tarea, fuentes, comportamiento o límites que ya están escritos. Tu trabajo aquí es enseñarme a llevar esas decisiones a Gemini. Pregunta únicamente cuando falte una decisión necesaria para configurar el Gem o cuando Gemini me presente una opción que requiera que yo decida.
+
+EL GEM QUE VOY A CREAR
+Es un GEM DE GEMINI únicamente de CONSULTA. Servirá para responder preguntas y orientar utilizando una base de conocimiento autorizada. No ejecutará acciones, no modificará registros, no tramitará solicitudes, no aprobará ni rechazará nada y no tomará decisiones en nombre de la entidad.
+
+EN GEMINI SOLO NECESITO CONFIGURAR ESTOS CUATRO ELEMENTOS:
+1. Nombre
+2. Descripción
+3. Instrucciones
+4. Base de conocimiento
+
+Si la interfaz presenta otras opciones, ayúdame a identificar cuáles son necesarias para estos cuatro elementos y cuáles puedo dejar para después. No me hagas rediseñar el proyecto.
+
+DATOS YA DEFINIDOS
+Nombre del proyecto: ${data.gemName||'(pendiente)'}
+Necesidad: ${data.need||'(pendiente)'}
+Resultado esperado: ${data.result||'(pendiente)'}
+Usuario: ${data.user||'(pendiente)'}
+Tarea: ${data.userTask||'(pendiente)'}
+Fuentes / base de conocimiento: ${data.sources||'(pendiente)'}
+Aspectos a verificar: ${data.gaps||'(pendiente)'}
+Comportamiento: ${data.behavior||'(pendiente)'}
+Información ausente: ${data.missing||'(pendiente)'}
+Límites: ${data.outscope||'(pendiente)'}
+Instrucciones aprobadas: ${data.finalInstructions||'(pendiente)'}
+
+FORMA DE TRABAJO
+Empieza comprobando si ya tengo abierto Gemini. Si sí, indícame solamente la siguiente acción concreta. Si no, indícame cómo llegar a la creación de un Gem. Después avanza una acción a la vez. Para cada acción dime dónde hacerla, qué debo escribir o seleccionar usando la información ya definida y qué debo comprobar antes de continuar. Cuando lleguemos al campo de instrucciones, indícame que pegue textualmente las instrucciones aprobadas; si detectas un problema en ellas, señálalo y pregúntame antes de modificarlas. Espera mi confirmación después de cada acción. Si la interfaz que veo no coincide con tus indicaciones, pídeme una captura de pantalla y trabaja sobre lo que aparezca. Cuando terminemos la configuración, indícame cómo guardar el Gem y cómo abrirlo para conversar con él, porque en el siguiente paso voy a probarlo. No me entregues todo el procedimiento de una sola vez.`}
+function buildIterationPrompt(){return `Sigamos trabajando en este mismo chat, donde me ayudaste a crear mi Gem de Gemini. Ya hice pruebas y quiero iterarlo.
+
+REGLA IMPORTANTE SOBRE LA INFORMACIÓN QUE RECIBES
+Toda la información que aparece más abajo YA FUE DILIGENCIADA y corresponde al trabajo realizado en este ejercicio. Léela completa antes de hacerme cualquier pregunta. NO vuelvas a preguntarme qué proyecto hice, quién es el usuario, cuál es la necesidad, cuáles son las fuentes, qué probé o qué ocurrió en las pruebas. Esa información ya está aquí.
+
+Es la primera vez que hago este tipo de trabajo, así que guíame paso a paso. No me entregues de una vez una nueva versión completa del Gem. Primero analiza la evidencia que te entrego, identifica conmigo qué merece revisión y haz una sola pregunta o plantea una sola decisión a la vez.
+
+RECUERDA EL ALCANCE DEL GEM
+Es un Gem de Gemini únicamente de consulta. Responde y orienta utilizando una base de conocimiento autorizada. No ejecuta acciones, no modifica registros, no tramita solicitudes, no aprueba ni rechaza nada y no toma decisiones en nombre de la entidad.
+
+SOLO PODEMOS ITERAR SOBRE ESTOS CUATRO ELEMENTOS DEL GEM:
+1. Nombre
+2. Descripción
+3. Instrucciones
+4. Base de conocimiento
+
+MI PROYECTO YA DEFINIDO
+Nombre: ${data.gemName||'(pendiente)'}
+Necesidad: ${data.need||'(pendiente)'}
+Resultado esperado: ${data.result||'(pendiente)'}
+Usuario: ${data.user||'(pendiente)'}
+Tarea: ${data.userTask||'(pendiente)'}
+Fuentes: ${data.sources||'(pendiente)'}
+Aspectos a verificar: ${data.gaps||'(pendiente)'}
+Comportamiento: ${data.behavior||'(pendiente)'}
+Información ausente: ${data.missing||'(pendiente)'}
+Límites: ${data.outscope||'(pendiente)'}
+Instrucciones actuales: ${data.finalInstructions||'(pendiente)'}
+
+RESULTADOS DE LAS PRUEBAS YA REALIZADAS
+Prueba 1: ${data.test1Question||'(pendiente)'}
+Esperado: ${data.test1Expected||'(pendiente)'}
+Observado: ${data.test1Observed||'(pendiente)'}
+Hallazgo: ${data.test1Finding||'(pendiente)'}
+
+Prueba 2: ${data.test2Question||'(pendiente)'}
+Esperado: ${data.test2Expected||'(pendiente)'}
+Observado: ${data.test2Observed||'(pendiente)'}
+Hallazgo: ${data.test2Finding||'(pendiente)'}
+
+FORMA DE TRABAJO
+Empieza leyendo y sintetizando los hallazgos que ya están registrados. Señala qué comportamiento observado merece atención y por qué, sin inventar causas. Después ayúdame a identificar cuál de los cuatro elementos del Gem podría requerir ajuste. Pregunta solo lo necesario para tomar esa decisión. Cuando decidamos qué cambiar, ayúdame a formular el cambio concreto e indícame dónde aplicarlo en el Gem y cómo guardarlo. Solo después propón cómo comprobarlo con una nueva prueba. Espera a que yo haga la prueba y te cuente el resultado. Finalmente ayúdame a interpretar ese nuevo resultado y decidir si conservar el cambio, ajustarlo nuevamente o dejar el diseño como estaba. Una decisión a la vez. No repitas preguntas que ya están respondidas en este contexto.`}
+function buildSharingPrompt(){return `Necesito compartir con otra persona el GEM DE GEMINI que acabo de construir. Es la primera vez que comparto un Gem, así que quiero que me guíes paso a paso.
+
+Primero explícame qué debo revisar antes de compartirlo. Después indícame exactamente dónde debo entrar en Gemini y qué opción debo utilizar para compartir este Gem. Trabaja UNA ACCIÓN A LA VEZ: dame un paso, espera a que confirme que lo hice y solo entonces continúa con el siguiente.
+
+Si existen varias formas de compartirlo, explícame brevemente cuál corresponde para una prueba de uso con otra persona y qué nivel de acceso necesita esa persona para poder utilizarlo. Indícame también qué debe hacer la persona que recibe el acceso para abrirlo y utilizarlo.
+
+No inventes nombres de botones ni opciones. Si la interfaz que estoy viendo puede variar según mi cuenta o versión de Gemini, dime qué debo buscar y pídeme una captura de pantalla si necesitas verla para orientarme con precisión.
+
+RECUERDA EL ALCANCE DEL GEM
+Es un Gem de Gemini únicamente de CONSULTA. La persona que lo pruebe debe utilizarlo para hacer consultas. El Gem no ejecuta acciones, no modifica registros, no tramita solicitudes, no aprueba ni rechaza nada y no toma decisiones en nombre de la entidad.
+
+MI PROYECTO
+Nombre del Gem: ${data.gemName||'(pendiente)'}
+Propósito: ${data.need||'(pendiente)'}
+Usuario previsto: ${data.user||'(pendiente)'}
+
+Cuando terminemos de compartirlo, indícame qué debe hacer la persona que lo prueba y qué evidencia conviene observar durante la prueba.`}
+
+function buildFinalVerificationPrompt(){const v=k=>data[k]||'(pendiente)';return `Vamos a cerrar el proyecto del GEM DE GEMINI que construimos durante este ejercicio. Necesito dos productos y quiero que los trabajes uno a la vez:
+1. Una FICHA DE DOCUMENTACIÓN COMPLETA DEL PROYECTO en PDF.
+2. Una INFOGRAFÍA para presentar el proyecto ante el grupo.
+
+REGLA SOBRE LA INFORMACIÓN
+Utiliza únicamente los datos y evidencias registrados a continuación y los documentos que adjunte en esta conversación. No inventes resultados, pruebas, participantes, métricas, decisiones ni hechos. Si falta un dato importante, escribe "Pendiente de definir". Distingue los hechos registrados, los aspectos pendientes y las propuestas.
+
+DATOS DEL PROYECTO
+NOMBRE DEL PROYECTO/ASISTENTE:
+${v('gemName')}
+
+NECESIDAD:
+${v('need')}
+
+RESULTADO ESPERADO:
+${v('result')}
+
+USUARIO:
+${v('user')}
+
+TAREA:
+${v('userTask')}
+
+FUENTES:
+${v('sources')}
+
+ASPECTOS POR VERIFICAR:
+${v('gaps')}
+
+COMPORTAMIENTO:
+${v('behavior')}
+
+INFORMACIÓN AUSENTE:
+${v('missing')}
+
+FUERA DE ALCANCE:
+${v('outscope')}
+
+INSTRUCCIONES FINALES:
+${v('finalInstructions')}
+
+CAMBIOS DURANTE LA CONSTRUCCIÓN:
+${v('constructionNotes')}
+
+PRUEBA 1:
+Pregunta: ${v('test1Question')}
+Esperado: ${v('test1Expected')}
+Observado: ${v('test1Observed')}
+Hallazgo: ${v('test1Finding')}
+
+PRUEBA 2:
+Pregunta: ${v('test2Question')}
+Esperado: ${v('test2Expected')}
+Observado: ${v('test2Observed')}
+Hallazgo: ${v('test2Finding')}
+
+ITERACIÓN:
+Observación: ${v('observation')}
+Cambio: ${v('change')}
+Nueva prueba: ${v('retestQuestion')}
+Resultado: ${v('retestObserved')}
+Conclusión: ${v('retestConclusion')}
+
+PRUEBA CON OTRA PERSONA:
+Consulta: ${v('shareQuestion')}
+Resultado: ${v('shareTest')}
+Hallazgo y decisión: ${v('shareFinding')}
+
+APRENDIZAJE DESTACADO:
+${v('presHighlight')}
+
+PRODUCTO 1 · FICHA DE DOCUMENTACIÓN EN PDF
+Documenta el proyecto completo con esta estructura: resumen ejecutivo; identificación; necesidad y propósito; usuario y tarea; fuentes y límites; comportamiento; configuración del Gem; pruebas; iteración; prueba de uso; estado final y límites; aprendizaje; próximos pasos; evidencia y vacíos. Usa una redacción institucional, clara y breve. Entrega el archivo PDF descargable. Si no puedes generar el PDF directamente, entrega la ficha como documento con formato listo para exportar a PDF.
+Cuando entregues la ficha, pregúntame si quiero ajustar algo antes de continuar con la infografía.
+
+PRODUCTO 2 · INFOGRAFÍA PARA PRESENTAR EL PROYECTO
+Propósito: servir como apoyo visual en una presentación breve del proyecto ante el grupo.
+Formato: vertical, una sola página, textos cortos, letra legible y jerarquía visual clara.
+Contenido, en este orden:
+1. Nombre del asistente.
+2. Necesidad que atiende y usuario al que se dirige.
+3. Fuentes que utiliza.
+4. Cómo responde y cuáles son sus límites.
+5. Qué mostraron las pruebas.
+6. Qué se mejoró a partir de la evidencia.
+7. Aprendizaje destacado.
+Antes de generar la infografía, muéstrame el texto exacto de cada sección para aprobarlo. Después genérala usando solamente ese texto aprobado. Si al generarla como imagen el texto aparece con errores o resulta ilegible, entrégala como un documento PDF de una página con diseño visual y el mismo contenido.`}
+function copyText(id){const t=document.getElementById(id);if(!t)return;const value=t.value||t.textContent||'';const statusId={constructionPrompt:'constructionCopyStatus',iterationPrompt:'iterationCopyStatus',sharingPrompt:'sharingCopyStatus',finalPrompt:'finalCopyStatus'}[id]||'copyStatus';const done=()=>document.getElementById(statusId)?.replaceChildren(document.createTextNode('Copiado.'));if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(value).then(done).catch(()=>fallbackCopy(value,done))}else fallbackCopy(value,done)}
+function fallbackCopy(value,done){const ta=document.createElement('textarea');ta.value=value;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}finally{ta.remove()}}
+function show(i){current=Math.max(0,Math.min(screens.length-1,i));screens.forEach((s,j)=>s.classList.toggle('active',j===current));document.getElementById('back').style.visibility=current?'visible':'hidden';document.getElementById('next').textContent=current===screens.length-1?'Volver al inicio':'Continuar →';refresh();window.scrollTo({top:0,behavior:'smooth'})}
+function go(n){if(current===screens.length-1&&n>0)show(0);else show(current+n)}
+const list=document.getElementById('sideList');titles.forEach((t,i)=>{const d=document.createElement('div');d.className='side-step';d.textContent=`${String(i+1).padStart(2,'0')} · ${t}`;d.onclick=()=>show(i);list.appendChild(d)});show(0);
+</script></body></html>
