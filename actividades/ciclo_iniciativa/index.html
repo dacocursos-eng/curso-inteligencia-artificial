@@ -1,1 +1,909 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guía del ciclo de vida de iniciativas de IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+body { margin: 0; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+/* Layout: un libro en HTML. Una sola página de papel centrada sobre el fondo azul marino; un capítulo visible a la vez; texto corrido en una columna de lectura; índice al comienzo y paso de capítulo al final. Estilo único con la paleta de la guía de Retos. */
+:root {
+  --navy: #00205b;
+  --navy-deep: #05445e;
+  --ice: #ebfdff;
+  --paper: #fcfeff;
+  --ink: #18223d;
+  --ink-soft: #55627f;
+  --rule: #d6e3ea;
+  --tint: #eef8fa;
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { animation: none !important; transition: none !important; } }
+body { background: linear-gradient(165deg, var(--navy) 0%, var(--navy-deep) 100%) fixed, var(--navy); color: var(--ink); font-family: var(--font-display); }
+.desk { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 48px 64px; }
+.page { max-width: 820px; margin: 0 auto; background: var(--paper); border-radius: 6px; box-shadow: 0 40px 90px -40px rgba(0,0,0,0.9); padding: 56px clamp(24px, 7vw, 96px) 64px; overflow: hidden; }
+@media (max-width: 600px) { .desk { padding-block: 16px 32px; } .page { padding-top: 32px; padding-bottom: 40px; } }
 
+.runhead { display: flex; justify-content: space-between; gap: 16px; font-family: var(--font-sans); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); padding-bottom: 16px; border-bottom: 1px solid var(--rule); margin-bottom: 48px; }
+.runhead a { color: var(--navy-deep); text-decoration: none; white-space: nowrap; }
+.runhead a:hover { text-decoration: underline; }
+.chapter { display: none; animation: turn .35s ease; }
+.chapter.on { display: block; }
+@keyframes turn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.kicker { font-family: var(--font-sans); font-size: 0.74rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--navy-deep); }
+h1 { font-weight: 500; font-size: clamp(2.2rem, 5vw, 3.2rem); line-height: 1.08; color: var(--navy); margin: 14px 0 0; text-wrap: balance; }
+.epigraph { margin: 28px 0 0; font-style: italic; font-size: 1.32rem; line-height: 1.5; color: var(--navy-deep); max-width: 34em; }
+.prose { margin-top: 44px; max-width: 36em; }
+.prose p { font-size: 1.16rem; line-height: 1.75; margin: 0 0 1.15em; hyphens: auto; }
+.prose p.first::first-letter { float: left; font-size: 3.4em; line-height: 0.82; padding: 0.08em 0.1em 0 0; color: var(--navy); font-weight: 500; }
+.prose h2 { font-weight: 500; font-size: 1.62rem; line-height: 1.25; color: var(--navy); margin: 2.4em 0 0.7em; text-wrap: balance; }
+.prose h3 { font-family: var(--font-sans); font-size: 0.76rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--navy-deep); margin: 2.6em 0 0.9em; }
+.prose em { color: var(--navy-deep); }
+.prose strong { font-weight: 600; color: var(--navy); }
+.aside { margin: 2em 0; padding: 22px 26px; background: var(--tint); border-radius: 4px; }
+.aside p { font-size: 1.06rem; margin-bottom: 0.8em; }
+.aside p:last-child { margin-bottom: 0; }
+.aside .kicker { display: block; margin-bottom: 10px; }
+.pull { margin: 2em 0 !important; padding-left: 22px; border-left: 2px solid var(--navy-deep); font-style: italic; font-size: 1.22rem !important; line-height: 1.6; color: var(--navy); }
+.prose .items { margin: 0.2em 0 1.4em; padding-left: 1.4em; }
+.prose ul.items { list-style: "–  "; }
+.prose .items li { font-size: 1.12rem; line-height: 1.65; margin-bottom: 0.6em; padding-left: 0.15em; }
+.prose .items li::marker { color: var(--navy-deep); font-weight: 600; }
+.prose .items li strong { color: var(--navy); }
+.gateq { text-align: center; font-style: italic; font-size: 1.42rem !important; line-height: 1.45 !important; color: var(--navy); margin: 1.4em auto 1.5em !important; padding: 1em 0.5em; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); text-wrap: balance; }
+.diagq { list-style: none; padding-left: 0 !important; }
+.diagq li { display: grid; grid-template-columns: 5.2em 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); margin: 0 !important; font-style: italic; color: var(--navy); }
+.diagq .diagst { font-family: var(--font-sans); font-style: normal; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); padding-top: 6px; }
+.questions p { font-style: italic; color: var(--navy); margin-bottom: 0.7em; }
+
+.figure { margin: 2.2em 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.figure a { padding: 16px 8px 18px; text-decoration: none; color: var(--ink); border-left: 1px solid var(--rule); min-width: 0; }
+.figure a:first-child { border-left: none; padding-left: 0; }
+.figure b { display: block; font-weight: 500; font-size: 1.5rem; color: var(--navy-deep); line-height: 1; }
+.figure span { display: block; margin-top: 8px; font-family: var(--font-sans); font-size: 0.74rem; line-height: 1.35; color: var(--ink-soft); }
+.figure a:hover span { color: var(--navy); }
+@media (max-width: 640px) { .figure { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 8px; } .figure a:nth-child(5) { border-left: none; padding-left: 0; } }
+.figcap { font-family: var(--font-sans); font-size: 0.78rem; color: var(--ink-soft); margin: -1.4em 0 0; }
+
+.tablewrap { overflow-x: auto; margin: 2em 0; }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-family: var(--font-sans); font-size: 0.86rem; }
+th, td { text-align: left; vertical-align: top; padding: 11px 12px 11px 0; border-bottom: 1px solid var(--rule); }
+th { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy-deep); }
+td { color: var(--ink); line-height: 1.5; }
+td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(--navy); white-space: nowrap; padding-right: 18px; }
+
+.cover { background: var(--navy); color: var(--ice); margin: -56px clamp(-96px, -7vw, -24px) 0; padding: 72px clamp(24px, 7vw, 96px) 64px; }
+@media (max-width: 600px) { .cover { margin-top: -32px; padding-top: 48px; } }
+.cover .kicker { color: #9fb3d9; }
+.cover h1 { color: #fff; font-size: clamp(2.4rem, 6vw, 3.8rem); }
+.cover h1 em { color: var(--ice); }
+.cover .epigraph { color: #cfe1f3; }
+.toc { margin-top: 40px; max-width: 36em; }
+.toc a { display: grid; grid-template-columns: 6em 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); text-decoration: none; color: var(--ink); }
+.toc a:hover .t { color: var(--navy-deep); text-decoration: underline; }
+.toc .n { font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-soft); padding-top: 5px; }
+.toc .t { font-size: 1.16rem; line-height: 1.4; }
+
+.turn { margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--rule); display: flex; justify-content: space-between; gap: 16px; font-family: var(--font-sans); font-size: 0.85rem; }
+.turn a { color: var(--navy-deep); text-decoration: none; max-width: 48%; }
+.turn a:hover { text-decoration: underline; }
+.turn a.next { text-align: right; margin-left: auto; font-weight: 600; }
+.turn small { display: block; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; margin-bottom: 3px; }
+
+.gloss dt { font-weight: 600; font-size: 1.1rem; color: var(--navy); margin-top: 1.3em; }
+.gloss dd { margin: 0.25em 0 0; font-size: 1.08rem; line-height: 1.65; }
+.refs p { font-size: 1rem !important; line-height: 1.6; padding-left: 1.5em; text-indent: -1.5em; }
+:focus-visible { outline: 2px solid var(--navy-deep); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="desk">
+<div class="page">
+
+<header class="runhead" id="runhead" hidden><span>Ciclo de vida de una iniciativa de IA</span><a href="#inicio">Índice</a></header>
+
+<article class="chapter" id="inicio">
+  <div class="cover">
+    <span class="kicker">Guía de estudio</span>
+    <h1>El ciclo de vida de una <em>iniciativa de inteligencia artificial</em></h1>
+    <p class="epigraph">Qué se decide en cada etapa, qué conviene pensar y qué evidencia permite avanzar, ajustar, regresar o cerrar.</p>
+  </div>
+  <div class="prose">
+    <p class="first">Esta guía acompaña la sesión sobre el ciclo de vida de las iniciativas de inteligencia artificial en entidades públicas. Puede leerse de principio a fin, como un texto continuo, o consultarse por capítulos cuando se necesite volver sobre una etapa.</p>
+    <h2>Cómo usar esta guía</h2>
+    <p>Se recomienda leer primero la introducción, las bases y la presentación del caso, y después las siete etapas en orden, porque cada una se apoya en la anterior. Cada capítulo indica al comienzo su tiempo aproximado de lectura.</p>
+    <p>Todas las etapas siguen la misma secuencia:</p>
+    <ul class="items">
+      <li>De qué se trata la etapa y cómo se desarrolla.</li>
+      <li>Lo que conviene cuidar.</li>
+      <li>Un caso real para pensar.</li>
+      <li>Lo que ocurre en la iniciativa que acompaña toda la guía.</li>
+      <li>La decisión con la que se cierra la etapa.</li>
+      <li>Una síntesis y dos preguntas para aplicar lo aprendido.</li>
+    </ul>
+    <p>Las preguntas del final pueden responderse por escrito, de forma individual, o conversarse en grupo. Resulta útil elegir desde el comienzo una iniciativa de IA de su propia entidad, real o en estudio, y aplicarle las preguntas de cada etapa a medida que avanza la lectura. Los términos técnicos se explican la primera vez que aparecen y se reúnen en el vocabulario, al final de la guía.</p>
+  </div>
+  <nav class="toc" aria-label="Índice">
+    <a href="#introduccion"><span class="n">Introducción</span><span class="t">Una iniciativa que cambia de naturaleza</span></a>
+    <a href="#bases"><span class="n">Bases</span><span class="t">Cinco ideas para recorrer el ciclo</span></a>
+    <a href="#caso"><span class="n">El caso</span><span class="t">La iniciativa que nos acompaña</span></a>
+    <a href="#etapa1"><span class="n">Etapa 1</span><span class="t">Enmarcar el problema y el valor esperado</span></a>
+    <a href="#etapa2"><span class="n">Etapa 2</span><span class="t">Diseñar y preparar la viabilidad</span></a>
+    <a href="#etapa3"><span class="n">Etapa 3</span><span class="t">Prototipar para aprender</span></a>
+    <a href="#etapa4"><span class="n">Etapa 4</span><span class="t">Pilotear y evaluar en condiciones representativas</span></a>
+    <a href="#etapa5"><span class="n">Etapa 5</span><span class="t">Institucionalizar y desplegar</span></a>
+    <a href="#etapa6"><span class="n">Etapa 6</span><span class="t">Escalar y revalidar</span></a>
+    <a href="#etapa7"><span class="n">Etapa 7</span><span class="t">Sostener, corregir y retirar</span></a>
+    <a href="#conjunto"><span class="n">Cierre</span><span class="t">Una mirada de conjunto</span></a>
+    <a href="#vocabulario"><span class="n">Anexo</span><span class="t">Vocabulario</span></a>
+    <a href="#referencias"><span class="n">Anexo</span><span class="t">Referencias</span></a>
+  </nav>
+</article>
+
+<article class="chapter" id="introduccion">
+  <span class="kicker">Introducción</span>
+  <h1>Una iniciativa que cambia de naturaleza</h1>
+  <div class="prose">
+    <p class="first">Toda iniciativa de inteligencia artificial empieza como una hipótesis sobre un problema. Con el tiempo incorpora datos, usuarios, pruebas, responsabilidades y decisiones de operación. A medida que avanza crecen al mismo tiempo dos cosas: la evidencia disponible y la exposición de la institución, es decir, lo que pone en juego: datos reales, usuarios, recursos y consecuencias para las personas. El ciclo de vida organiza ese recorrido en siete etapas para que cada decisión se apoye en la evidencia que existe en ese momento.</p>
+    <p>El ciclo cumple una función práctica: exige evidencia en cada paso que separa una idea de una compra, y da a cada piloto un momento claro de decisión. También permite conservar memoria de por qué la entidad avanzó, cambió de rumbo o se detuvo.</p>
+    <h2>Pregunta, producto y puerta</h2>
+    <p>Cada etapa se construye con tres elementos. Una <strong>pregunta principal</strong>, que expresa lo que la entidad necesita comprobar antes de comprometer más recursos. Un <strong>producto esperado</strong>, que reúne los resultados documentados con los que se responde esa pregunta. Y una <strong>puerta de decisión</strong>, el momento formal en que esa evidencia se convierte en una decisión institucional.</p>
+    <p>En cada puerta caben cuatro decisiones. Avanzar, cuando la evidencia es favorable y la siguiente etapa tiene condiciones para iniciar. Ajustar, cuando el valor sigue siendo prometedor y el diseño requiere cambios. Regresar, cuando falta una condición que corresponde a una etapa anterior. Y cerrar, cuando la evidencia ya no justifica continuar. Las cuatro son resultados legítimos de gestión: todas protegen recursos y dejan aprendizaje registrado.</p>
+    <h2>Las siete etapas</h2>
+    <p>Las siete etapas pueden leerse en tres momentos. Las tres primeras se ocupan del problema y de la solución en condiciones controladas. La cuarta observa la solución en condiciones parecidas a la operación real. Las tres últimas se ocupan de la capacidad de la entidad para operar la solución, ampliarla y gestionarla a lo largo del tiempo, hasta su eventual retiro.</p>
+  </div>
+  <div class="figure" aria-label="Las siete etapas del ciclo">
+    <a href="#etapa1"><b>1</b><span>Enmarcar</span></a>
+    <a href="#etapa2"><b>2</b><span>Preparar viabilidad</span></a>
+    <a href="#etapa3"><b>3</b><span>Prototipar</span></a>
+    <a href="#etapa4"><b>4</b><span>Pilotear y evaluar</span></a>
+    <a href="#etapa5"><b>5</b><span>Institucionalizar</span></a>
+    <a href="#etapa6"><b>6</b><span>Escalar y revalidar</span></a>
+    <a href="#etapa7"><b>7</b><span>Sostener, corregir, retirar</span></a>
+  </div>
+  <p class="figcap">El recorrido admite regresos: cualquier puerta puede devolver la iniciativa a una etapa anterior.</p>
+  <div class="prose">
+    <h2>Dos aprendizajes en paralelo</h2>
+    <p>El ciclo produce conocimiento sobre la solución y también sobre la institución. Un piloto revela si la herramienta funciona y, al mismo tiempo, si los datos llegan a tiempo, si el área de seguridad puede responder a un incidente o si el proveedor entrega los registros que se le piden.</p>
+    <p>Un buen recorrido deja además activos que sirven a otras iniciativas: un conjunto de pruebas, una clasificación de información, una cláusula contractual o una práctica de revisión humana. Cada caso fortalece así la capacidad de la entidad para el siguiente.</p>
+  </div>
+</article>
+
+<article class="chapter" id="bases">
+  <span class="kicker">Bases</span>
+  <h1>Cinco ideas para recorrer el ciclo</h1>
+  <p class="epigraph">Antes de entrar en las etapas conviene tener presentes algunas ideas que reaparecen en todas ellas.</p>
+  <div class="prose">
+    <h2>El papel de la IA dentro del proceso</h2>
+    <p class="first">Para gobernar una solución hace falta describir qué autoridad ejerce dentro del proceso, además de qué tecnología usa. Una forma útil de hacerlo es pensar en cuatro papeles, de menor a mayor autoridad.</p>
+    <ul class="items">
+      <li><strong>Informar.</strong> La IA localiza, resume o estructura información y la valoración permanece en una persona. El control central está en las fuentes, su vigencia y su procedencia.</li>
+      <li><strong>Asistir.</strong> Prepara un borrador o una propuesta que la persona revisa y puede modificar. La calidad de esa revisión se vuelve parte del diseño.</li>
+      <li><strong>Recomendar.</strong> Orienta directamente una decisión, por ejemplo qué expediente revisar primero. Exige distinguir una señal, que indica qué merece atención, de una conclusión sobre el caso, que corresponde a una persona con competencia para decidir.</li>
+      <li><strong>Ejecutar.</strong> Activa acciones sin validación humana caso por caso. Puede ser razonable en tareas reversibles y de baja consecuencia, y exige permisos mínimos, registros y capacidad de suspensión.</li>
+    </ul>
+    <p>Una misma tecnología puede ocupar papeles distintos. Un puntaje de riesgo puede servir para priorizar una inspección, y usarlo como fundamento automático de una sanción es institucionalmente muy distinto. Por eso el papel de la IA se propone al comienzo del ciclo, se prueba en las etapas intermedias y se revalida cada vez que se quiere aumentar.</p>
+    <h2>Las capacidades de la institución</h2>
+    <p>Una solución de IA necesita mucho más que un modelo. Se apoya en siete capacidades de la institución:</p>
+    <ul class="items">
+      <li><strong>Gobernanza y responsabilidad:</strong> quién decide, quién responde y quién puede detener.</li>
+      <li><strong>Legalidad, derechos y transparencia:</strong> si la entidad tiene autoridad para el uso propuesto y qué garantías corresponden.</li>
+      <li><strong>Datos y seguridad:</strong> información ordenada, protegida y trazable.</li>
+      <li><strong>Tecnología e infraestructura:</strong> la base para probar, operar y recuperarse de fallas.</li>
+      <li><strong>Personas y cambio:</strong> usuarios formados y con tiempo para revisar.</li>
+      <li><strong>Contratación y proveedores:</strong> condiciones sobre datos, cambios del proveedor y salida.</li>
+      <li><strong>Medición y aprendizaje:</strong> la práctica que permite saber si la solución produce el valor esperado.</li>
+    </ul>
+    <p>Estas siete capacidades crecen en intensidad según la consecuencia del uso. Un asistente interno de bajo impacto puede avanzar con controles sencillos; una herramienta que influye sobre derechos o recursos de las personas necesita controles reforzados en cada una de ellas.</p>
+    <h2>Una revisión proporcional a la consecuencia</h2>
+    <p>La intensidad de las revisiones depende de lo que está en juego. Tres rutas ayudan a asignar a cada iniciativa la revisión que le corresponde:</p>
+    <ul class="items">
+      <li><strong>Ruta rápida:</strong> asistencia interna, con datos públicos o sintéticos (creados artificialmente para imitar los reales) y sin integración con otros sistemas.</li>
+      <li><strong>Ruta estándar:</strong> información interna autorizada, usuarios definidos y piloto controlado.</li>
+      <li><strong>Ruta reforzada:</strong> datos sensibles, decisiones sobre terceros, integración con sistemas críticos o capacidad de ejecutar acciones, con participación de varias áreas especializadas.</li>
+    </ul>
+    <p>Esta proporcionalidad tiene una razón práctica: si cada prueba de bajo impacto exige una larga cadena de aprobaciones, la experimentación tiende a desplazarse hacia espacios informales. Reservar la revisión exigente para los casos que la necesitan permite concentrar el criterio experto donde más aporta.</p>
+    <h2>Un gobierno ligero desde el comienzo</h2>
+    <p>Una entidad puede gobernar sus iniciativas sin crear de inmediato una oficina especializada. Bastan cuatro piezas:</p>
+    <ul class="items">
+      <li><strong>Patrocinio directivo</strong> que oriente y resuelva conflictos de recursos o de riesgo.</li>
+      <li><strong>Una mesa de varias áreas</strong> que se reúna cuando un caso supera ciertos umbrales.</li>
+      <li><strong>Un dueño para cada iniciativa</strong>, que responda por su propósito y por la definición de un buen resultado.</li>
+      <li><strong>Puertas de decisión</strong> que establezcan qué evidencia se necesita para pasar de una etapa a otra.</li>
+    </ul>
+    <p>Cada decisión importante conserva un registro mínimo: la fecha, la evidencia revisada, la decisión tomada, sus condiciones y la persona responsable. Ese registro sencillo crea memoria institucional y permite reconstruir el recorrido de cada caso.</p>
+    <h2>Cuando la IA empieza a actuar</h2>
+    <p>Los agentes de IA interpretan una meta, usan herramientas, ejecutan pasos y avanzan hacia un resultado con cierto grado de autonomía. Con ellos, la IA pasa de producir contenido a participar en flujos de acción, y cada etapa del ciclo agrega una exigencia propia:</p>
+    <ul class="items">
+      <li><strong>Viabilidad:</strong> revisar los permisos y la identidad con que actuará el agente.</li>
+      <li><strong>Prototipo:</strong> probarlo en un entorno aislado, con acciones simuladas o reversibles.</li>
+      <li><strong>Piloto:</strong> medir secuencias completas de acciones, además de resultados aislados.</li>
+      <li><strong>Despliegue:</strong> contar con un mecanismo de parada inmediata y una persona autorizada para activarlo.</li>
+      <li><strong>Escala:</strong> revalidar en cada aumento de autonomía.</li>
+      <li><strong>Retiro:</strong> revocar accesos y credenciales.</li>
+    </ul>
+    <p>La autonomía de un agente crece de manera gradual, y cada paso exige evidencia antes de conceder el siguiente:</p>
+    <ol class="items">
+      <li><strong>Leer:</strong> consulta información autorizada.</li>
+      <li><strong>Proponer:</strong> prepara acciones para aprobación humana.</li>
+      <li><strong>Ejecutar acciones reversibles:</strong> actúa dentro de límites, con registro y capacidad de deshacer.</li>
+      <li><strong>Ejecutar acciones sensibles:</strong> solo con evidencia mucho más fuerte y controles reforzados.</li>
+    </ol>
+  </div>
+</article>
+
+<article class="chapter" id="caso">
+  <span class="kicker">El caso</span>
+  <h1>La iniciativa que nos acompaña</h1>
+  <p class="epigraph">Una misma iniciativa, seguida de etapa en etapa, permite ver cómo cambia la pregunta a medida que crece la evidencia.</p>
+  <div class="prose">
+    <p class="first">La guía acompaña una iniciativa en una entidad ilustrativa, la ANSOP, una autoridad con funciones sobre embarcaciones y zarpes. Cada día, sus funcionarios reciben solicitudes de zarpe, revisan la información, consultan procedimientos y resoluciones vigentes y preparan una respuesta.</p>
+    <p>La iniciativa consiste en un asistente que prepara el borrador de esa respuesta. El funcionario lo revisa y puede modificarlo sustancialmente antes de enviarlo. En términos del papel de la IA, se trata de una función de asistencia: la autorización del zarpe permanece en el funcionario competente y el asistente apoya la preparación del texto.</p>
+    <p>Al final de cada etapa, un apartado titulado <em>En la ANSOP</em> cuenta qué ocurre con esta iniciativa. El recorrido es ilustrativo y fue construido con fines pedagógicos; las cifras que aparecen sirven para razonar sobre cada etapa y no corresponden a datos de una entidad real.</p>
+  </div>
+</article>
+
+<article class="chapter" id="etapa1">
+  <span class="kicker">Etapa 1 de 7</span>
+  <h1>Enmarcar el problema y el valor esperado</h1>
+  <p class="epigraph">¿Qué situación merece intervención, para quién y con qué resultado esperado?</p>
+  <div class="prose">
+    <p class="first">Enmarcar es la etapa en la que una idea todavía puede cambiar con facilidad. Su propósito es construir una comprensión compartida del problema antes de comprometer datos, contratación, integración o desarrollo. La respuesta a la pregunta central debe poder entenderse sin mencionar todavía un producto específico.</p>
+    <h2>De un producto imaginado a una pregunta que se puede investigar</h2>
+    <p>Es frecuente que una necesidad llegue expresada como producto: «queremos un chatbot», «necesitamos un modelo predictivo». Esa formulación contiene una intuición valiosa y deja abiertas las preguntas que permiten evaluar si la intervención tiene sentido. Enmarcar traduce esa intuición en una pregunta que el área de tecnología y los proveedores pueden investigar: qué tarea, qué población, qué resultado, qué condición de éxito y qué límite.</p>
+    <p>Con esa precisión cambia también la conversación con los proveedores. La entidad puede pedir evidencia sobre su necesidad concreta en lugar de evaluar una demostración general del producto, y se crea un lenguaje común entre la dirección, el área misional, tecnología, jurídica y las personas que utilizarán la solución.</p>
+    <h2>El objetivo define la evidencia que se necesitará</h2>
+    <p>Enmarcar permite decidir desde ahora qué tipo de evidencia hará falta más adelante, porque cada objetivo pide una medición distinta:</p>
+    <ul class="items">
+      <li><strong>Reducir tiempo:</strong> la línea base muestra cuánto tarda hoy la tarea y cuánto retrabajo genera.</li>
+      <li><strong>Mejorar la calidad:</strong> se define qué significa una salida correcta y qué errores tienen mayor consecuencia.</li>
+      <li><strong>Ampliar la cobertura:</strong> se mide qué población queda hoy fuera del servicio.</li>
+    </ul>
+    <h2>Siete elementos para describir el problema</h2>
+    <p>Un buen encuadre describe siete aspectos de la situación. Juntos convierten una idea general en un caso que puede evaluarse y compararse con otros:</p>
+    <ul class="items">
+      <li><strong>Usuario o población:</strong> quién recibe el valor, sea un ciudadano, un funcionario o una empresa regulada.</li>
+      <li><strong>Tarea, decisión o servicio:</strong> dónde aparece la fricción, descrita como una tarea observable.</li>
+      <li><strong>Frecuencia y volumen:</strong> cuántas veces ocurre, lo que dimensiona tanto el valor potencial como la exposición.</li>
+      <li><strong>Consecuencia actual:</strong> qué produce hoy la situación: demora, retrabajo, error, costo o dificultad de acceso.</li>
+      <li><strong>Línea base:</strong> una medición del proceso actual, aunque sea aproximada, que permita comparar después.</li>
+      <li><strong>Alternativas de intervención:</strong> mejora de proceso, cambio de reglas o automatización convencional, que pueden resolver el problema con menos esfuerzo.</li>
+      <li><strong>Autoridad y límites:</strong> qué función ejerce la entidad y qué decisiones requieren juicio, motivación o posibilidad de recurso.</li>
+    </ul>
+    <h2>La autoridad forma parte del problema</h2>
+    <p>En la gestión pública, saber qué puede hacer la IA depende también de quién tiene competencia para realizar la actuación. Una solución puede técnicamente recomendar una acción que la norma atribuye a un funcionario o a una autoridad específica. Por eso el encuadre describe la distribución de responsabilidades y propone un papel tentativo para la IA. Una entidad puede tener autoridad para usar analítica con el fin de priorizar revisiones y conservar la decisión posterior bajo procedimiento formal; esa distinción cambia el papel de la herramienta, los datos que puede usar y las salvaguardas que necesita.</p>
+    <h2>Del diagnóstico a la hipótesis de valor</h2>
+    <p>El diagnóstico identifica dónde existe una fricción. La hipótesis de valor convierte esa observación en una afirmación que se puede comprobar, y contiene cuatro componentes: una tarea, una condición de uso, un cambio esperado y una restricción de calidad.</p>
+    <p class="pull">Si un asistente consulta exclusivamente procedimientos vigentes y prepara un borrador para solicitudes repetitivas, esperamos reducir el tiempo de preparación en al menos un 25 %, conservando o mejorando la tasa actual de errores sustantivos.</p>
+    <p>A partir de esta formulación se diseñan las métricas y las pruebas de las etapas siguientes. La hipótesis también anticipa cuándo conviene reformular: si la búsqueda de información es una fracción pequeña del proceso, el asistente producirá poco valor; si las fuentes están desactualizadas, la prioridad puede ser ordenar primero el conocimiento.</p>
+    <h3>Lo que conviene cuidar</h3>
+    <p>La señal más frecuente de un encuadre incompleto es una iniciativa que se describe por su tecnología. También merecen atención la ausencia de línea base, las alternativas que nadie exploró y la falta de un dueño del proceso, porque es el área misional la que sabe qué significa un buen resultado y qué error resulta grave. Por último, el encuadre necesita quedar escrito: así cualquier persona que no participó en la conversación inicial puede entender el caso, y la iniciativa no depende de la memoria del equipo que la inició.</p>
+    <h3>Un caso para pensar</h3>
+    <p>La Corte Constitucional recibe un volumen de acciones de tutela muy superior al de sus primeros años, y la selección de expedientes exige procesar enormes cantidades de información. PretorIA surgió como una herramienta de apoyo para organizar y analizar esa información, con un objetivo delimitado con precisión: aumentar la capacidad para revisar y organizar expedientes, con la selección y el razonamiento jurídico bajo responsabilidad de la Corte. La Sentencia T-323 de 2024 refuerza esa lógica al reconocer usos de apoyo y proteger las funciones que requieren razonamiento humano.</p>
+    <p>La lección es de gestión: saber con claridad qué queda dentro y fuera del proyecto permite identificar los datos necesarios, las personas que deben participar y las consecuencias que la prueba puede producir.</p>
+    <div class="aside">
+      <span class="kicker">En la ANSOP</span>
+      <p>El área de capitanías identifica que preparar respuestas a solicitudes de zarpe repetitivas consume tiempo de funcionarios expertos, sobre todo en la búsqueda de procedimientos y resoluciones. Antes de pensar en un asistente, el equipo considera dos alternativas más simples: plantillas estandarizadas y un índice actualizado de procedimientos.</p>
+      <p>El encuadre termina con la hipótesis de valor presentada en este capítulo: reducir en al menos un 25 % el tiempo de preparación, sin aumentar los errores sustantivos. Quedan dos preguntas para la siguiente etapa: si la respuesta al usuario es una actuación administrativa con deber de motivación, y si las fuentes tienen versiones controladas.</p>
+    </div>
+    <h3>La decisión al cerrar la etapa</h3>
+    <p class="gateq">¿El problema es suficientemente importante, observable y legítimo para justificar una exploración con IA?</p>
+    <p>Para responderla, la entidad cuenta con estos productos de la etapa:</p>
+    <ul class="items">
+      <li>La descripción del problema y de la población.</li>
+      <li>Una línea base inicial.</li>
+      <li>La hipótesis de valor.</li>
+      <li>El papel tentativo de la IA.</li>
+      <li>Las alternativas consideradas.</li>
+      <li>Una primera estimación de qué pasaría si la solución falla.</li>
+      <li>El dueño del proceso.</li>
+      <li>Las preguntas jurídicas y de datos que deberá resolver la viabilidad.</li>
+    </ul>
+    <p>Con esa evidencia caben tres decisiones:</p>
+    <ul class="items">
+      <li><strong>Avanzar:</strong> existe una hipótesis razonable y un espacio controlable para aprender.</li>
+      <li><strong>Ajustar:</strong> volver sobre el encuadre, porque la necesidad todavía es difusa y requiere mayor precisión.</li>
+      <li><strong>Cerrar:</strong> otra alternativa resulta más adecuada; el aprendizaje queda registrado.</li>
+    </ul>
+
+    <h3>En síntesis</h3>
+    <p>Enmarcar consiste en describir el problema antes que la solución: quién lo vive, en qué tarea aparece, qué produce hoy y cómo se medirá un cambio. La etapa termina cuando existe una hipótesis de valor que se puede comprobar y un dueño del proceso que responde por ella.</p>
+
+    <h3>Para aplicar en su entidad</h3>
+    <div class="questions">
+      <p>Piense en una iniciativa de IA que ya se haya mencionado en su entidad. ¿Cuál de los siete elementos del encuadre es hoy el más difícil de responder?</p>
+      <p>Si tuviera que explicar el problema que su entidad quiere resolver sin mencionar ninguna tecnología, ¿podría hacerlo en dos frases?</p>
+    </div>
+  </div>
+</article>
+
+<article class="chapter" id="etapa2">
+  <span class="kicker">Etapa 2 de 7</span>
+  <h1>Diseñar y preparar la viabilidad</h1>
+  <p class="epigraph">¿Existen condiciones razonables para construir y probar la solución?</p>
+  <div class="prose">
+    <p class="first">Con el problema enmarcado y la hipótesis formulada, la entidad revisa si cuenta con lo necesario para construir y probar la solución. Esta etapa reúne decisiones que con frecuencia aparecen demasiado tarde en los proyectos: la calidad y la autorización de los datos, la arquitectura, los costos, las capacidades internas, la contratación, la seguridad, el fundamento jurídico y las condiciones de operación. Esas decisiones se ordenan en cinco dimensiones, que se presentan a continuación.</p>
+    <h2>Los datos</h2>
+    <p>La viabilidad de los datos reúne disponibilidad, autorización de uso, calidad, representatividad y trazabilidad, que es la posibilidad de saber de dónde viene cada dato y cómo se transformó. Una fuente puede estar disponible para consulta y aun así resultar inadecuada para entrenar o evaluar un sistema: puede contener errores sistemáticos, periodos que ya no representan la operación actual o variables que introducen sesgos, es decir, diferencias injustificadas en el trato a ciertos grupos o casos. Su uso también puede estar limitado por reserva, protección de datos personales, propiedad intelectual o condiciones contractuales.</p>
+    <p>Por eso esta revisión funciona como una decisión de diseño: establece qué datos pueden usarse, para qué finalidad, bajo qué controles y con qué tratamiento previo. Incluye los datos de la operación futura, porque una solución puede funcionar con un conjunto de prueba muy ordenado y perder desempeño con la información cotidiana del proceso. Un archivo documental abundante puede ser poco útil si contiene versiones duplicadas y contradictorias, y un conjunto histórico de buena calidad estadística puede reflejar prácticas que la entidad ya quiere cambiar.</p>
+    <h2>Lo jurídico y los derechos</h2>
+    <p>Esta dimensión pregunta qué actuación pública apoya la IA, qué competencias la autorizan y qué derechos o intereses pueden verse afectados. Después determina las condiciones de información, transparencia, protección de datos, revisión y reclamación que correspondan. Cuando el análisis encuentra una restricción, la respuesta puede ser ajustar el alcance, cambiar los datos, aumentar la supervisión o elegir otro diseño. Así, el componente jurídico participa en la arquitectura del caso desde el comienzo.</p>
+    <p>Un asistente que redacta comunicaciones dirigidas a ciudadanos, por ejemplo, exige precisar si esa comunicación equivale a una actuación administrativa con deber de motivación, es decir, con la obligación de exponer las razones que la sustentan. En casos de bajo impacto estas preguntas se resuelven con una revisión sencilla; a medida que aumentan las consecuencias, el análisis necesita más profundidad.</p>
+    <h2>La tecnología</h2>
+    <p>La viabilidad tecnológica describe si la solución puede integrarse, operar con seguridad y mantenerse en el entorno real de la entidad. Incluye integraciones, autenticación, almacenamiento, capacidad de cómputo, seguridad, observabilidad (la posibilidad de ver qué hace el sistema y detectar sus fallas) y continuidad, y exige saber qué parte de la solución depende de servicios externos y qué ocurre si esos servicios cambian o se interrumpen. Una prueba de concepto, que es una demostración técnica inicial, puede funcionar en un computador aislado y requerir una arquitectura completamente distinta al conectarse con los sistemas institucionales; conviene conocer esas dependencias antes de que el prototipo cree expectativas difíciles de sostener.</p>
+    <h2>La organización</h2>
+    <p>Esta dimensión pregunta cómo encajará la solución en el trabajo que ya se realiza: quién la usará, qué tarea cambiará, quién revisará los resultados, quién resolverá los incidentes y quién responderá por el servicio cuando el equipo del piloto ya no esté. A menudo revela cambios de proceso más importantes que la propia tecnología. Un asistente puede ahorrar tiempo en una tarea y crear al mismo tiempo una nueva necesidad de revisión; la solución es viable cuando esas nuevas responsabilidades tienen rol, tiempo, formación y procedimiento.</p>
+    <h2>Los costos y el contrato</h2>
+    <p>La viabilidad económica considera el costo completo a lo largo de todo el ciclo de vida: licencias o consumo del modelo, infraestructura, integración, preparación de datos, seguridad, soporte, formación, evaluación y mantenimiento. Una solución económica para experimentar puede resultar costosa al crecer: un asistente que cuesta poco con veinte usuarios puede volverse significativamente más caro con mil, sobre todo si el proveedor cobra por consulta o por volumen de texto.</p>
+    <p>La dimensión contractual deja establecido, antes de comprometerse con un proveedor:</p>
+    <ul class="items">
+      <li>Qué ocurre con los datos de la entidad.</li>
+      <li>Qué registros estarán disponibles para auditoría.</li>
+      <li>Qué niveles de servicio se esperan.</li>
+      <li>Cómo se gestionan los cambios del modelo.</li>
+      <li>Qué derechos conserva la entidad sobre sus activos.</li>
+      <li>Cómo puede terminar la relación.</li>
+    </ul>
+    <p>Con esa información se toma la decisión de comprar, configurar o desarrollar.</p>
+    <h2>Evaluar el impacto a tiempo</h2>
+    <p>La evaluación temprana de impacto identifica quién puede verse afectado, qué decisión puede cambiar, qué tan grave y qué tan reversible sería un error y qué controles harían falta. Su utilidad está en que todavía puede modificar el diseño. Una primera clasificación de la consecuencia orienta todo lo demás. De menor a mayor:</p>
+    <ul class="items">
+      <li>Un efecto limitado e interno.</li>
+      <li>Un efecto operativo moderado.</li>
+      <li>Una influencia sobre terceros.</li>
+      <li>Una influencia sobre derechos, beneficios, sanciones o funciones críticas.</li>
+    </ul>
+    <p>A mayor consecuencia, más especialidades participan, más evidencia se exige y más intensas son las pruebas y la supervisión.</p>
+    <h2>Preparar antes de prototipar</h2>
+    <p>Preparar la viabilidad significa resolver las condiciones que podrían invalidar el experimento: datos utilizables, alcance jurídico, entorno técnico, usuarios, métricas y controles básicos. Así el prototipo responde una pregunta real en un entorno adecuado. La arquitectura final se resuelve más adelante; esta etapa busca los asuntos que podrían volver inviable el caso o cambiar su diseño. A veces la decisión adecuada es fortalecer primero una condición, por ejemplo ordenar las fuentes documentales, aunque eso retrase el prototipo; ese trabajo también construye capacidad para la entidad.</p>
+    <h3>Lo que conviene cuidar</h3>
+    <p>Conviene desconfiar de los datos que solo se han visto en condiciones de prueba, revisar la viabilidad jurídica por separado de la técnica y estimar el costo de operación por separado del costo del experimento. También conviene preguntar quién asumirá las nuevas tareas de revisión que crea la herramienta: si nadie puede asumirlas, el diseño necesita ajustarse.</p>
+    <h3>Un caso para pensar</h3>
+    <p>El Gobierno de Canadá exige una Evaluación de Impacto Algorítmico que se completa desde la etapa de diseño, cuando todavía es posible cambiar el alcance, los datos o la arquitectura, y que se actualiza ante cualquier cambio de alcance o de funcionalidad antes de llegar a producción. El principio es trasladable a cualquier entidad: la evaluación de impacto es más útil cuando todavía puede cambiar las decisiones.</p>
+    <div class="aside">
+      <span class="kicker">En la ANSOP</span>
+      <p>El inventario de fuentes muestra que los procedimientos de zarpe y las resoluciones aplicables existen en varias versiones, sin control de vigencia. La entidad decide crear primero una colección oficial de fuentes vigentes, con un responsable en gestión documental.</p>
+      <p>Jurídica establece que la respuesta al usuario forma parte de una actuación administrativa: el borrador debe citar la norma aplicable y la decisión permanece en el funcionario. Como la respuesta tiene efectos sobre terceros, el caso sigue una ruta de revisión estándar, con participación de jurídica y seguridad. El proveedor cobra por volumen de texto, de modo que se estima el costo tanto para el piloto como para una operación en todas las capitanías.</p>
+    </div>
+    <h3>La decisión al cerrar la etapa</h3>
+    <p class="gateq">¿Podemos construir un prototipo que produzca aprendizaje relevante con un nivel de exposición y un costo razonables?</p>
+    <p>Para responderla, la entidad llega a la puerta con:</p>
+    <ul class="items">
+      <li>Un mapa de fuentes y datos.</li>
+      <li>Un análisis jurídico inicial.</li>
+      <li>La clasificación de la consecuencia.</li>
+      <li>Una arquitectura conceptual.</li>
+      <li>La estimación de costos de prueba y de operación.</li>
+      <li>El diseño del entorno de prototipo.</li>
+      <li>La lista de riesgos que deben probarse.</li>
+    </ul>
+    <p>Cada conclusión tiene un responsable, y lo que todavía es incierto queda registrado como pregunta pendiente. Con esa evidencia caben cuatro decisiones:</p>
+    <ul class="items">
+      <li><strong>Avanzar:</strong> las condiciones permiten un prototipo con exposición y costo razonables.</li>
+      <li><strong>Ajustar:</strong> fortalecer primero alguna condición: datos, autoridad, infraestructura o capacidades.</li>
+      <li><strong>Regresar:</strong> volver al encuadre si el problema debe replantearse.</li>
+      <li><strong>Cerrar:</strong> alguna condición vuelve inviable el caso.</li>
+    </ul>
+
+    <h3>En síntesis</h3>
+    <p>Preparar la viabilidad consiste en revisar, antes de construir, cinco condiciones: datos, marco jurídico, tecnología, organización y costos, junto con la consecuencia posible del caso. La etapa termina cuando la entidad sabe qué puede probar, con qué datos, bajo qué controles y a qué costo.</p>
+
+    <h3>Para aplicar en su entidad</h3>
+    <div class="questions">
+      <p>Tome una iniciativa real o hipotética y califique de uno a cinco qué tan resuelta está cada una de las cinco dimensiones, donde uno significa que no se ha revisado y cinco que está resuelta y documentada. ¿Cuál es la más débil y qué pregunta concreta la fortalecería?</p>
+      <p>¿Su entidad ha aprobado alguna vez una iniciativa de IA sin revisar su viabilidad jurídica por separado de la técnica?</p>
+    </div>
+  </div>
+</article>
+
+<article class="chapter" id="etapa3">
+  <span class="kicker">Etapa 3 de 7</span>
+  <h1>Prototipar para aprender</h1>
+  <p class="epigraph">¿La idea muestra suficiente utilidad y factibilidad para justificar un piloto más exigente?</p>
+  <div class="prose">
+    <p class="first">Un prototipo es una versión reducida de la idea, diseñada para responder preguntas. Su valor está en que puede cambiar rápido y a bajo costo, y permite observar el comportamiento de la solución antes de involucrar la operación real, grandes volúmenes de información o decisiones de mayor consecuencia. Puede ser muy pequeño: veinte o cincuenta casos representativos, una interfaz sencilla o incluso una prueba manual.</p>
+    <h2>Lo que un prototipo debe enseñar</h2>
+    <p>Un prototipo es valioso cuando su resultado cambia una decisión, y por eso las preguntas se definen antes de construirlo. Puede mostrar si los datos contienen suficiente información, si el modelo comprende el tipo de documentos, si el sistema encuentra los documentos pertinentes para cada consulta, si los usuarios entienden la salida, qué errores aparecen en los casos difíciles y en qué situaciones el sistema debería abstenerse de responder y remitir el caso a una persona.</p>
+    <p>Un prototipo útil también tiene un criterio de fracaso. Si todas las pruebas están diseñadas para mostrar que la idea funciona, la entidad aprende poco. Conviene seleccionar los casos difíciles antes de empezar, definir qué tasa de error sería inaceptable y registrar los resultados de modo que puedan compararse entre versiones. Una pregunta útil para la dirección es qué evidencia justificaría que el propio equipo recomiende detener su iniciativa; cuando esa respuesta existe desde el comienzo, el experimento se orienta al aprendizaje.</p>
+    <h2>Una demostración y un prototipo</h2>
+    <p>Una demostración muestra una posibilidad, suele usar un escenario preparado y puede ser muy convincente. Un prototipo prueba una hipótesis en condiciones que permiten observar errores y variabilidad. La demostración sirve para comunicar una idea; la decisión sobre un piloto se apoya en la evidencia del prototipo.</p>
+    <p>Por eso el prototipo incluye entradas pensadas para revelar límites:</p>
+    <ul class="items">
+      <li>Documentos incompletos o versiones contradictorias.</li>
+      <li>Instrucciones ambiguas.</li>
+      <li>Casos fuera de alcance o preguntas sin información suficiente.</li>
+      <li>Solicitudes que intentan obtener información reservada.</li>
+      <li>Textos con errores de redacción o formatos poco frecuentes.</li>
+    </ul>
+    <p>La capacidad de abstenerse puede ser tan importante como la de responder.</p>
+    <h2>Un lugar seguro para experimentar</h2>
+    <p>Experimentar es más fácil cuando la institución prepara un espacio donde los equipos saben qué herramientas, datos, permisos y reglas pueden utilizar. Ese entorno puede empezar siendo sencillo: cuentas institucionales, configuraciones de privacidad aprobadas, datos públicos, ficticios o sintéticos, un repositorio de documentos de prueba, un formato de experimento y un canal con jurídica y seguridad. Separar el desarrollo, la prueba y la producción evita que un ensayo modifique información real o afecte a usuarios sin autorización.</p>
+    <p>Cuando una prueba necesita información sensible, el principio es acercar al desarrollador al dato bajo reglas claras, en lugar de mover el dato fuera de su entorno protegido.</p>
+    <h2>Un conjunto de pruebas que se pueda reutilizar</h2>
+    <p>Un conjunto de evaluación reúne casos representativos y difíciles para medir el sistema con criterios estables: situaciones frecuentes, excepciones, entradas ambiguas, casos de alta consecuencia e intentos maliciosos. Con ese conjunto la entidad puede comparar modelos y versiones sin cambiar la pregunta cada vez, y detectar retrocesos cuando el proveedor actualiza su modelo.</p>
+    <h2>El registro de aprendizaje</h2>
+    <p>Una pantalla que funciona ayuda a comunicar la idea, y el producto que perdura es el conocimiento: las hipótesis probadas, los datos utilizados, las configuraciones, los casos de prueba, las fallas encontradas, los límites observados y las razones para continuar o cerrar. Ese registro hace auditable el prototipo y permite que otro equipo reproduzca la experiencia sin empezar de cero. Cuando algo falla durante una prueba, se documenta qué ocurrió, qué lo permitió y qué cambio se propone; una cultura que penaliza los fallos de prueba invita a esconderlos.</p>
+    <h3>Lo que conviene cuidar</h3>
+    <p>Las señales de alerta en esta etapa son las pruebas diseñadas solo para confirmar, las decisiones tomadas a partir de una demostración del proveedor, el uso de datos reales cuando no es necesario y los hallazgos que nadie registra. Un prototipo bien hecho termina con un documento que otra persona puede leer y entender.</p>
+    <h3>Un caso para pensar</h3>
+    <p>La OCDE, al estudiar la experimentación con IA generativa (la que produce textos, imágenes u otros contenidos) en los gobiernos, destaca el valor de crear entornos donde las instituciones puedan aprender de manera controlada, y observa que pocos gobiernos miden de forma sistemática el desempeño, el impacto o el cumplimiento de sus experimentos. Esa falta de medición limita su utilidad como conocimiento reutilizable. El prototipo es el momento para instalar el hábito de documentar qué se intentó, qué ocurrió y qué cambia.</p>
+    <div class="aside">
+      <span class="kicker">En la ANSOP</span>
+      <p>Con la colección oficial de fuentes ya creada, el equipo selecciona veinte procedimientos vigentes y prepara preguntas de prueba: casos frecuentes, una resolución derogada, una solicitud con información faltante, una consulta fuera de competencia y una respuesta que requiere combinar dos fuentes. Antes de empezar, acuerda que cualquier cita a una norma derogada será un error crítico.</p>
+      <p>El asistente prepara borradores útiles en los casos frecuentes y cita bien cuando la fuente es única, pero falla cuando dos documentos se contradicen. El equipo ajusta las instrucciones para que el asistente señale la contradicción y remita el caso al funcionario. Los casos de prueba y la clasificación de fallas quedan guardados para detectar retrocesos en el futuro.</p>
+    </div>
+    <h3>La decisión al cerrar la etapa</h3>
+    <p class="gateq">¿La idea muestra suficiente utilidad y factibilidad para justificar un piloto más exigente?</p>
+    <p>El equipo explica qué probó, con qué casos, frente a qué criterio de éxito, qué fallas aparecieron y qué aprendió sobre los datos y el diseño.</p>
+    <p>Con esa evidencia caben cuatro decisiones:</p>
+    <ul class="items">
+      <li><strong>Avanzar:</strong> pasar al piloto.</li>
+      <li><strong>Ajustar:</strong> repetir el prototipo con cambios o elegir una solución más sencilla.</li>
+      <li><strong>Regresar:</strong> volver a la viabilidad para mejorar los datos o la arquitectura.</li>
+      <li><strong>Cerrar:</strong> el valor esperado no se sostiene.</li>
+    </ul>
+
+    <h3>En síntesis</h3>
+    <p>Un prototipo es una prueba pequeña y rápida, diseñada para aprender dónde funciona la idea y dónde falla. Se construye con casos difíciles, un criterio de fracaso definido de antemano y un registro de lo aprendido que otros equipos puedan reutilizar.</p>
+
+    <h3>Para aplicar en su entidad</h3>
+    <div class="questions">
+      <p>Piense en un prototipo que su entidad podría construir esta semana. ¿Qué tasa de error sería inaceptable y qué tres casos difíciles usaría para ponerlo a prueba?</p>
+      <p>Las pruebas que su entidad ha hecho con IA, ¿estaban diseñadas para descubrir dónde falla la solución?</p>
+    </div>
+  </div>
+</article>
+
+<article class="chapter" id="etapa4">
+  <span class="kicker">Etapa 4 de 7</span>
+  <h1>Pilotear y evaluar en condiciones representativas</h1>
+  <p class="epigraph">¿La solución produce suficiente valor, calidad y control para justificar su incorporación al proceso?</p>
+  <div class="prose">
+    <p class="first">El piloto introduce la solución en un contexto suficientemente parecido a la operación para saber cómo funciona con usuarios reales, variedad de casos y controles concretos. Es más exigente que el prototipo porque su evidencia debe sostener una decisión de inversión y de operación. Es también el momento en que la organización empieza a conocer la interacción entre la tecnología, las personas y el proceso.</p>
+    <p>Por eso el piloto observa tanto la salida del sistema como lo que ocurre alrededor de ella: si los usuarios revisan realmente, cuánto retrabajo aparece, qué consultas se escalan, qué datos faltan y cuánto soporte necesita el equipo. Al terminar, la dirección debería poder comparar la situación inicial con la observada durante la prueba y entender cuánto cuesta mantener los controles.</p>
+    <h2>Un piloto bien diseñado</h2>
+    <p>Un piloto bien diseñado define siete elementos antes de empezar:</p>
+    <ul class="items">
+      <li><strong>Alcance:</strong> qué tareas, usuarios, sedes y datos incluye.</li>
+      <li><strong>Duración:</strong> suficiente para cubrir la variabilidad real, lo que puede exigir semanas si el proceso cambia por ciclos semanales o mensuales.</li>
+      <li><strong>Línea base:</strong> histórica, simultánea o construida con muestras evaluadas por expertos.</li>
+      <li><strong>Métricas:</strong> desempeño, valor, viabilidad, facilidad de uso y riesgo.</li>
+      <li><strong>Revisión humana:</strong> qué revisa la persona, cuánto tiempo tiene y cómo se registra cuando modifica o rechaza un resultado.</li>
+      <li><strong>Pruebas difíciles:</strong> condiciones adversas además de los casos ideales.</li>
+      <li><strong>Condiciones de parada:</strong> los umbrales que obligarían a suspender, corregir o restringir la prueba.</li>
+    </ul>
+    <h2>Mirar el proceso completo</h2>
+    <p>La unidad de análisis es la tarea o el servicio que se quiere mejorar, con todo lo que ocurre antes y después de la salida del modelo. El tiempo que ahorra la IA puede reaparecer como más revisión, más correcciones o nuevas tareas en otro punto del proceso. De ahí la importancia de medir juntos el tiempo total, la calidad final, el retrabajo, los errores críticos, la carga de revisión, los costos, los incidentes y los efectos sobre terceros.</p>
+    <p class="pull">Un asistente reduce de 20 a 5 minutos la preparación de un borrador, pero los revisores necesitan 12 minutos adicionales para verificar las citas. El ahorro neto existe —tres minutos por caso— y es mucho menor que el observado en la primera tarea.</p>
+    <p>Si además disminuyen las devoluciones, el valor puede aumentar; si suben los errores críticos, la decisión cambia.</p>
+    <h2>Probar en condiciones difíciles</h2>
+    <p>Las pruebas difíciles buscan descubrir los límites antes de la operación. En una entidad civil esto significa probar con:</p>
+    <ul class="items">
+      <li>Documentos contradictorios y cambios recientes de norma.</li>
+      <li>Consultas fuera de competencia y datos incompletos.</li>
+      <li>Instrucciones maliciosas escondidas en un archivo, es decir, textos diseñados para manipular el comportamiento del sistema.</li>
+      <li>La caída temporal de una fuente.</li>
+      <li>Usuarios con permisos distintos.</li>
+      <li>Casos poco frecuentes de alta consecuencia.</li>
+    </ul>
+    <p>En los sistemas de mayor consecuencia se añaden pruebas de seguridad, sesgo y filtración de información.</p>
+    <h2>Medir la revisión humana</h2>
+    <p>La revisión humana forma parte del desempeño del proceso y se evalúa como tal. Que una persona figure en el flujo no indica por sí solo si tiene la competencia, la información, el tiempo y la autoridad necesarios para cuestionar el resultado. Durante el piloto conviene observar qué porcentaje de salidas modifica, qué errores detecta y cuáles deja pasar, cuánto tarda y qué ocurre cuando discrepa del sistema. Esos datos muestran si el control humano funciona o si la presión del tiempo y la confianza en la herramienta lo están volviendo un trámite.</p>
+    <h2>El piloto también prueba a la institución</h2>
+    <p>Durante un piloto se descubre quién puede responder preguntas técnicas, quién conserva los registros, quién atiende los incidentes y cuánto tarda la entidad en decidir. Un piloto puede mostrar buen desempeño técnico y, al mismo tiempo, debilidades operativas que deben resolverse antes del despliegue.</p>
+    <p>La entidad necesita además proteger la posibilidad de concluir algo distinto de lo esperado. Una iniciativa acumula patrocinadores, presupuesto y expectativas, y el equipo puede sentir presión para demostrar que funciona. Algunas prácticas ayudan:</p>
+    <ul class="items">
+      <li>Definir las condiciones de parada antes de empezar.</li>
+      <li>Separar al equipo que evalúa de la presión comercial del proveedor.</li>
+      <li>Presentar los resultados negativos con la misma visibilidad que los positivos.</li>
+      <li>Reconocer el aprendizaje de una iniciativa que se detiene a tiempo.</li>
+    </ul>
+    <h3>Lo que conviene cuidar</h3>
+    <p>Las alertas de esta etapa son medir solo la salida del modelo, aceptar una revisión humana que se ha vuelto formal, decidir las condiciones de parada sobre la marcha y terminar el piloto antes de que haya cubierto la variedad real del proceso.</p>
+    <h3>Un caso para pensar</h3>
+    <p>El Gobierno del Reino Unido realizó un experimento con un asistente de productividad con cerca de 20.000 funcionarios de 12 organizaciones públicas, y combinó datos de uso con encuestas, grupos focales y análisis de tareas. Los resultados mostraron beneficios en búsqueda, resumen y trabajo administrativo, límites en tareas más complejas y preocupaciones sobre información sensible. La lección está en el diseño: quien evalúe una herramienta similar necesita definir de antemano qué población observa, qué tareas compara, qué línea base utiliza y cómo distinguir el ahorro de tiempo que perciben las personas de la mejora real del proceso.</p>
+    <div class="aside">
+      <span class="kicker">En la ANSOP</span>
+      <p>El piloto se realiza en una capitanía, durante un periodo que cubre sus ciclos semanales de solicitudes. Los tiempos coinciden con el ejemplo de este capítulo: el ahorro neto es de tres minutos por caso, porque la verificación de citas consume buena parte del tiempo ganado en la redacción. El equipo mide qué porcentaje de borradores modifican los funcionarios y qué errores detectan. La condición de parada, escrita antes de empezar, es suspender el piloto si una respuesta enviada cita una norma derogada.</p>
+      <p>El piloto revela además una debilidad de la institución: el proveedor tarda en entregar los registros de uso. La entidad lo corrige antes de decidir el despliegue.</p>
+    </div>
+    <h3>La decisión al cerrar la etapa</h3>
+    <p class="gateq">¿La evidencia sostiene la incorporación de la solución al proceso?</p>
+    <p>Para desplegar, la entidad necesita mostrar:</p>
+    <ul class="items">
+      <li>Valor frente a la línea base.</li>
+      <li>Una calidad suficiente para el papel asignado.</li>
+      <li>Errores críticos entendidos.</li>
+      <li>Una revisión humana efectiva.</li>
+      <li>Riesgos con controles verificables.</li>
+      <li>Viabilidad operativa y contractual.</li>
+      <li>Capacidad de monitorear en producción.</li>
+    </ul>
+    <p>Con esa evidencia caben cuatro decisiones:</p>
+    <ul class="items">
+      <li><strong>Avanzar:</strong> autorizar el despliegue.</li>
+      <li><strong>Ajustar:</strong> mantener la solución en piloto o reducir su alcance.</li>
+      <li><strong>Regresar:</strong> volver al prototipo.</li>
+      <li><strong>Cerrar:</strong> la evidencia no sostiene la incorporación al proceso.</li>
+    </ul>
+
+    <h3>En síntesis</h3>
+    <p>El piloto prueba la solución con usuarios reales y mide el proceso completo, incluida la revisión humana. Sus siete elementos, en especial la línea base y las condiciones de parada, se definen antes de empezar, y su evidencia sustenta la decisión de desplegar.</p>
+
+    <h3>Para aplicar en su entidad</h3>
+    <div class="questions">
+      <p>Para un piloto reciente o hipotético de su entidad, ¿cuál de los elementos de un buen diseño se omite primero?</p>
+      <p>Si su piloto más reciente tuviera que detenerse mañana, ¿esa condición ya estaba escrita antes de empezar?</p>
+    </div>
+  </div>
+</article>
+
+<article class="chapter" id="etapa5">
+  <span class="kicker">Etapa 5 de 7</span>
+  <h1>Institucionalizar y desplegar</h1>
+  <p class="epigraph">¿La entidad puede operar, supervisar y sostener la solución aunque cambien las personas que participaron en el piloto?</p>
+  <div class="prose">
+    <p class="first">Desplegar significa poner la solución en producción. Institucionalizar significa convertirla en una capacidad estable de la organización, que funciona con independencia de quienes la impulsaron. Una solución puede estar técnicamente disponible y seguir dependiendo de un desarrollador, de una hoja de cálculo informal, de un acuerdo verbal con el proveedor o de un pequeño grupo de usuarios expertos. Institucionalizar transforma ese conocimiento en responsabilidades y prácticas estables.</p>
+    <h2>Del proyecto al servicio</h2>
+    <p>Durante el piloto, el equipo resuelve los problemas con atención directa y conocimiento informal. En producción, la solución tiene que funcionar cuando esas personas no están disponibles. Pasar a servicio significa que la herramienta adquiere usuarios, dependencia operativa y expectativas de continuidad. Por eso necesita respuesta clara a nueve preguntas:</p>
+    <ul class="items">
+      <li>¿Quién es dueño del proceso?</li>
+      <li>¿Quién administra la solución?</li>
+      <li>¿Quién atiende el soporte?</li>
+      <li>¿Quién revisa la calidad?</li>
+      <li>¿Quién autoriza los cambios?</li>
+      <li>¿Quién gestiona los incidentes?</li>
+      <li>¿Quién mantiene las fuentes y los datos?</li>
+      <li>¿Quién supervisa al proveedor?</li>
+      <li>¿Quién puede decidir suspenderla o retirarla?</li>
+    </ul>
+    <p>Estas funciones pueden distribuirse entre varias áreas, cada una con un responsable identificable.</p>
+    <p>Para un asistente que prepara borradores de respuesta, una distribución posible sería esta:</p>
+    <ul class="items">
+      <li><strong>Área de atención:</strong> es dueña del proceso y define qué es un buen resultado.</li>
+      <li><strong>Tecnología:</strong> configura la plataforma.</li>
+      <li><strong>Gestión documental:</strong> mantiene las fuentes.</li>
+      <li><strong>Jurídica:</strong> revisa los límites de uso.</li>
+      <li><strong>Seguridad:</strong> gestiona los accesos y los incidentes.</li>
+      <li><strong>Contratación:</strong> supervisa al proveedor.</li>
+      <li><strong>Dirección:</strong> autoriza cualquier paso hacia la interacción directa con ciudadanos.</li>
+    </ul>
+    <h2>Documentar y formar</h2>
+    <p>La documentación permite que el conocimiento del sistema sobreviva a los cambios de personal. Explica qué hace la solución, con qué datos trabaja, qué límites tiene, cómo se evaluó, qué incidentes se han registrado y qué condiciones deben cumplirse para modificarla. Sirve para formar a nuevos usuarios, responder auditorías, investigar incidentes y decidir cambios con información suficiente.</p>
+    <p>La formación, por su parte, enseña tanto el uso como los límites de la herramienta, a partir del flujo real de trabajo: qué tareas apoya, qué fuentes usa, qué errores se han observado, qué debe verificarse, cómo escalar una duda y qué hacer si el servicio no está disponible. También conviene ajustar las metas de trabajo, porque si el sistema cambia tiempos y responsabilidades, los indicadores deben reflejar la nueva realidad.</p>
+    <h2>Qué pasa cuando la IA falla</h2>
+    <p>Todo servicio necesita una forma de operar cuando el sistema no está disponible, entrega un resultado que no puede usarse o requiere mantenimiento. Ese mecanismo alternativo puede ser volver temporalmente al proceso manual, usar una versión anterior, desactivar una función específica o suspender las respuestas externas. Se diseña antes del incidente: qué tareas pueden continuar sin la herramienta, durante cuánto tiempo, quién decide activar el cambio y cómo se registra lo ocurrido.</p>
+    <p>Antes del despliegue, la entidad verifica que los usuarios estén preparados, que los accesos estén configurados, que exista ese mecanismo de contingencia, que las métricas estén activas y que el contrato permita gestionar cambios. Estas condiciones convierten un resultado experimental en un servicio sostenible.</p>
+    <h3>Lo que conviene cuidar</h3>
+    <p>La señal más clara de una institucionalización pendiente es la dependencia de una persona. Le siguen la contingencia improvisada en el momento de la falla, una formación centrada en el manejo de la herramienta, sin práctica para reconocer sus errores, y los acuerdos con el proveedor que nunca quedaron por escrito.</p>
+    <h3>Un caso para pensar</h3>
+    <p>Project Maven comenzó en 2017 como una iniciativa del Departamento de Defensa de Estados Unidos para aplicar aprendizaje automático al análisis de grandes volúmenes de imágenes y video, y con el tiempo evolucionó hacia una plataforma más amplia. El trabajo conjunto con usuarios operativos permitió ajustar las funciones a las necesidades reales. Una evaluación del Inspector General encontró prácticas de monitoreo y de gestión contractual, y señaló que parte de esos procesos requería mayor formalización para que el conocimiento no se perdiera al cambiar las personas.</p>
+    <p>El caso permite distinguir dos dimensiones de una misma capacidad: la utilidad operacional, que indica que el sistema aporta al trabajo, y la fortaleza institucional, que indica que la organización conserva el conocimiento, los controles, los contratos y la responsabilidad para sostenerlo. Una solución puede avanzar mucho en la primera y seguir necesitando trabajo en la segunda.</p>
+    <div class="aside">
+      <span class="kicker">En la ANSOP</span>
+      <p>La ANSOP aplica una distribución como la descrita: el área de capitanías asume la propiedad del proceso y define qué es un borrador correcto; tecnología administra la plataforma; gestión documental mantiene la colección oficial de fuentes; jurídica y seguridad tienen funciones asignadas, y contratación supervisa al proveedor.</p>
+      <p>Los funcionarios aprenden a verificar las citas, a reconocer la señal de contradicción entre fuentes y a reportar incidentes. Si el asistente falla, las capitanías vuelven a las plantillas manuales con un procedimiento escrito y un responsable de activar el cambio. Las metas de tiempo de respuesta se ajustan para incluir el tiempo de verificación medido en el piloto.</p>
+    </div>
+    <h3>La decisión al cerrar la etapa</h3>
+    <p class="gateq">¿La solución está lista para operar de manera estable?</p>
+    <p>La entidad lo demuestra cuando puede:</p>
+    <ul class="items">
+      <li>Operar y dar soporte al servicio.</li>
+      <li>Monitorear su calidad y sus riesgos.</li>
+      <li>Responder a incidentes.</li>
+      <li>Mantener las fuentes y los datos.</li>
+      <li>Supervisar al proveedor.</li>
+      <li>Formar a los usuarios.</li>
+      <li>Recuperar el proceso ante una falla.</li>
+      <li>Conservar el conocimiento aunque cambie el equipo.</li>
+    </ul>
+    <p>Con esa evidencia caben tres decisiones:</p>
+    <ul class="items">
+      <li><strong>Avanzar:</strong> autorizar la operación estable.</li>
+      <li><strong>Ajustar:</strong> hacer cambios antes de institucionalizar o mantener un piloto extendido.</li>
+      <li><strong>Cerrar:</strong> la entidad no puede sostener la solución en condiciones aceptables.</li>
+    </ul>
+    <p>La prueba de madurez es sencilla de enunciar: el servicio sigue siendo comprensible y gobernable cuando el equipo original ya no está.</p>
+
+    <h3>En síntesis</h3>
+    <p>Institucionalizar consiste en que la solución funcione como un servicio estable, con responsables identificados, documentación, usuarios formados y un plan para operar cuando la IA falla. La etapa termina cuando el servicio sigue siendo gobernable sin el equipo que lo creó.</p>
+
+    <h3>Para aplicar en su entidad</h3>
+    <div class="questions">
+      <p>Para una solución de IA que esté en producción o cerca de estarlo en su entidad, ¿quién es dueño del proceso, quién atiende el soporte y quién puede decidir suspenderla?</p>
+      <p>Si la persona que impulsó el piloto se fuera mañana de su entidad, ¿la solución seguiría funcionando igual?</p>
+    </div>
+  </div>
+</article>
+
+<article class="chapter" id="etapa6">
+  <span class="kicker">Etapa 6 de 7</span>
+  <h1>Escalar y revalidar</h1>
+  <p class="epigraph">¿La evidencia disponible representa el alcance que queremos autorizar ahora?</p>
+  <div class="prose">
+    <p class="first">Escalar amplía el alcance de una solución. Puede significar más usuarios, más datos, nuevas sedes, nuevas integraciones, mayor volumen, interacción con el público o un papel más autónomo de la IA. Cada forma de ampliación cambia el perfil del caso; de ahí que escalar vaya siempre acompañado de revalidar: comprobar que la evidencia obtenida hasta ahora sigue describiendo las nuevas condiciones.</p>
+    <h2>Cuando la ampliación transforma el sistema</h2>
+    <p>Pensemos en un asistente que se probó con cinco abogados y diez documentos públicos. Con el tiempo, la organización propone conectarlo a miles de expedientes, abrirlo a toda la entidad, permitir que redacte respuestas a ciudadanos, integrarlo con el sistema de gestión y dejar que envíe comunicaciones. El producto conserva su nombre, aunque institucionalmente se ha transformado: cambiaron los datos, las personas afectadas, las integraciones, la exposición y quizá el papel de la IA.</p>
+    <p>Al escalar conviene revisar lo que cambió respecto del piloto:</p>
+    <ul class="items">
+      <li><strong>Población:</strong> si los nuevos usuarios o casos se parecen a los anteriores, o si aparecen regiones, perfiles o situaciones distintas.</li>
+      <li><strong>Datos:</strong> si se incorporan fuentes con otra calidad o sensibilidad.</li>
+      <li><strong>Volumen:</strong> si el sistema y las personas que revisan pueden sostener la nueva carga.</li>
+      <li><strong>Integración:</strong> si se añaden permisos o acciones que aumentan la exposición.</li>
+      <li><strong>Consecuencia:</strong> si la salida empieza a producir efectos más directos sobre las personas.</li>
+      <li><strong>Proveedor o modelo:</strong> si la ampliación obliga a cambiar de arquitectura, de plan comercial o de versión del modelo.</li>
+    </ul>
+    <h2>Lo que un piloto pequeño puede no mostrar</h2>
+    <p>La evidencia de un piloto describe las condiciones en que se obtuvo: un grupo concreto, un conjunto de documentos, un volumen limitado. Un piloto con doscientos casos puede mostrar buen desempeño sin revelar fallas que solo aparecen en situaciones poco frecuentes.</p>
+    <p class="pull">Un error que ocurre en el 0,1 % de los casos puede no aparecer en un piloto de doscientos casos. En una operación de doscientos mil casos, afecta a doscientas personas.</p>
+    <p>Por eso la evaluación de escala observa cómo se distribuyen los errores y establece un monitoreo específico para los eventos de baja frecuencia y alta consecuencia.</p>
+    <h2>Crecer por fases</h2>
+    <p>Una forma prudente de ampliar es avanzar por pasos intermedios, en este orden:</p>
+    <ol class="items">
+      <li>Más usuarios en el mismo tipo de caso.</li>
+      <li>Mayor variedad de datos.</li>
+      <li>Otras unidades de la entidad.</li>
+      <li>Interacción con el público.</li>
+      <li>Nuevas integraciones.</li>
+      <li>Mayor autonomía.</li>
+    </ol>
+    <p>Cada paso produce evidencia y permite ajustar antes de combinar todos los cambios, de modo que los primeros grupos revelan problemas de integración o de uso antes de exponer a una población mayor.</p>
+    <h2>La revisión humana bajo un volumen mayor</h2>
+    <p>Cuando aumenta el volumen, la revisión humana puede perder profundidad aunque siga existiendo en el papel. La revisión que funciona con cincuenta casos diarios puede degradarse con quinientos. Conviene medir de nuevo la carga por revisor, el tiempo medio, la tasa de modificaciones y los errores que pasan sin ser detectados. Si la revisión se vuelve inviable, la organización rediseña el proceso o limita el papel de la IA, para que el control humano siga siendo efectivo.</p>
+    <h2>Costos, dependencia y autonomía</h2>
+    <p>Al crecer el uso crecen también el consumo, el almacenamiento, el soporte y la dependencia de un proveedor. Los precios por usuario, por consulta o por volumen de texto pueden cambiar de manera significativa. Una entidad preparada para escalar conoce sus costos variables, sus alternativas de proveedor y las condiciones en que podría migrar; esa información protege la continuidad y mejora su posición para negociar.</p>
+    <p>Aumentar la autonomía de la IA es una de las formas más exigentes de escalar. La madurez de una entidad se expresa en su capacidad para elegir conscientemente cuánta autonomía conviene en cada caso: una organización madura puede decidir que una herramienta de alto impacto se quede en el papel de recomendación aunque técnicamente pudiera ejecutar.</p>
+    <h3>Lo que conviene cuidar</h3>
+    <p>Las alertas de esta etapa son extrapolar la evidencia del piloto a condiciones que nunca representó, combinar todos los cambios a la vez, aceptar que la revisión humana se degrade con el volumen y descubrir los costos de la escala cuando ya se comprometió el presupuesto.</p>
+    <h3>Un caso para pensar</h3>
+    <p>En 2013, el estado de Michigan implementó MiDAS para automatizar la detección de fraude en el seguro de desempleo. El sistema generaba y notificaba la acusación de forma prácticamente automática, con muy poca revisión humana previa. Entre 2013 y 2015, cerca de 40.000 personas fueron acusadas de fraude, una cifra varias veces superior a la esperada por la propia agencia. En 2016, el Auditor General revisó una muestra de 22.000 determinaciones y encontró que el 93 % no correspondía a fraude.</p>
+    <p>El caso muestra un patrón que se repite en otros sistemas: un proceso aplicado a muchos casos, consecuencias relevantes para las personas y mecanismos de corrección débiles. Distinguir entre una señal, su revisión y una decisión adversa se vuelve esencial a medida que crecen el volumen y la autonomía.</p>
+    <div class="aside">
+      <span class="kicker">En la ANSOP</span>
+      <p>Tras seis meses de operación en una capitanía, se proponen tres ampliaciones: extender el asistente a todas las capitanías, conectarlo al sistema de gestión de trámites y permitir que envíe la respuesta directamente al usuario. La revisión de escala muestra que la tercera propuesta cambia el papel de la IA, que pasaría de asistir a ejecutar una comunicación externa; por eso se trata como una decisión distinta, con una nueva evaluación jurídica y de impacto.</p>
+      <p>La ampliación avanza por fases: primero dos capitanías de volumen similar, luego las de mayor volumen. En cada fase se mide de nuevo la carga de revisión, porque algunas sedes reciben varias veces más solicitudes, y se recalcula el costo con el cobro por volumen de texto.</p>
+    </div>
+    <h3>La decisión al cerrar la etapa</h3>
+    <p class="gateq">¿La evidencia disponible representa el alcance que queremos autorizar ahora?</p>
+    <p>El equipo explica qué cambió respecto de la operación anterior, qué controles se revalidaron y qué riesgos nuevos aparecieron.</p>
+    <p>Con esa evidencia caben tres decisiones:</p>
+    <ul class="items">
+      <li><strong>Avanzar:</strong> autorizar la siguiente fase.</li>
+      <li><strong>Ajustar:</strong> pedir cambios o mantener el alcance actual.</li>
+      <li><strong>Regresar:</strong> retroceder a un alcance anterior.</li>
+    </ul>
+    <p>Si la respuesta es parcial, la ampliación avanza por fases con límites claros.</p>
+
+    <h3>En síntesis</h3>
+    <p>Escalar exige revalidar, porque cada ampliación de usuarios, datos, integraciones o autonomía cambia las condiciones en que se obtuvo la evidencia. La ampliación avanza por fases, vuelve a medir la revisión humana y los costos, y trata cualquier aumento de autonomía como una decisión propia.</p>
+
+    <h3>Para aplicar en su entidad</h3>
+    <div class="questions">
+      <p>Piense en una solución que funcionó bien en un piloto pequeño. ¿Qué cambiaría más al pasar de diez usuarios a mil?</p>
+      <p>La evidencia que tiene hoy sobre esa solución, ¿representa las condiciones a las que quiere ampliarla?</p>
+    </div>
+  </div>
+</article>
+
+<article class="chapter" id="etapa7">
+  <span class="kicker">Etapa 7 de 7</span>
+  <h1>Sostener, corregir y retirar</h1>
+  <p class="epigraph">¿La solución sigue produciendo suficiente valor y control para justificar su continuidad?</p>
+  <div class="prose">
+    <p class="first">La puesta en producción inaugura una etapa de gestión permanente. Un sistema de IA necesita mantenerse porque cambian los datos, las normas, los proveedores, los procesos y las personas. Y un sistema que permanece años en operación acumula dependencia: usuarios que organizan su trabajo alrededor de él, datos que se transforman para alimentarlo, contratos que lo sostienen y procesos que incorporan sus resultados. Por eso corregir y retirar requieren planificación.</p>
+    <h2>De dónde viene el cambio</h2>
+    <p>El cambio puede llegar por cinco caminos:</p>
+    <ul class="items">
+      <li><strong>Los datos:</strong> evolucionan la población, las prácticas o la calidad de las fuentes.</li>
+      <li><strong>La norma o el procedimiento:</strong> una modificación vuelve incorrecta una regla o una fuente.</li>
+      <li><strong>El modelo:</strong> el proveedor actualiza una versión o sustituye componentes.</li>
+      <li><strong>La organización:</strong> aparecen nuevos usuarios, sedes o responsables.</li>
+      <li><strong>La relación entre costo y valor:</strong> los costos crecen, el beneficio disminuye o aparece una alternativa mejor.</li>
+    </ul>
+    <p>El monitoreo, en consecuencia, observa el sistema y también su entorno.</p>
+    <h2>Qué observar en la operación</h2>
+    <p>El monitoreo combina indicadores técnicos y operativos: la calidad de las salidas, los errores críticos, el volumen, los incidentes, las reclamaciones, el comportamiento por grupos de población, el tiempo de revisión, los cambios del proveedor, los costos, el uso real y los resultados del proceso. La selección corresponde al propósito del sistema: si el objetivo es reducir tiempo sin deteriorar la calidad, ambas dimensiones se observan juntas. Y la frecuencia depende de la consecuencia, de modo que un sistema de alto impacto se revisa más de cerca que un asistente interno.</p>
+    <h2>Las formas de corregir</h2>
+    <p>Corregir puede requerir ajustar el modelo, cambiar los datos, modificar la interfaz o reducir el alcance. Las opciones son muchas:</p>
+    <ul class="items">
+      <li>Restringir las fuentes o reducir los permisos.</li>
+      <li>Cambiar las instrucciones.</li>
+      <li>Aumentar la revisión humana.</li>
+      <li>Excluir un tipo de caso.</li>
+      <li>Congelar una versión que funciona.</li>
+      <li>Cambiar de proveedor.</li>
+      <li>Volver temporalmente al proceso manual.</li>
+    </ul>
+    <p>Tener estas opciones previstas desde el diseño amplía la capacidad de respuesta cuando aparece un problema; poder reducir el alcance con rapidez es una forma de resiliencia.</p>
+    <p>A veces la mejor corrección consiste en reducir el papel de la IA. Una iniciativa concebida para recomendar puede resultar más valiosa como herramienta de información, y un sistema pensado para atender al público puede usarse primero como asistente interno.</p>
+    <h2>Cuándo volver a evaluar</h2>
+    <p>Canadá exige que su evaluación de impacto se revise cuando cambian de forma relevante el alcance o la funcionalidad del sistema, porque el perfil de impacto evoluciona con el tiempo. Una entidad puede adoptar una práctica similar y acordar de antemano qué hechos obligan a revalidar:</p>
+    <ul class="items">
+      <li>Una nueva fuente de datos.</li>
+      <li>Un nuevo tipo de usuario.</li>
+      <li>Una actualización mayor del modelo.</li>
+      <li>Un cambio de finalidad.</li>
+      <li>Una nueva integración.</li>
+      <li>Un aumento de autonomía.</li>
+      <li>Un incidente significativo.</li>
+      <li>Un cambio normativo.</li>
+    </ul>
+    <p>El conjunto de pruebas construido en el prototipo permite repetir la evaluación después de cada cambio y detectar retrocesos.</p>
+    <h2>Retirar es parte del ciclo</h2>
+    <p>Retirar significa cerrar una solución de manera ordenada cuando deja de producir suficiente valor o ya no puede sostenerse en condiciones aceptables. El retiro puede ser completo o parcial: mantener solo una función, convertir una ejecución en recomendación, migrar a otra herramienta, reemplazarla por una automatización convencional o volver al proceso manual mientras se rediseña.</p>
+    <p>Los criterios de retiro conviene definirlos desde el piloto, para que la decisión se tome con evidencia y con independencia de la costumbre o de la inversión ya realizada. Entre los más comunes están:</p>
+    <ul class="items">
+      <li>Errores críticos por encima del umbral acordado.</li>
+      <li>Imposibilidad de auditar el sistema.</li>
+      <li>Incumplimientos legales o contractuales.</li>
+      <li>Degradación sostenida del desempeño.</li>
+      <li>Un costo superior al valor que produce.</li>
+      <li>Una dependencia inaceptable de un proveedor o de una persona.</li>
+      <li>La aparición de una alternativa mejor.</li>
+    </ul>
+    <p>La decisión de retirar se documenta con la misma disciplina que la de desplegar.</p>
+    <p class="pull">El asistente redujo un 18 % el tiempo de borrador, pero aumentó un 22 % el tiempo de verificación y produjo errores en citas normativas. Se cierra esta configuración. El conjunto de pruebas y el protocolo de verificación se conservan para futuras alternativas.</p>
+    <p>Un registro de cierre como este deja claro qué se probó, qué se aprendió y qué se conserva. El cierre ordenado incluye además tareas concretas: archivar o eliminar la información de prueba según las reglas, revocar los accesos, documentar los resultados, comunicar la decisión y conservar lo que puede servir a otros.</p>
+    <h2>Lo que queda cuando un sistema termina</h2>
+    <p>La capacidad institucional continúa después del producto. Un caso cerrado deja resultados de evaluación, registros de incidentes, decisiones de diseño, conjuntos de pruebas, cláusulas contractuales útiles, métricas y lecciones. Conservados y organizados, estos activos reducen el costo y el riesgo de las siguientes iniciativas, y convierten la experiencia dispersa en conocimiento que la entidad puede reutilizar.</p>
+    <h3>Lo que conviene cuidar</h3>
+    <p>La alerta más común en esta etapa es el sistema que nadie ha evaluado recientemente porque siempre ha funcionado. Le siguen la continuidad sostenida por costumbre, las actualizaciones del proveedor que se aceptan sin volver a probar y los cierres que no dejan ningún registro.</p>
+    <h3>Un caso para pensar</h3>
+    <p>Robodebt fue un programa del gobierno australiano orientado a identificar y recuperar supuestas deudas asociadas con prestaciones sociales. Utilizó procesos automatizados y promedios de ingresos para inferir deudas en situaciones donde la información disponible no permitía sostener esa inferencia. Una comisión oficial de investigación (Royal Commission) reconstruyó en 2023, en un informe de cerca de 990 páginas, una cadena amplia de fallas que incluyó el diseño de la política y la respuesta institucional a las señales tempranas.</p>
+    <p>La lección es que el daño apareció cuando una lógica automatizada se insertó en una política, produjo comunicaciones y consecuencias, y operó bajo una estructura de gobierno que no corrigió a tiempo. La legalidad, la calidad de los datos, la revisión humana, el derecho de reclamación y la supervisión forman parte del sistema durante toda su operación.</p>
+    <div class="aside">
+      <span class="kicker">En la ANSOP</span>
+      <p>Un cambio en el reglamento de zarpes obliga a revalidar: gestión documental actualiza la colección oficial y el equipo repite el conjunto de pruebas con las nuevas reglas antes de reactivar el asistente en esos trámites. Meses después, el proveedor anuncia una actualización mayor del modelo; las pruebas detectan un retroceso en la señal de contradicción entre fuentes, y la entidad mantiene la versión anterior hasta que la nueva las supere.</p>
+      <p>La revisión anual compara costo y valor en todas las capitanías y mantiene el servicio con ajustes. Los criterios de retiro, registrados desde el piloto, siguen vigentes: citas a normas derogadas por encima del umbral, imposibilidad de auditar las respuestas o un costo superior al valor medido.</p>
+    </div>
+    <h3>La decisión al cerrar la etapa</h3>
+    <p class="gateq">¿La solución sigue produciendo suficiente valor y control para justificar su continuidad?</p>
+    <p>En esta etapa la puerta se abre periódicamente, siempre con la misma pregunta.</p>
+    <p>Las decisiones posibles adoptan aquí cuatro formas:</p>
+    <ul class="items">
+      <li><strong>Continuar:</strong> mantener la operación con ajustes.</li>
+      <li><strong>Corregir:</strong> cambiar datos, instrucciones o controles, o reducir el alcance.</li>
+      <li><strong>Sustituir:</strong> reemplazar la solución por una alternativa mejor.</li>
+      <li><strong>Retirar:</strong> cerrar de forma ordenada, conservando registros y evidencia.</li>
+    </ul>
+    <p>En todos los casos se conserva la evidencia que explica la decisión, y esa evidencia alimenta las siguientes iniciativas de la entidad. Así el ciclo de vida se convierte en un sistema de aprendizaje continuo.</p>
+
+    <h3>En síntesis</h3>
+    <p>Sostener una solución implica observar el sistema y su entorno, corregir con opciones graduales y volver a evaluar cuando ocurren los cambios acordados de antemano. El retiro forma parte de esa gestión: se decide con criterios definidos y conserva los activos que servirán a las siguientes iniciativas.</p>
+
+    <h3>Para aplicar en su entidad</h3>
+    <div class="questions">
+      <p>Para una solución que su entidad ya sostiene en producción, ¿qué tres señales concretas obligarían a corregirla o retirarla?</p>
+      <p>¿Su entidad tiene hoy un sistema de IA que nadie ha evaluado recientemente porque siempre ha funcionado?</p>
+    </div>
+  </div>
+</article>
+
+<article class="chapter" id="conjunto">
+  <span class="kicker">Cierre</span>
+  <h1>Una mirada de conjunto</h1>
+  <p class="epigraph">Una pregunta, un producto que la responde y una decisión que se toma con esa evidencia.</p>
+  <div class="prose">
+    <p class="first">Recorridas las siete etapas, el ciclo puede resumirse en una sola tabla. Cada fila repite la misma lógica: lo que la entidad necesita saber, lo que produce para saberlo y la decisión que toma con ello.</p>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <tr><th>Etapa</th><th>Pregunta central</th><th>Producto principal</th><th>Decisión</th></tr>
+      <tr><td>1. Enmarcar</td><td>¿Qué merece intervención, para quién y con qué resultado?</td><td>Hipótesis de valor, línea base y dueño del proceso</td><td>¿Es importante, observable y legítimo?</td></tr>
+      <tr><td>2. Viabilidad</td><td>¿Hay condiciones para construir y probar?</td><td>Mapa de datos, análisis jurídico, consecuencia y costos</td><td>¿El prototipo producirá aprendizaje con exposición razonable?</td></tr>
+      <tr><td>3. Prototipar</td><td>¿La idea justifica un piloto?</td><td>Registro de aprendizaje</td><td>Avanzar, ajustar, regresar o cerrar</td></tr>
+      <tr><td>4. Pilotear</td><td>¿Produce valor, calidad y control?</td><td>Evidencia frente a la línea base</td><td>¿Se autoriza el despliegue?</td></tr>
+      <tr><td>5. Institucionalizar</td><td>¿Se puede operar y sostener?</td><td>Responsables, documentación y continuidad</td><td>¿Está lista la operación estable?</td></tr>
+      <tr><td>6. Escalar</td><td>¿La evidencia representa el nuevo alcance?</td><td>Revalidación por fases</td><td>¿Se autoriza la siguiente fase?</td></tr>
+      <tr><td>7. Sostener</td><td>¿Sigue justificándose?</td><td>Monitoreo, correcciones y criterios de retiro</td><td>Continuar, corregir, sustituir o retirar</td></tr>
+    </table>
+  </div>
+  <div class="prose" style="margin-top:0">
+    <h2>¿En qué etapa está realmente su iniciativa?</h2>
+    <p>La etapa en que se encuentra una iniciativa se lee en su evidencia, con independencia de cómo se anuncie. Una forma sencilla de saberlo es recorrer las siguientes preguntas en orden y detenerse en la primera cuya respuesta sea negativa: esa es la etapa cuyo trabajo está pendiente.</p>
+    <ol class="items diagq">
+      <li><span class="diagst">Etapa 1</span>¿Existe una hipótesis de valor escrita, con una línea base inicial y un dueño del proceso?</li>
+      <li><span class="diagst">Etapa 2</span>¿Se revisaron los datos, lo jurídico, la tecnología, la organización y los costos, y se clasificó la consecuencia?</li>
+      <li><span class="diagst">Etapa 3</span>¿Un prototipo probó la hipótesis con casos difíciles y dejó un registro de lo aprendido?</li>
+      <li><span class="diagst">Etapa 4</span>¿Un piloto en condiciones representativas mostró valor frente a la línea base, con condiciones de parada definidas de antemano?</li>
+      <li><span class="diagst">Etapa 5</span>¿La solución opera con responsables asignados, documentación, formación y un mecanismo de continuidad?</li>
+      <li><span class="diagst">Etapa 6</span>¿Cada ampliación del alcance se revalidó en población, datos, volumen, integración y costos?</li>
+    </ol>
+    <p>Si todas las respuestas son afirmativas, la iniciativa está en la séptima etapa, y su trabajo es de gestión permanente. Si hay respuestas afirmativas después de una negativa, conviene completar primero la evidencia que falta, porque las decisiones posteriores se apoyan en ella.</p>
+  </div>
+</article>
+
+<article class="chapter" id="vocabulario">
+  <span class="kicker">Anexo</span>
+  <h1>Vocabulario</h1>
+  <p class="epigraph">Los términos que se usan a lo largo de la guía, con el sentido que tienen en ella.</p>
+  <dl class="prose gloss">
+    <dt>Ciclo de vida</dt><dd>Organización de una iniciativa desde que se identifica una necesidad hasta que se decide mantenerla, ampliarla o retirarla, en siete etapas con pregunta, producto y puerta de decisión.</dd>
+    <dt>Dueño del proceso</dt><dd>Área o persona que responde por el propósito y el resultado de una iniciativa, y que define qué significa un buen resultado y qué error resulta grave.</dd>
+    <dt>Encuadre</dt><dd>Descripción del problema que se quiere atender, con su población, su tarea, su consecuencia, su línea base, sus alternativas y sus límites, antes de comprometer recursos.</dd>
+    <dt>Puerta de decisión</dt><dd>Momento formal en que la evidencia de una etapa se convierte en una decisión institucional: avanzar, ajustar, regresar o cerrar.</dd>
+    <dt>Papel de la IA</dt><dd>Grado de autoridad que la IA ejerce dentro del proceso: informar, asistir, recomendar o ejecutar.</dd>
+    <dt>Hipótesis de valor</dt><dd>Afirmación comprobable sobre el cambio esperado, con una tarea, una condición de uso, un cambio esperado y una restricción de calidad.</dd>
+    <dt>Línea base</dt><dd>Medición del proceso actual con la información disponible, que permite comparar el resultado de la intervención.</dd>
+    <dt>Viabilidad</dt><dd>Existencia de condiciones razonables para construir y probar la solución en cinco dimensiones: datos, jurídica, tecnológica, organizacional y económica.</dd>
+    <dt>Consecuencia</dt><dd>Efecto posible de la iniciativa, desde uno limitado e interno hasta la influencia sobre derechos, beneficios, sanciones o funciones críticas. Define la intensidad de las revisiones.</dd>
+    <dt>Rutas de revisión</dt><dd>Niveles de revisión (rápida, estándar y reforzada) que se asignan a cada iniciativa según los datos que usa, su integración y su consecuencia.</dd>
+    <dt>Prototipo</dt><dd>Versión reducida de la idea, diseñada para responder preguntas y producir evidencia, que puede cambiar rápido y a bajo costo.</dd>
+    <dt>Conjunto de pruebas</dt><dd>Casos representativos y difíciles, documentados, que permiten medir el sistema con criterios estables y detectar retrocesos.</dd>
+    <dt>Registro de aprendizaje</dt><dd>Documento que conserva las hipótesis probadas, los datos, las configuraciones, los casos de prueba, las fallas y las razones para continuar o cerrar un experimento.</dd>
+    <dt>Piloto</dt><dd>Prueba de la solución en un contexto representativo de la operación, con usuarios reales, variedad de casos y controles concretos.</dd>
+    <dt>Condiciones de parada</dt><dd>Umbrales definidos antes del piloto que obligan a suspender, corregir o restringir la prueba.</dd>
+    <dt>Revisión humana significativa</dt><dd>Revisión ejercida por una persona con la competencia, la información, el tiempo y la autoridad necesarios para cuestionar el resultado.</dd>
+    <dt>Institucionalizar</dt><dd>Convertir una solución en una capacidad que la organización puede operar, supervisar y sostener aunque cambien las personas que la impulsaron.</dd>
+    <dt>Mecanismo alternativo</dt><dd>Forma de operar cuando la IA falla o debe suspenderse, como el regreso temporal al proceso manual.</dd>
+    <dt>Escalar</dt><dd>Ampliar el alcance de una solución en usuarios, datos, sedes, integraciones, volumen, interacción con el público o autonomía.</dd>
+    <dt>Revalidar</dt><dd>Comprobar que la evidencia disponible representa las nuevas condiciones de operación.</dd>
+    <dt>Agente de IA</dt><dd>Sistema que interpreta una meta, usa herramientas, ejecuta pasos y avanza hacia un resultado con cierto grado de autonomía.</dd>
+    <dt>Criterios de retiro</dt><dd>Señales definidas con anticipación que obligan a corregir o retirar una solución.</dd>
+  </dl>
+</article>
+
+<article class="chapter" id="referencias">
+  <span class="kicker">Anexo</span>
+  <h1>Referencias</h1>
+  <p class="epigraph">Fuentes de los casos citados en la guía.</p>
+  <div class="prose refs">
+    <p>Australian Department of Defence. (2024). AUKUS trials artificial intelligence in robotic vehicles (TORVICE).</p>
+    <p>Corte Constitucional de Colombia. (2024). Sentencia T-323 de 2024.</p>
+    <p>Corte Constitucional de Colombia. (s. f.). Información institucional sobre PretorIA.</p>
+    <p>DoD Office of Inspector General. (2022). Evaluation of Contract Monitoring and Management for Project Maven, DODIG-2022-049.</p>
+    <p>Gobierno de Canadá. (2026). Algorithmic Impact Assessment tool.</p>
+    <p>Michigan Auditor General. (2016). Revisión de determinaciones de fraude del sistema MiDAS.</p>
+    <p>OCDE. (2026). Generative AI experimentation in government. OECD Publishing.</p>
+    <p>Royal Commission into the Robodebt Scheme. (2023). Report of the Royal Commission into the Robodebt Scheme.</p>
+    <p>UK Government. (2025). Microsoft 365 Copilot Experiment: Cross-Government Findings Report.</p>
+  </div>
+</article>
+
+<nav class="turn" id="turn" aria-label="Paso de capítulo"></nav>
+</div>
+</div>
+
+<script>
+const chapters = [...document.querySelectorAll(".chapter")];
+chapters.forEach(c => {
+  if (c.id === "inicio") return;
+  const k = c.querySelector(":scope > .kicker"); if (!k) return;
+  const words = c.textContent.trim().split(/\s+/).length;
+  const min = Math.max(2, Math.round(words / 200));
+  k.textContent = k.textContent + " · " + min + " minutos de lectura";
+});
+const ids = chapters.map(c => c.id);
+const titles = chapters.map(c => { const h = c.querySelector("h1"); return h ? h.textContent : ""; });
+const turn = document.getElementById("turn");
+function show(id, scroll) {
+  let i = ids.indexOf(id); if (i < 0) i = 0;
+  chapters.forEach((c, j) => c.classList.toggle("on", j === i));
+  let h = "";
+  if (i > 0) h += `<a href="#${ids[i - 1]}"><small>← ${i - 1 === 0 ? "Volver" : "Anterior"}</small>${i - 1 === 0 ? "Portada e índice" : titles[i - 1]}</a>`;
+  if (i < ids.length - 1) h += `<a class="next" href="#${ids[i + 1]}"><small>Siguiente →</small>${titles[i + 1]}</a>`;
+  turn.innerHTML = h;
+  document.getElementById("runhead").hidden = (i === 0);
+  if (scroll) window.scrollTo({ top: 0 });
+}
+function fromHash() { const id = (location.hash || "").slice(1); show(ids.includes(id) ? id : "inicio", true); }
+window.addEventListener("hashchange", fromHash);
+fromHash();
+document.addEventListener("keydown", e => {
+  const i = ids.indexOf((location.hash || "#inicio").slice(1));
+  if (e.key === "ArrowRight" && i < ids.length - 1) location.hash = ids[i + 1];
+  if (e.key === "ArrowLeft" && i > 0) location.hash = ids[i - 1];
+});
+</script>
+</body>
+</html>
