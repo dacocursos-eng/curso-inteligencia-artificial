@@ -8,9 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-body { margin: 0; }
-[hidden] { display: none !important; }
-img { max-width: 100%; }
 /* Layout: un libro en HTML. Una sola página de papel centrada sobre el fondo azul marino; un capítulo visible a la vez; texto corrido en una columna de lectura; índice al comienzo y paso de capítulo al final. Estilo único con la paleta de la guía de Retos. */
 :root {
   --navy: #00205b;
@@ -104,9 +101,13 @@ td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(-
 .gloss dd { margin: 0.25em 0 0; font-size: 1.08rem; line-height: 1.65; }
 .refs p { font-size: 1rem !important; line-height: 1.6; padding-left: 1.5em; text-indent: -1.5em; }
 :focus-visible { outline: 2px solid var(--navy-deep); outline-offset: 3px; }
+
+body{margin:0}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
+
 <div class="desk">
 <div class="page">
 
@@ -114,29 +115,17 @@ td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(-
 
 <article class="chapter" id="inicio">
   <div class="cover">
-    <span class="kicker">Guía de estudio</span>
+    <span class="kicker">Inteligencia artificial en entidades públicas</span>
     <h1>El ciclo de vida de una <em>iniciativa de inteligencia artificial</em></h1>
     <p class="epigraph">Qué se decide en cada etapa, qué conviene pensar y qué evidencia permite avanzar, ajustar, regresar o cerrar.</p>
   </div>
   <div class="prose">
-    <p class="first">Esta guía acompaña la sesión sobre el ciclo de vida de las iniciativas de inteligencia artificial en entidades públicas. Puede leerse de principio a fin, como un texto continuo, o consultarse por capítulos cuando se necesite volver sobre una etapa.</p>
-    <h2>Cómo usar esta guía</h2>
-    <p>Se recomienda leer primero la introducción, las bases y la presentación del caso, y después las siete etapas en orden, porque cada una se apoya en la anterior. Cada capítulo indica al comienzo su tiempo aproximado de lectura.</p>
-    <p>Todas las etapas siguen la misma secuencia:</p>
-    <ul class="items">
-      <li>De qué se trata la etapa y cómo se desarrolla.</li>
-      <li>Lo que conviene cuidar.</li>
-      <li>Un caso real para pensar.</li>
-      <li>Lo que ocurre en la iniciativa que acompaña toda la guía.</li>
-      <li>La decisión con la que se cierra la etapa.</li>
-      <li>Una síntesis y dos preguntas para aplicar lo aprendido.</li>
-    </ul>
-    <p>Las preguntas del final pueden responderse por escrito, de forma individual, o conversarse en grupo. Resulta útil elegir desde el comienzo una iniciativa de IA de su propia entidad, real o en estudio, y aplicarle las preguntas de cada etapa a medida que avanza la lectura. Los términos técnicos se explican la primera vez que aparecen y se reúnen en el vocabulario, al final de la guía.</p>
+    <p class="first">Una iniciativa de inteligencia artificial en una entidad pública recorre siete etapas, desde la formulación del problema hasta su operación, su ampliación y su eventual retiro. Cada etapa responde una pregunta distinta, produce un tipo de evidencia y termina en una decisión: avanzar, ajustar, regresar o cerrar.</p>
   </div>
   <nav class="toc" aria-label="Índice">
     <a href="#introduccion"><span class="n">Introducción</span><span class="t">Una iniciativa que cambia de naturaleza</span></a>
     <a href="#bases"><span class="n">Bases</span><span class="t">Cinco ideas para recorrer el ciclo</span></a>
-    <a href="#caso"><span class="n">El caso</span><span class="t">La iniciativa que nos acompaña</span></a>
+    <a href="#caso"><span class="n">El caso</span><span class="t">Un asistente para solicitudes de zarpe</span></a>
     <a href="#etapa1"><span class="n">Etapa 1</span><span class="t">Enmarcar el problema y el valor esperado</span></a>
     <a href="#etapa2"><span class="n">Etapa 2</span><span class="t">Diseñar y preparar la viabilidad</span></a>
     <a href="#etapa3"><span class="n">Etapa 3</span><span class="t">Prototipar para aprender</span></a>
@@ -244,12 +233,12 @@ td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(-
 
 <article class="chapter" id="caso">
   <span class="kicker">El caso</span>
-  <h1>La iniciativa que nos acompaña</h1>
+  <h1>Un asistente para solicitudes de zarpe</h1>
   <p class="epigraph">Una misma iniciativa, seguida de etapa en etapa, permite ver cómo cambia la pregunta a medida que crece la evidencia.</p>
   <div class="prose">
-    <p class="first">La guía acompaña una iniciativa en una entidad ilustrativa, la ANSOP, una autoridad con funciones sobre embarcaciones y zarpes. Cada día, sus funcionarios reciben solicitudes de zarpe, revisan la información, consultan procedimientos y resoluciones vigentes y preparan una respuesta.</p>
+    <p class="first">La ANSOP es una entidad ilustrativa: una autoridad con funciones sobre embarcaciones y zarpes. Cada día, sus funcionarios reciben solicitudes de zarpe, revisan la información, consultan procedimientos y resoluciones vigentes y preparan una respuesta.</p>
     <p>La iniciativa consiste en un asistente que prepara el borrador de esa respuesta. El funcionario lo revisa y puede modificarlo sustancialmente antes de enviarlo. En términos del papel de la IA, se trata de una función de asistencia: la autorización del zarpe permanece en el funcionario competente y el asistente apoya la preparación del texto.</p>
-    <p>Al final de cada etapa, un apartado titulado <em>En la ANSOP</em> cuenta qué ocurre con esta iniciativa. El recorrido es ilustrativo y fue construido con fines pedagógicos; las cifras que aparecen sirven para razonar sobre cada etapa y no corresponden a datos de una entidad real.</p>
+    <p>El caso es ilustrativo y sus cifras no corresponden a datos de una entidad real.</p>
   </div>
 </article>
 
@@ -260,7 +249,7 @@ td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(-
   <div class="prose">
     <p class="first">Enmarcar es la etapa en la que una idea todavía puede cambiar con facilidad. Su propósito es construir una comprensión compartida del problema antes de comprometer datos, contratación, integración o desarrollo. La respuesta a la pregunta central debe poder entenderse sin mencionar todavía un producto específico.</p>
     <h2>De un producto imaginado a una pregunta que se puede investigar</h2>
-    <p>Es frecuente que una necesidad llegue expresada como producto: «queremos un chatbot», «necesitamos un modelo predictivo». Esa formulación contiene una intuición valiosa y deja abiertas las preguntas que permiten evaluar si la intervención tiene sentido. Enmarcar traduce esa intuición en una pregunta que el área de tecnología y los proveedores pueden investigar: qué tarea, qué población, qué resultado, qué condición de éxito y qué límite.</p>
+    <p>Es frecuente que una necesidad llegue expresada como producto: “queremos un chatbot”, “necesitamos un modelo predictivo”. Esa formulación contiene una intuición valiosa y deja abiertas las preguntas que permiten evaluar si la intervención tiene sentido. Enmarcar traduce esa intuición en una pregunta que el área de tecnología y los proveedores pueden investigar: qué tarea, qué población, qué resultado, qué condición de éxito y qué límite.</p>
     <p>Con esa precisión cambia también la conversación con los proveedores. La entidad puede pedir evidencia sobre su necesidad concreta en lugar de evaluar una demostración general del producto, y se crea un lenguaje común entre la dirección, el área misional, tecnología, jurídica y las personas que utilizarán la solución.</p>
     <h2>El objetivo define la evidencia que se necesitará</h2>
     <p>Enmarcar permite decidir desde ahora qué tipo de evidencia hará falta más adelante, porque cada objetivo pide una medición distinta:</p>
@@ -294,7 +283,7 @@ td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(-
     <div class="aside">
       <span class="kicker">En la ANSOP</span>
       <p>El área de capitanías identifica que preparar respuestas a solicitudes de zarpe repetitivas consume tiempo de funcionarios expertos, sobre todo en la búsqueda de procedimientos y resoluciones. Antes de pensar en un asistente, el equipo considera dos alternativas más simples: plantillas estandarizadas y un índice actualizado de procedimientos.</p>
-      <p>El encuadre termina con la hipótesis de valor presentada en este capítulo: reducir en al menos un 25 % el tiempo de preparación, sin aumentar los errores sustantivos. Quedan dos preguntas para la siguiente etapa: si la respuesta al usuario es una actuación administrativa con deber de motivación, y si las fuentes tienen versiones controladas.</p>
+      <p>El encuadre termina con una hipótesis de valor: reducir en al menos un 25 % el tiempo de preparación, sin aumentar los errores sustantivos. Quedan dos preguntas para la siguiente etapa: si la respuesta al usuario es una actuación administrativa con deber de motivación, y si las fuentes tienen versiones controladas.</p>
     </div>
     <h3>La decisión al cerrar la etapa</h3>
     <p class="gateq">¿El problema es suficientemente importante, observable y legítimo para justificar una exploración con IA?</p>
@@ -484,7 +473,7 @@ td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(-
     </ul>
     <h2>Mirar el proceso completo</h2>
     <p>La unidad de análisis es la tarea o el servicio que se quiere mejorar, con todo lo que ocurre antes y después de la salida del modelo. El tiempo que ahorra la IA puede reaparecer como más revisión, más correcciones o nuevas tareas en otro punto del proceso. De ahí la importancia de medir juntos el tiempo total, la calidad final, el retrabajo, los errores críticos, la carga de revisión, los costos, los incidentes y los efectos sobre terceros.</p>
-    <p class="pull">Un asistente reduce de 20 a 5 minutos la preparación de un borrador, pero los revisores necesitan 12 minutos adicionales para verificar las citas. El ahorro neto existe —tres minutos por caso— y es mucho menor que el observado en la primera tarea.</p>
+    <p class="pull">Un asistente reduce de 20 a 5 minutos la preparación de un borrador, pero los revisores necesitan 12 minutos adicionales para verificar las citas. El ahorro neto existe, tres minutos por caso, y es mucho menor que el observado en la primera tarea.</p>
     <p>Si además disminuyen las devoluciones, el valor puede aumentar; si suben los errores críticos, la decisión cambia.</p>
     <h2>Probar en condiciones difíciles</h2>
     <p>Las pruebas difíciles buscan descubrir los límites antes de la operación. En una entidad civil esto significa probar con:</p>
@@ -514,7 +503,7 @@ td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(-
     <p>El Gobierno del Reino Unido realizó un experimento con un asistente de productividad con cerca de 20.000 funcionarios de 12 organizaciones públicas, y combinó datos de uso con encuestas, grupos focales y análisis de tareas. Los resultados mostraron beneficios en búsqueda, resumen y trabajo administrativo, límites en tareas más complejas y preocupaciones sobre información sensible. La lección está en el diseño: quien evalúe una herramienta similar necesita definir de antemano qué población observa, qué tareas compara, qué línea base utiliza y cómo distinguir el ahorro de tiempo que perciben las personas de la mejora real del proceso.</p>
     <div class="aside">
       <span class="kicker">En la ANSOP</span>
-      <p>El piloto se realiza en una capitanía, durante un periodo que cubre sus ciclos semanales de solicitudes. Los tiempos coinciden con el ejemplo de este capítulo: el ahorro neto es de tres minutos por caso, porque la verificación de citas consume buena parte del tiempo ganado en la redacción. El equipo mide qué porcentaje de borradores modifican los funcionarios y qué errores detectan. La condición de parada, escrita antes de empezar, es suspender el piloto si una respuesta enviada cita una norma derogada.</p>
+      <p>El piloto se realiza en una capitanía, durante un periodo que cubre sus ciclos semanales de solicitudes. El ahorro neto es de tres minutos por caso, porque la verificación de citas consume buena parte del tiempo ganado en la redacción. El equipo mide qué porcentaje de borradores modifican los funcionarios y qué errores detectan. La condición de parada, escrita antes de empezar, es suspender el piloto si una respuesta enviada cita una norma derogada.</p>
       <p>El piloto revela además una debilidad de la institución: el proveedor tarda en entregar los registros de uso. La entidad lo corrige antes de decidir el despliegue.</p>
     </div>
     <h3>La decisión al cerrar la etapa</h3>
@@ -826,7 +815,7 @@ td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(-
 <article class="chapter" id="vocabulario">
   <span class="kicker">Anexo</span>
   <h1>Vocabulario</h1>
-  <p class="epigraph">Los términos que se usan a lo largo de la guía, con el sentido que tienen en ella.</p>
+  <p class="epigraph">Términos clave del ciclo de vida de una iniciativa de inteligencia artificial.</p>
   <dl class="prose gloss">
     <dt>Ciclo de vida</dt><dd>Organización de una iniciativa desde que se identifica una necesidad hasta que se decide mantenerla, ampliarla o retirarla, en siete etapas con pregunta, producto y puerta de decisión.</dd>
     <dt>Dueño del proceso</dt><dd>Área o persona que responde por el propósito y el resultado de una iniciativa, y que define qué significa un buen resultado y qué error resulta grave.</dd>
@@ -856,7 +845,7 @@ td:first-child { font-family: var(--font-display); font-size: 1rem; color: var(-
 <article class="chapter" id="referencias">
   <span class="kicker">Anexo</span>
   <h1>Referencias</h1>
-  <p class="epigraph">Fuentes de los casos citados en la guía.</p>
+  <p class="epigraph">Fuentes de los casos citados.</p>
   <div class="prose refs">
     <p>Australian Department of Defence. (2024). AUKUS trials artificial intelligence in robotic vehicles (TORVICE).</p>
     <p>Corte Constitucional de Colombia. (2024). Sentencia T-323 de 2024.</p>
@@ -905,5 +894,6 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft" && i > 0) location.hash = ids[i - 1];
 });
 </script>
+
 </body>
 </html>
