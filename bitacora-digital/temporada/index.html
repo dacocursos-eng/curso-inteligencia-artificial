@@ -1,1 +1,564 @@
-d
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bitácora Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Un mundo nocturno de puerto: el faro (dorado) guía, la marea (turquesa) acompaña. Portada a lo ancho, temporada en fila, ficha en columna de lectura. */
+  --abismo: #061423;
+  --marea: #0d2a45;
+  --casco: #12385a;
+  --turquesa: #34c6b8;
+  --faro: #f4c25a;
+  --espuma: #eaf2f6;
+  --niebla: #93a9bb;
+  --linea: rgba(234, 242, 246, 0.12);
+  --display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --texto: "Figtree", "Segoe UI", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--abismo);
+  color: var(--espuma);
+  font-family: var(--texto);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--faro); }
+button { font-family: inherit; }
+:focus-visible { outline: 3px solid var(--faro); outline-offset: 3px; border-radius: 6px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+.contenedor { width: min(1180px, 100% - 40px); margin-inline: auto; }
+
+/* Portada */
+.portada { position: relative; overflow: hidden; border-bottom: 1px solid var(--linea); }
+#mar { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.portada-contenido { position: relative; padding: 96px 0 72px; display: grid; gap: 22px; max-width: 760px; }
+.sello { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--faro); font-weight: 700; }
+.sello::before { content: ""; width: 28px; height: 2px; background: var(--faro); }
+.portada h1 { font-size: clamp(44px, 8vw, 92px); line-height: .95; font-weight: 800; letter-spacing: -.02em; }
+.portada h1 span { color: var(--turquesa); display: block; }
+.portada p { font-size: 20px; color: var(--niebla); max-width: 60ch; margin: 0; }
+.cifras { display: flex; flex-wrap: wrap; gap: 10px; }
+.cifra { border: 1px solid var(--linea); background: rgba(6, 20, 35, .55); backdrop-filter: blur(6px); padding: 8px 14px; border-radius: 999px; font-size: 14px; }
+.cifra b { color: var(--faro); font-variant-numeric: tabular-nums; }
+.acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
+.boton { display: inline-flex; align-items: center; gap: 10px; border: 0; cursor: pointer; padding: 14px 22px; border-radius: 999px; font-weight: 700; font-size: 16px; text-decoration: none; }
+.boton-faro { background: var(--faro); color: var(--abismo); }
+.boton-faro:hover { filter: brightness(1.08); }
+.boton-claro { background: transparent; color: var(--espuma); border: 1px solid var(--linea); }
+.boton-claro:hover { border-color: var(--turquesa); }
+
+/* Temporada */
+.seccion { padding: 72px 0; }
+.seccion-cabeza { display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+.seccion-cabeza h2 { font-size: clamp(26px, 3.4vw, 38px); }
+.seccion-cabeza p { color: var(--niebla); margin: 6px 0 0; max-width: 60ch; }
+.temporada { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 1080px) { .temporada { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .temporada { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 440px) { .temporada { grid-template-columns: 1fr; } }
+.tarjeta { all: unset; cursor: pointer; display: grid; gap: 12px; align-content: start; align-self: start; border-radius: 18px; transition: transform .25s ease; }
+.tarjeta:hover { transform: translateY(-6px); }
+.tarjeta:focus-visible { outline: 3px solid var(--faro); outline-offset: 4px; }
+.caratula { position: relative; aspect-ratio: 1; border-radius: 16px; overflow: hidden; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 18px 40px rgba(0, 0, 0, .35); }
+.caratula svg.icono { position: absolute; right: -18px; bottom: -18px; width: 68%; opacity: .9; }
+.caratula .num { font-family: var(--display); font-size: 54px; font-weight: 800; line-height: 1; color: rgba(255, 255, 255, .95); position: relative; }
+.caratula .serie { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; position: relative; color: rgba(255, 255, 255, .85); }
+.reproducir-icono { position: absolute; left: 16px; bottom: 16px; width: 46px; height: 46px; border-radius: 50%; background: var(--faro); display: grid; place-items: center; opacity: 0; transform: translateY(8px); transition: .25s ease; }
+.tarjeta:hover .reproducir-icono, .tarjeta:focus-visible .reproducir-icono { opacity: 1; transform: none; }
+.tarjeta h3 { font-size: 16px; line-height: 1.25; font-weight: 600; }
+.tarjeta small { color: var(--niebla); font-size: 14px; display: block; }
+
+/* Uso con equipos */
+.franja { background: var(--marea); border-block: 1px solid var(--linea); }
+.pasos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 760px) { .pasos { grid-template-columns: 1fr; } }
+.paso { background: var(--abismo); border: 1px solid var(--linea); border-radius: 16px; padding: 22px; display: grid; gap: 8px; align-content: start; }
+.paso .tiempo { font-family: var(--display); color: var(--faro); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.paso h3 { font-size: 17px; }
+.paso p { margin: 0; color: var(--niebla); }
+
+/* Autores */
+.autores { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 1080px) { .autores { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .autores { grid-template-columns: 1fr; } }
+.equipo { border-top: 3px solid var(--c, var(--turquesa)); padding-top: 14px; }
+.equipo h3 { font-size: 14px; margin-bottom: 10px; color: var(--c, var(--turquesa)); }
+.equipo ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.equipo li { font-size: 15px; }
+.equipo li span { display: block; font-size: 13px; color: var(--niebla); }
+
+footer { padding: 40px 0 56px; color: var(--niebla); font-size: 14px; border-top: 1px solid var(--linea); }
+footer .contenedor { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+/* Episodio */
+.episodio { position: fixed; inset: 0; z-index: 20; background: var(--abismo); overflow-y: auto; display: none; }
+.episodio.abierto { display: block; }
+.barra { position: sticky; top: 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; background: rgba(6, 20, 35, .88); backdrop-filter: blur(8px); border-bottom: 1px solid var(--linea); }
+.barra b { font-family: var(--display); font-size: 14px; letter-spacing: .04em; }
+.barra .boton { padding: 10px 16px; font-size: 14px; }
+.escenario { position: relative; width: min(1080px, 100% - 32px); margin: 24px auto 0; aspect-ratio: 16 / 9; border-radius: 18px; overflow: hidden; background: #020a13; box-shadow: 0 30px 80px rgba(0, 0, 0, .5); }
+.capa { position: absolute; inset: 0; display: none; }
+.capa.activa { display: block; }
+.capa:not(.activa) { display: none !important; }
+#video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+
+.inicio-escena.activa { display: grid; } .inicio-escena { place-items: center; text-align: center; background: radial-gradient(circle at 50% 120%, var(--casco), #020a13 70%); }
+.inicio-escena .bloque { display: grid; gap: 14px; justify-items: center; padding: 20px; }
+.inicio-escena h2 { font-size: clamp(20px, 3.6vw, 40px); max-width: 22ch; }
+.inicio-escena p { margin: 0; color: var(--niebla); max-width: 52ch; }
+
+.entrada { background: #020a13; overflow: hidden; }
+.haz { position: absolute; left: 50%; top: 110%; width: 240%; height: 240%; transform-origin: 0 0; background: conic-gradient(from 250deg at 0 0, transparent 0deg, rgba(244, 194, 90, .28) 8deg, transparent 18deg); animation: barrido 4.2s ease-in-out forwards; }
+@keyframes barrido { from { transform: rotate(-30deg); } to { transform: rotate(32deg); } }
+.entrada .centro { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 6%; }
+.entrada .marca { font-family: var(--display); font-weight: 800; font-size: clamp(22px, 5vw, 58px); letter-spacing: .02em; }
+.entrada .marca i { font-style: normal; display: inline-block; opacity: 0; transform: translateY(24px); animation: letra .6s cubic-bezier(.2, .8, .2, 1) forwards; }
+@keyframes letra { to { opacity: 1; transform: none; } }
+.entrada .ep { color: var(--faro); letter-spacing: .3em; text-transform: uppercase; font-size: clamp(11px, 1.4vw, 15px); font-weight: 700; opacity: 0; animation: aparecer .7s 1.3s forwards; }
+.entrada .titulo-ep { font-family: var(--display); font-size: clamp(16px, 2.8vw, 32px); max-width: 24ch; margin: 14px auto 0; opacity: 0; animation: subir .8s 1.7s forwards; }
+.entrada .frase { color: var(--niebla); font-size: clamp(13px, 1.6vw, 18px); max-width: 48ch; margin: 12px auto 0; opacity: 0; animation: aparecer .8s 2.3s forwards; }
+.entrada .olas { position: absolute; left: 0; right: 0; bottom: 0; height: 28%; opacity: .55; }
+@keyframes aparecer { to { opacity: 1; } }
+@keyframes subir { from { transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+.simulado { background: linear-gradient(135deg, var(--casco), #071a2c); display: grid; place-items: center; text-align: center; }
+.simulado .bloque { display: grid; gap: 10px; justify-items: center; padding: 24px; }
+.simulado .tag { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--turquesa); font-weight: 700; }
+.simulado h3 { font-size: clamp(18px, 2.6vw, 28px); max-width: 26ch; }
+.simulado p { margin: 0; color: var(--niebla); max-width: 46ch; }
+.progreso { position: absolute; left: 0; bottom: 0; height: 4px; width: 0; background: var(--faro); }
+
+.creditos { background: #020a13; overflow: hidden; }
+.rodillo { position: absolute; left: 0; right: 0; top: 100%; text-align: center; display: grid; gap: 26px; padding: 0 8%; }
+.rodillo.corre { animation: rodar 15s linear forwards; }
+@keyframes rodar { from { transform: translateY(0); } to { transform: translateY(calc(-100% - 140%)); } }
+.rodillo .k { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--faro); font-weight: 700; }
+.rodillo .nombre { font-family: var(--display); font-size: clamp(16px, 2.4vw, 26px); }
+.rodillo .cargo { color: var(--niebla); font-size: clamp(12px, 1.5vw, 16px); }
+.rodillo .grupo-rol { display: grid; gap: 6px; }
+.rodillo .idea { font-size: clamp(15px, 2vw, 22px); max-width: 40ch; margin-inline: auto; color: var(--espuma); font-style: italic; }
+.rodillo .marca-final { font-family: var(--display); font-weight: 800; font-size: clamp(24px, 4.4vw, 50px); }
+.rodillo .marca-final span { color: var(--turquesa); }
+
+.cierre-escena.activa { display: grid; } .cierre-escena { place-items: center; text-align: center; background: radial-gradient(circle at 50% -20%, var(--casco), #020a13 70%); }
+.cierre-escena .bloque { display: grid; gap: 14px; justify-items: center; padding: 20px; }
+.cierre-escena .fila { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+.ver-creditos { position: absolute; right: 14px; top: 14px; z-index: 2; padding: 10px 16px; font-size: 14px; }
+.saltar { position: absolute; right: 14px; bottom: 14px; z-index: 2; background: rgba(2, 10, 19, .7); color: var(--espuma); border: 1px solid var(--linea); border-radius: 999px; padding: 8px 14px; font-size: 13px; cursor: pointer; display: none; }
+.saltar.visible { display: block; }
+
+.ficha { width: min(1080px, 100% - 32px); margin: 36px auto 80px; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 40px; }
+@media (max-width: 860px) { .ficha { grid-template-columns: minmax(0, 1fr); } }
+.ficha > * { min-width: 0; } .ficha a { overflow-wrap: anywhere; }
+@media (max-width: 600px) { .escenario { aspect-ratio: 4 / 5; } }
+.ficha h2 { font-size: clamp(24px, 3vw, 34px); margin-bottom: 8px; }
+.ficha .lead { color: var(--niebla); font-size: 19px; margin: 0 0 28px; max-width: 62ch; }
+.bloque-ficha { margin-bottom: 30px; }
+.bloque-ficha h3 { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--turquesa); margin-bottom: 12px; font-family: var(--texto); font-weight: 700; }
+.bloque-ficha p { margin: 0; max-width: 62ch; white-space: pre-line; overflow-wrap: anywhere; }
+.nivel { white-space: pre-line; }
+.enlace-escena.activa { display: grid; } .enlace-escena { place-items: center; text-align: center; }
+.enlace-escena .bloque { display: grid; gap: 16px; justify-items: center; padding: 24px; }
+.enlace-escena h2 { font-size: clamp(20px, 3.4vw, 38px); max-width: 22ch; margin: 0; }
+.enlace-escena .fila { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.bloque-ficha ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 62ch; }
+.niveles { display: grid; gap: 12px; }
+.nivel { border: 1px solid var(--linea); border-radius: 14px; padding: 16px 18px; background: var(--marea); }
+.nivel b { display: block; color: var(--faro); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+.lateral { display: grid; gap: 18px; align-content: start; }
+.pregunta { background: linear-gradient(160deg, var(--casco), var(--marea)); border: 1px solid var(--linea); border-radius: 18px; padding: 22px; display: grid; gap: 14px; }
+.pregunta .k { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--faro); font-weight: 700; }
+.pregunta q { font-size: 20px; line-height: 1.4; quotes: "\201C" "\201D"; }
+.autores-ep { border: 1px solid var(--linea); border-radius: 18px; padding: 22px; }
+.autores-ep h3 { font-size: 14px; letter-spacing: .12em; text-transform: uppercase; color: var(--turquesa); margin-bottom: 12px; font-family: var(--texto); font-weight: 700; }
+.autores-ep ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.autores-ep li span { display: block; color: var(--niebla); font-size: 14px; }
+.fuentes li { color: var(--niebla); }
+.aviso { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--faro); color: var(--abismo); font-weight: 700; padding: 10px 18px; border-radius: 999px; z-index: 40; opacity: 0; pointer-events: none; transition: opacity .3s; }
+.aviso.ver { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition: none !important; }
+  .rodillo.corre { animation: none; position: static; }
+}
+</style>
+</head>
+<body>
+
+<header class="portada">
+  <canvas id="mar" aria-hidden="true"></canvas>
+  <div class="contenedor portada-contenido">
+    <span class="sello">Temporada 1 · Bienestar digital</span>
+    <h1>Bitácora <span>Digital</span></h1>
+    <p>Bienestar digital y trabajo con inteligencia artificial.</p>
+    <div class="acciones">
+      <button class="boton boton-faro" type="button" data-abrir="1">
+        <svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true"><path d="M0 0L14 8L0 16z" fill="currentColor"/></svg>
+        Empezar por el episodio 1
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="seccion" aria-labelledby="t-temporada">
+    <div class="contenedor">
+      <div class="seccion-cabeza">
+        <div>
+          <h2 id="t-temporada">La temporada</h2>
+        </div>
+      </div>
+      <div class="temporada" id="temporada"></div>
+    </div>
+  </section>
+
+  <section class="seccion" aria-labelledby="t-autores">
+    <div class="contenedor">
+      <div class="seccion-cabeza">
+        <div>
+          <h2 id="t-autores">Equipos de producción</h2>
+        </div>
+      </div>
+      <div class="autores" id="autores"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="contenedor">
+    <span>Bitácora Digital · Temporada 1</span>
+    <span>2026</span>
+  </div>
+</footer>
+
+<div class="episodio" id="episodio" role="dialog" aria-modal="true" aria-labelledby="ep-titulo">
+  <div class="barra">
+    <b id="barra-titulo">Bitácora Digital</b>
+    <button class="boton boton-claro" type="button" id="cerrar">Volver a la temporada</button>
+  </div>
+
+  <div class="escenario" id="escenario">
+    <div class="capa inicio-escena activa" id="capa-inicio">
+      <div class="bloque">
+        <span class="sello" id="inicio-ep">Episodio 1</span>
+        <h2 id="inicio-titulo"></h2>
+        <p id="inicio-frase"></p>
+        <button class="boton boton-faro" type="button" id="play">
+          <svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true"><path d="M0 0L14 8L0 16z" fill="currentColor"/></svg>
+          Reproducir episodio
+        </button>
+      </div>
+    </div>
+
+    <div class="capa entrada" id="capa-entrada" aria-live="polite">
+      <div class="haz"></div>
+      <svg class="olas" viewBox="0 0 1200 200" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 120 C 200 80, 400 160, 600 120 S 1000 80, 1200 120 V200 H0z" fill="#0d2a45"/>
+        <path d="M0 150 C 250 120, 450 190, 700 150 S 1050 120, 1200 150 V200 H0z" fill="#12385a"/>
+      </svg>
+      <div class="centro">
+        <div>
+          <div class="marca" id="marca"></div>
+          <div class="ep" id="entrada-ep"></div>
+          <div class="titulo-ep" id="entrada-titulo"></div>
+          <div class="frase" id="entrada-frase"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="capa" id="capa-video">
+      <video id="video" playsinline controls preload="metadata"></video>
+    </div>
+
+    <div class="capa enlace-escena" id="capa-enlace">
+      <div class="bloque">
+        <span class="sello" id="enlace-ep"></span>
+        <h2 id="enlace-titulo"></h2>
+        <div class="fila">
+          <a class="boton boton-faro" id="enlace-ver" href="#" target="_blank" rel="noopener">
+            <svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true"><path d="M0 0L14 8L0 16z" fill="currentColor"/></svg>
+            Ver el episodio
+          </a>
+          <button class="boton boton-claro" type="button" id="enlace-creditos">Ver créditos</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="capa" id="capa-drive">
+      <iframe id="drive-marco" title="Video del episodio" allow="autoplay; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;background:#000"></iframe>
+      <button class="boton boton-faro ver-creditos" type="button" id="ver-creditos">Ver créditos</button>
+    </div>
+
+    <div class="capa creditos" id="capa-creditos">
+      <div class="rodillo" id="rodillo"></div>
+    </div>
+
+    <div class="capa cierre-escena" id="capa-cierre">
+      <div class="bloque">
+        <span class="sello">Fin del episodio</span>
+        <h2 id="cierre-titulo"></h2>
+        <div class="fila">
+          <button class="boton boton-faro" type="button" id="siguiente">Siguiente episodio</button>
+          <button class="boton boton-claro" type="button" id="repetir">Ver de nuevo</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="saltar" type="button" id="saltar">Saltar</button>
+  </div>
+
+  <article class="ficha">
+    <div>
+      <span class="sello" id="ficha-ep"></span>
+      <h2 id="ep-titulo"></h2>
+      <p class="lead" id="ficha-descripcion"></p>
+      <div class="bloque-ficha"><h3>El problema</h3><p id="ficha-problema"></p></div>
+      <div class="bloque-ficha" id="bloque-caso"><h3>Un caso</h3><p id="ficha-caso"></p></div>
+      <div class="bloque-ficha"><h3>Cómo se reconoce</h3><p id="ficha-senales"></p></div>
+      <div class="bloque-ficha"><h3>Efectos</h3><p id="ficha-efectos"></p></div>
+      <div class="bloque-ficha"><h3>Dato clave</h3><p id="ficha-dato"></p></div>
+      <div class="bloque-ficha"><h3>Buenas prácticas</h3><div class="niveles" id="ficha-practicas"></div></div>
+      <div class="bloque-ficha fuentes" id="bloque-fuentes"><h3>Fuentes</h3><ul id="ficha-fuentes"></ul></div>
+    </div>
+    <aside class="lateral">
+      <div class="pregunta">
+        <span class="k">Para conversar en equipo</span>
+        <q id="ficha-pregunta"></q>
+        <button class="boton boton-faro" type="button" id="copiar-pregunta">Copiar la pregunta</button>
+      </div>
+      <div class="autores-ep">
+        <h3>Producido por</h3>
+        <ul id="ficha-autores"></ul>
+      </div>
+      <button class="boton boton-claro" type="button" id="copiar-enlace">Copiar enlace del episodio</button>
+    </aside>
+  </article>
+</div>
+
+<div class="aviso" id="aviso" role="status"></div>
+
+<script>
+const EPISODIOS = [{"n": 1, "color": ["#f4c25a", "#c9762c"], "acento": "#f4c25a", "icono": "faro", "titulo": "¿La IA te está quemando el cerebro? Cómo evitar el brain fry", "tema": "Más productividad, ¿a qué costo?", "idea": "Uso responsable de la IA para no desgastarnos en revisiones.", "descripcion": "¿La inteligencia artificial está sobrecargando nuestro cerebro? Descubre qué es el brain fry y cómo el uso excesivo de herramientas de IA puede afectar nuestra concentración, creatividad y capacidad de decisión. Aprende estrategias prácticas para aprovechar la tecnología sin sacrificar tu bienestar mental ni tu pensamiento crítico.", "problema": "El uso excesivo y sin control de herramientas de inteligencia artificial para redactar documentos, informes y comunicaciones en una Autoridad Marítima puede provocar el fenómeno conocido como brain fry, caracterizado por la sobrecarga mental, la fatiga cognitiva y la dificultad para procesar información y tomar decisiones. La ausencia de supervisión y lineamientos institucionales puede fomentar una dependencia tecnológica que debilite el pensamiento crítico, la capacidad de análisis y el criterio profesional de los funcionarios. El desafío es aprovechar la IA como herramienta de apoyo, evitando que su uso indiscriminado termine afectando el bienestar mental y la calidad del trabajo institucional.", "caso": "La gestora documental de una Autoridad Marítima enfrenta una sobrecarga de trabajo al tener que revisar y validar grandes volúmenes de documentos institucionales, muchos de ellos elaborados con apoyo de inteligencia artificial, sin lineamientos ni supervisión previa. Esta situación dificulta identificar información imprecisa, poco confiable o ajena a la misionalidad de la entidad, incrementando la carga cognitiva, el desgaste mental y el riesgo de afectar la calidad documental institucional.", "senales": "El brain fry se manifiesta mediante fatiga mental, dificultad para concentrarse, pérdida de pensamiento crítico, problemas para tomar decisiones y dependencia excesiva de la inteligencia artificial. En el entorno laboral, puede reflejarse en la aceptación de información sin verificar, dificultades para identificar errores, disminución de la creatividad, saturación por exceso de información y agotamiento al revisar o elaborar documentos, afectando la calidad del trabajo y el criterio profesional.", "efectos": "Persona: experimenta agotamiento mental, pérdida de concentración, disminución del pensamiento crítico y dificultades para tomar decisiones. Puede desarrollar dependencia de la IA, reducir su creatividad y perder capacidad para analizar y validar información de manera autónoma.\nEquipo de trabajo: enfrenta sobrecarga laboral, reprocesos y dificultades para unificar criterios. La necesidad de revisar, corregir y validar contenidos generados con IA puede afectar la colaboración, la confianza y la eficiencia del equipo.\nOrganización: se expone a riesgos por la emisión de documentos con información imprecisa, no verificada o ajena a su misionalidad. Esto puede comprometer la calidad documental, la confiabilidad de la información institucional, la seguridad de los datos y la toma de decisiones.", "dato": "Humanos \"cansables\" frente a máquinas incansables. El mundo del trabajo está ante una encrucijada provocada por una inteligencia artificial que nunca baja el ritmo y que nos obliga a explorar los límites laborales de nuestra especie.\nhttps://www.revistagq.com/articulo/prohibido-agotarse-la-vida-laboral-ante-una-ia-que-nunca-baja-el-ritmo", "practicas": {"persona": "Utilizar la inteligencia artificial como herramienta de apoyo y no como sustituto del pensamiento propio. Verificar la información generada, contrastar fuentes, mantener el criterio profesional, establecer pausas activas y evitar la dependencia tecnológica en las tareas cotidianas.", "lider": "Promover el uso responsable de la IA mediante supervisión, acompañamiento y orientación al equipo. Establecer criterios de revisión y validación de documentos, fomentar el pensamiento crítico, distribuir adecuadamente las cargas laborales y garantizar que las herramientas tecnológicas se utilicen de acuerdo con los objetivos institucionales.", "organizacion": "Implementar políticas y lineamientos para el uso seguro y responsable de la IA, definir controles de calidad y mecanismos de supervisión humana, capacitar a los funcionarios y establecer límites sobre la información que puede procesarse. Garantizar que todo contenido institucional responda a la misionalidad, las competencias y las disposiciones normativas de la entidad."}, "pregunta": "¿Cómo podemos mitigar el brain fry?", "fuentes": ["La nueva amenaza de la Inteligencia Artificial: alertan que les \"quema la cabeza\" a empleados. Universidad del CEMA, participación de Fernando Troilo, marzo de 2026. https://ucema.edu.ar/investigacion/iprofesional-280326", "Prohibido agotarse: la vida laboral ante una IA que nunca baja el ritmo. Adrián Espallargas, GQ, agosto de 2026. https://www.revistagq.com/articulo/prohibido-agotarse-la-vida-laboral-ante-una-ia-que-nunca-baja-el-ritmo", "Falta de concentración y dolor de cabeza: los riesgos ocultos de usar IA todo el día en el trabajo. Dylan Escobar Ruiz, Infobae, abril de 2026. https://www.infobae.com/tecno/2026/04/09/falta-de-concentracion-y-dolor-de-cabeza-los-riesgos-ocultos-de-usar-ia-todo-el-dia-en-el-trabajo/"], "integrantes": ["LizVane", "Marce", "Will"], "video": "", "driveId": "", "enlace": "https://notebook.google.com/notebook/0062934c-2169-4d15-bd3a-ec284088cef0/artifact/f3ba75e1-5c7d-49ed-ade8-e8018abf62ea"}, {"n": 3, "color": ["#7aa7ff", "#3b4fa8"], "acento": "#9db9ff", "icono": "ancla", "titulo": "Aprender sin miedo: actualizarse con IA sin quedarse atrás", "tema": "Aprender sin vivir con miedo a quedarse atrás", "idea": "Aprender a trabajar con IA no es una carrera para no quedarse atrás: con tiempo, acompañamiento y confianza, se convierte en un reto que nos hace crecer.", "descripcion": "Este episodio explica de dónde viene la presión por aprender cada nueva herramienta de IA, cómo se convierte en cansancio y en temor a ser reemplazado, y qué pueden hacer las personas, los líderes y las organizaciones para que aprender sea un reto que motiva y no una carrera que agota.", "problema": "A los profesionales con experiencia que deben adoptar herramientas de IA que cambian cada semana, sin tiempo ni acompañamiento para aprenderlas, les llega el agotamiento y el miedo a que su experiencia pierda valor o a ser reemplazados.", "caso": "Marta es analista sénior y lleva quince años en su área. El lunes abre tres correos que anuncian nuevas funciones de IA y una capacitación opcional fuera del horario. En la reunión, un compañero más joven muestra un informe que la IA le armó en minutos, algo que a ella le tomaba una tarde, y el jefe dice que así deberían trabajar todos. Marta se queda hasta tarde viendo tutoriales, no se atreve a preguntar lo que no entiende y empieza a dudar de lo que sabe y de si su puesto seguirá existiendo.", "senales": "- Sensación de que nunca se termina de aprender: cada semana hay algo nuevo y lo anterior ya parece viejo.\n- Aprender fuera del horario, a escondidas o con culpa.\n- Vergüenza de preguntar o de admitir que no se domina una herramienta.\n- Comparación constante con compañeros que parecen ir más rápido.\n- Comentarios como \"esto ya lo hace la IA\" o \"mi experiencia ya no vale\".\n- Usar herramientas por cuenta propia, sin guía, solo para no quedarse atrás.\n- Evitar las herramientas nuevas o resistirse a ellas por miedo a equivocarse.", "efectos": "Persona: cansancio mental, ansiedad, menos confianza en sus capacidades, pérdida del orgullo por las tareas que dominaba y dudas sobre su futuro laboral.\nEquipo: menos colaboración y más competencia silenciosa, brechas entre quienes se adaptan rápido y quienes no, y menos disposición a experimentar o compartir errores.\nOrganización: menor compromiso y sentido del trabajo, más intención de renuncia, pérdida de conocimiento experto y una adopción de IA desordenada y sin control.", "dato": "Según el Work Trend Index 2024 de Microsoft y LinkedIn (\"AI at Work Is Here. Now Comes the Hard Part\"), el 75 % de los trabajadores del conocimiento ya usa IA en su trabajo, pero solo el 39 % de los usuarios ha recibido capacitación en IA por parte de su empresa.", "practicas": {"persona": "- Elegir una o dos herramientas útiles para su trabajo real y aprenderlas a fondo, en lugar de intentar seguirlo todo.\n- Reservar un bloque corto y fijo para aprender dentro del horario.\n- Ver la IA como un apoyo que suma a su experiencia: el criterio y el conocimiento del contexto siguen siendo suyos.\n- Pedir ayuda y compartir dudas sin vergüenza.", "lider": "- Dar tiempo protegido para aprender dentro de la jornada y no esperar que se haga en horas extra.\n- Crear un espacio seguro para experimentar y equivocarse con las herramientas nuevas.\n- Formar parejas o grupos en los que quienes van más adelante acompañan a los demás, y donde la experiencia de los veteranos también se valora.\n- Conversar abiertamente sobre los temores al reemplazo y reconocer el valor de lo que cada persona sabe.\n- Involucrar al equipo en decidir qué herramientas adoptar y para qué.", "organizacion": "- Comunicar con transparencia por qué y cómo se adopta la IA y qué pasará con los roles.\n- Ofrecer formación estructurada y continua, por niveles, y no solo herramientas.\n- Incluir en la formación el manejo del estrés y la resiliencia, además de lo técnico.\n- Priorizar pocas herramientas bien implementadas en vez de cambios permanentes.\n- Medir el bienestar y la carga de aprendizaje como parte de la transformación digital."}, "pregunta": "¿Qué necesitaríamos como equipo para que aprender una herramienta nueva se sienta como una oportunidad y no como una amenaza?", "fuentes": ["Microsoft y LinkedIn, 2024, 2024 Work Trend Index: AI at Work Is Here. Now Comes the Hard Part, https://blogs.microsoft.com/blog/2024/05/08/microsoft-and-linkedin-release-the-2024-work-trend-index-on-the-state-of-ai-at-work/", "Shekhar, A. y Saurombe, M. D., 2026, Algorithmic anxiety: AI, work, and the evolving psychological contract in digital discourse (Frontiers in Psychology), https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2026.1745164/full", "Fettahoglu, S. y Yikilmaz, I., 2025, Reframing Technostress for Organizational Resilience: The Mediating Role of Techno-Eustress (Systems, MDPI), https://www.mdpi.com/2079-8954/13/7/550", "Yamada, H., Kursim, L. A., Matsushima, M., Nakagomi, A. y Tabuchi, T., 2026, The Impact of AI-Induced Job Replacement Anxiety on Work Motivation, Turnover Intention, and Mental Well-Being: Evidence from Japan, https://ies.keio.ac.jp/upload/DP2026-015_EN.pdf"], "integrantes": ["CF Francisco Villegas", "Ingeniero Marlon Rojas", "Ingeniero Mauricio Cuadrado"], "video": "", "driveId": "", "enlace": "https://notebook.google.com/notebook/efc403ea-24e3-4289-8657-a78a6f8ef77e/artifact/f086714c-2c23-41b7-8573-778e4c0ed50a"}];
+
+const ICONOS = {
+  faro: '<svg class="icono" viewBox="0 0 120 120" aria-hidden="true"><path d="M52 30h16l6 70H46z" fill="rgba(255,255,255,.88)"/><rect x="48" y="18" width="24" height="14" rx="3" fill="rgba(255,255,255,.95)"/><path d="M60 6l10 12H50z" fill="rgba(255,255,255,.95)"/><path d="M50 48h20v8H48zM48 70h24v8H47z" fill="rgba(0,0,0,.18)"/><path d="M72 22L120 4v32z" fill="rgba(255,255,255,.35)"/></svg>',
+  brujula: '<svg class="icono" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="44" fill="none" stroke="rgba(255,255,255,.9)" stroke-width="6"/><path d="M60 22l10 38-10 38-10-38z" fill="rgba(255,255,255,.92)"/><path d="M60 22l10 38H50z" fill="rgba(0,0,0,.2)"/><circle cx="60" cy="60" r="5" fill="rgba(0,0,0,.25)"/></svg>',
+  ancla: '<svg class="icono" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="20" r="9" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="6"/><path d="M60 29v70M38 46h44" stroke="rgba(255,255,255,.92)" stroke-width="7" stroke-linecap="round"/><path d="M20 72c4 20 20 30 40 30s36-10 40-30" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="7" stroke-linecap="round"/></svg>',
+  timon: '<svg class="icono" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="32" fill="none" stroke="rgba(255,255,255,.92)" stroke-width="7"/><circle cx="60" cy="60" r="8" fill="rgba(255,255,255,.92)"/><g stroke="rgba(255,255,255,.92)" stroke-width="6" stroke-linecap="round"><path d="M60 10v100M10 60h100M25 25l70 70M95 25L25 95"/></g></svg>',
+  olas: '<svg class="icono" viewBox="0 0 120 120" aria-hidden="true"><g fill="none" stroke="rgba(255,255,255,.92)" stroke-width="7" stroke-linecap="round"><path d="M8 48c13-12 26-12 39 0s26 12 39 0 26-12 39 0"/><path d="M8 72c13-12 26-12 39 0s26 12 39 0 26-12 39 0"/><path d="M8 96c13-12 26-12 39 0s26 12 39 0 26-12 39 0"/></g></svg>'
+};
+
+const $ = id => document.getElementById(id);
+const nn = n => String(n).padStart(2, "0");
+
+function enlazar(t) { return esc(t).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>'); }
+function esc(t) { return String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+function pintarTemporada() {
+  $("temporada").innerHTML = EPISODIOS.map(e => `
+    <button class="tarjeta" type="button" data-abrir="${e.n}" aria-label="Episodio ${e.n}: ${esc(e.titulo)}">
+      <div class="caratula" style="background: linear-gradient(150deg, ${e.color[0]}, ${e.color[1]});">
+        <span class="serie">Bitácora Digital</span>
+        <span class="num">${nn(e.n)}</span>
+        ${ICONOS[e.icono]}
+        <span class="reproducir-icono"><svg width="14" height="16" viewBox="0 0 14 16" aria-hidden="true"><path d="M0 0L14 8L0 16z" fill="#061423"/></svg></span>
+      </div>
+      <h3>${esc(e.titulo)}</h3>
+      <small>${esc(e.idea)}</small>
+    </button>`).join("");
+  $("autores").innerHTML = EPISODIOS.map(e => `
+    <div class="equipo" style="--c: ${e.acento};">
+      <h3>Episodio ${e.n}</h3>
+      <ul>${e.integrantes.map(p => `<li>${esc(p)}</li>`).join("")}</ul>
+    </div>`).join("");
+}
+
+let actual = null, temporizadores = [], animSim = null;
+
+function limpiar() {
+  temporizadores.forEach(clearTimeout); temporizadores = [];
+  if (animSim) cancelAnimationFrame(animSim);
+  const v = $("video"); v.pause(); v.removeAttribute("src"); v.load();
+  $("saltar").classList.remove("visible");
+  const m = $("drive-marco"); if (m) m.src = "about:blank";
+}
+
+function capa(nombre) {
+  document.querySelectorAll(".capa").forEach(c => c.classList.toggle("activa", c.id === "capa-" + nombre));
+}
+
+function abrir(n, conHash = true) {
+  const e = EPISODIOS.find(x => x.n === n); if (!e) return;
+  actual = e; limpiar();
+  $("barra-titulo").textContent = `Bitácora Digital · Episodio ${n}`;
+  $("inicio-ep").textContent = `Episodio ${n}`;
+  $("inicio-titulo").textContent = e.titulo;
+  $("inicio-frase").textContent = e.idea;
+  $("capa-inicio").style.background = `radial-gradient(circle at 50% 120%, ${e.color[1]}, #020a13 70%)`;
+  $("ficha-ep").textContent = `Episodio ${n}`;
+  $("ep-titulo").textContent = e.titulo;
+  $("ficha-descripcion").textContent = e.descripcion;
+  $("ficha-problema").textContent = e.problema;
+  $("ficha-caso").textContent = e.caso || ""; $("bloque-caso").style.display = e.caso ? "" : "none";
+  $("ficha-senales").textContent = e.senales;
+  $("ficha-efectos").textContent = e.efectos;
+  $("ficha-dato").innerHTML = enlazar(e.dato);
+  $("ficha-practicas").innerHTML = [["La persona", e.practicas.persona], ["El líder", e.practicas.lider], ["La organización", e.practicas.organizacion]]
+    .map(([k, v]) => `<div class="nivel"><b>${k}</b>${esc(v)}</div>`).join("");
+  $("bloque-fuentes").style.display = e.fuentes.length ? "" : "none";
+  $("ficha-fuentes").innerHTML = e.fuentes.map(f => `<li>${enlazar(f)}</li>`).join("");
+  $("ficha-pregunta").textContent = e.pregunta;
+  $("ficha-autores").innerHTML = e.integrantes.map(p => `<li>${esc(p)}</li>`).join("");
+  $("siguiente").style.display = EPISODIOS.some(x => x.n > n) ? "" : "none";
+  capa("inicio");
+  $("episodio").classList.add("abierto");
+  $("episodio").scrollTop = 0;
+  document.body.style.overflow = "hidden";
+  if (conHash) { try { history.replaceState(null, "", "#episodio-" + n); } catch (err) { location.hash = "episodio-" + n; } }
+  $("play").focus();
+}
+
+function cerrar() {
+  limpiar(); $("episodio").classList.remove("abierto"); document.body.style.overflow = "";
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (err) { location.hash = ""; }
+}
+
+function entrada() {
+  const e = actual;
+  $("marca").innerHTML = [..."BITÁCORA DIGITAL"].map((c, i) => `<i style="animation-delay:${(i * 0.05).toFixed(2)}s">${c === " " ? "&nbsp;" : c}</i>`).join("");
+  $("entrada-ep").textContent = `Episodio ${nn(e.n)}`;
+  $("entrada-titulo").textContent = e.titulo;
+  $("entrada-frase").textContent = e.idea;
+  const c = $("capa-entrada"); const clon = c.cloneNode(true); c.replaceWith(clon);
+  capa("entrada");
+  $("saltar").classList.add("visible");
+  temporizadores.push(setTimeout(video, 5200));
+}
+
+function video() {
+  temporizadores.forEach(clearTimeout); temporizadores = [];
+  $("saltar").classList.remove("visible");
+  const v = $("video"), e = actual;
+  v.onended = creditos;
+  v.onerror = () => { v.onerror = null; drive(); };
+  if (!e.video) { e.enlace ? enlace() : drive(); return; }
+  v.src = e.video;
+  capa("video");
+  const intento = v.play();
+  if (intento && intento.catch) intento.catch(() => {});
+}
+
+function enlace() {
+  const e = actual;
+  $("enlace-ep").textContent = `Episodio ${nn(e.n)}`;
+  $("enlace-titulo").textContent = e.titulo;
+  $("enlace-ver").href = e.enlace;
+  $("capa-enlace").style.background = `radial-gradient(circle at 50% 120%, ${e.color[1]}, #020a13 70%)`;
+  capa("enlace");
+}
+
+function drive() {
+  const e = actual;
+  if (!e.driveId) { creditos(); return; }
+  $("drive-marco").src = `https://drive.google.com/file/d/${e.driveId}/preview`;
+  capa("drive");
+}
+
+function creditos() {
+  if (animSim) cancelAnimationFrame(animSim);
+  const e = actual;
+  $("rodillo").innerHTML = `
+    <div class="idea">${esc(e.idea)}</div>
+    <div class="grupo-rol"><span class="k">Bitácora Digital · Episodio ${nn(e.n)}</span><span class="nombre">${esc(e.titulo)}</span></div>
+    <div class="grupo-rol"><span class="k">Un episodio de</span>${e.integrantes.map(p => `<span class="nombre">${esc(p)}</span>`).join("")}</div>
+    <div class="marca-final">Bitácora <span>Digital</span></div>`;
+  const r = $("rodillo"); r.classList.remove("corre"); void r.offsetWidth; r.classList.add("corre");
+  capa("creditos");
+  $("saltar").classList.add("visible");
+  temporizadores.push(setTimeout(fin, 15200));
+}
+
+function fin() {
+  temporizadores.forEach(clearTimeout); temporizadores = [];
+  $("saltar").classList.remove("visible");
+  $("cierre-titulo").textContent = actual.titulo;
+  capa("cierre");
+}
+
+$("saltar").addEventListener("click", () => {
+  const activa = document.querySelector(".capa.activa").id;
+  if (activa === "capa-entrada") video();
+  else if (activa === "capa-creditos") fin();
+});
+$("play").addEventListener("click", entrada);
+$("ver-creditos").addEventListener("click", () => { $("drive-marco").src = "about:blank"; creditos(); });
+$("enlace-creditos").addEventListener("click", creditos);
+$("repetir").addEventListener("click", () => { limpiar(); entrada(); });
+$("siguiente").addEventListener("click", () => { const s = EPISODIOS.filter(x => x.n > actual.n)[0]; if (s) abrir(s.n); });
+$("cerrar").addEventListener("click", cerrar);
+document.addEventListener("keydown", ev => { if (ev.key === "Escape" && $("episodio").classList.contains("abierto")) cerrar(); });
+document.addEventListener("click", ev => { const b = ev.target.closest("[data-abrir]"); if (b) abrir(Number(b.dataset.abrir)); });
+
+function avisar(t) { const a = $("aviso"); a.textContent = t; a.classList.add("ver"); setTimeout(() => a.classList.remove("ver"), 2200); }
+async function copiar(texto, ok) {
+  try { await navigator.clipboard.writeText(texto); avisar(ok); }
+  catch (err) { avisar("No se pudo copiar. Seleccione el texto y cópielo a mano."); }
+}
+$("copiar-pregunta").addEventListener("click", () => copiar(actual.pregunta, "Pregunta copiada"));
+$("copiar-enlace").addEventListener("click", () => copiar(location.href.split("#")[0] + "#episodio-" + actual.n, "Enlace copiado"));
+
+function rutaInicial() { const m = location.hash.match(/^#episodio-(\d)$/); if (m) abrir(Number(m[1]), false); else if ($("episodio").classList.contains("abierto")) cerrar(); }
+window.addEventListener("hashchange", rutaInicial);
+
+/* Mar con faro en la portada */
+(function mar() {
+  const cv = $("mar"), cx = cv.getContext("2d");
+  const reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w, h, dpr;
+  function medir() { dpr = Math.min(2, window.devicePixelRatio || 1); w = cv.clientWidth; h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  function dibujar(t) {
+    cx.clearRect(0, 0, w, h);
+    const cielo = cx.createLinearGradient(0, 0, 0, h);
+    cielo.addColorStop(0, "#061423"); cielo.addColorStop(1, "#0d2a45");
+    cx.fillStyle = cielo; cx.fillRect(0, 0, w, h);
+    const fx = w * 0.84, fy = h * 0.42;
+    const ang = Math.sin(t / 2600) * 0.55 + Math.PI;
+    cx.save(); cx.translate(fx, fy);
+    for (const lado of [ang, ang + Math.PI]) {
+      const g = cx.createRadialGradient(0, 0, 0, 0, 0, w * 0.9);
+      g.addColorStop(0, "rgba(244,194,90,.28)"); g.addColorStop(1, "rgba(244,194,90,0)");
+      cx.fillStyle = g; cx.beginPath(); cx.moveTo(0, 0); cx.arc(0, 0, w * 0.9, lado - 0.09, lado + 0.09); cx.closePath(); cx.fill();
+    }
+    cx.restore();
+    cx.fillStyle = "#eaf2f6";
+    cx.beginPath(); cx.moveTo(fx - 9, fy + 6); cx.lineTo(fx + 9, fy + 6); cx.lineTo(fx + 14, h * 0.74); cx.lineTo(fx - 14, h * 0.74); cx.closePath(); cx.fill();
+    cx.fillStyle = "#f4c25a"; cx.fillRect(fx - 8, fy - 8, 16, 14);
+    cx.beginPath(); cx.arc(fx, fy - 1, 22, 0, Math.PI * 2); cx.fillStyle = "rgba(244,194,90,.25)"; cx.fill();
+    const capas = [["rgba(18,56,90,.9)", 0.72, 14, 0.010, 0.0011], ["rgba(13,42,69,.95)", 0.80, 18, 0.008, -0.0009], ["rgba(6,20,35,1)", 0.90, 12, 0.012, 0.0014]];
+    for (const [col, base, amp, fr, vel] of capas) {
+      cx.beginPath(); cx.moveTo(0, h);
+      for (let x = 0; x <= w; x += 8) cx.lineTo(x, h * base + Math.sin(x * fr + t * vel) * amp + Math.sin(x * fr * 2.3 + t * vel * 1.7) * amp * 0.35);
+      cx.lineTo(w, h); cx.closePath(); cx.fillStyle = col; cx.fill();
+    }
+    if (!reducido) requestAnimationFrame(dibujar);
+  }
+  medir(); window.addEventListener("resize", () => { medir(); if (reducido) dibujar(0); });
+  requestAnimationFrame(dibujar);
+})();
+
+pintarTemporada();
+rutaInicial();
+</script>
+</body>
+</html>
