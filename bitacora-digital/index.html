@@ -168,8 +168,7 @@ figcaption div { margin-bottom: 4px; }
     <div class="resultado" id="resultado">
       <section>
         <h2>Su ficha y sus instrucciones</h2>
-        <p>Las instrucciones y los créditos los van a pegar en NotebookLM en los pasos que siguen. La ficha se envía al final de esta página junto con el video. Si quieren una copia, también la pueden descargar.</p>
-        <div class="acciones"><button class="boton" type="button" id="descargar">Descargar ficha en PDF</button></div>
+        <p>Las instrucciones y los créditos los van a pegar en NotebookLM en los pasos que siguen. La ficha se envía al final de esta página junto con el video.</p>
         <div class="copiar"><div class="k"><span>Instrucciones del episodio</span><button class="boton chico" type="button" data-copiar="out-instrucciones">Copiar</button></div><pre id="out-instrucciones"></pre></div>
         <div class="copiar"><div class="k"><span>Créditos del episodio</span><button class="boton chico" type="button" data-copiar="out-creditos">Copiar</button></div><pre id="out-creditos"></pre></div>
       </section>
@@ -379,10 +378,6 @@ function crearPDF() {
 
 function fichaLista() { return document.getElementById("resultado").classList.contains("ver"); }
 
-document.getElementById("descargar").addEventListener("click", () => {
-  if (!window.jspdf) { avisar("No se pudo cargar el generador de PDF. Revisen la conexión a internet."); return; }
-  crearPDF().save(`Ficha_${GRUPO.replace(/\s+/g, "_")}.pdf`);
-});
 
 const URL_ENVIO = "https://script.google.com/macros/s/AKfycbwzBvd5HZo8syo0nptYUb03mb6X34RNQdIW39tpMiyNOh0rSTA7YHfuea7nDN1K8-m8gw/exec";
 function base64(archivo) { return new Promise((ok, mal) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(",")[1]); r.onerror = mal; r.readAsDataURL(archivo); }); }
